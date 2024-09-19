@@ -1,10 +1,10 @@
 # DND_Course_Project
 .NET Development Course Project
 
-Martin Milenov Donchev - Mar7inD - https://github.com/Mar7inD \
-Dimitar Kostadinov Terziev - Plo4i - https://github.com/Plo4i \
-Marin Nikolaev Nikolov - Caiko - https://github.com/Caiko \
-Andreas Ahlstrøm Hyldal Thomsen - AndreasHyldal - https://github.com/AndreasHyldal
+Martin Milenov Donchev (316145) - Mar7inD - https://github.com/Mar7inD \
+Dimitar Kostadinov Terziev (316133) - Plo4i - https://github.com/Plo4i \
+Marin Nikolaev Nikolov (318168) - Caiko - https://github.com/Caiko \
+Andreas Ahlstrøm Hyldal Thomsen (316130) - AndreasHyldal - https://github.com/AndreasHyldal
 
 # Software Blog:
 [#1 Project Formulation & Initial Requirements](https://github.com/Mar7inD/DND_Course_Project/blob/main/Software_Blog/1.Project%20Formulation%20%26%20Initial%20Requirements.md) \
