@@ -7,7 +7,7 @@ Marin Nikolaev Nikolov (318168) - Caiko - https://github.com/Caiko \
 Andreas Ahlstrøm Hyldal Thomsen (316130) - AndreasHyldal - https://github.com/AndreasHyldal
 
 # Software Blog:
-[#1 Project Formulation & Initial Requirements](https://github.com/Mar7inD/DND_Course_Project/blob/main/Software_Blog/1.Project%20Formulation%20%26%20Initial%20Requirements.md) \
+[#1 Project Formulation & Initial Requirements](https://github.com/Mar7inD/DND_Course_Project/blob/main/Software_Blog/1.%20Project%20Formulation%20%26%20Initial%20Requirements.md) \
 [#2 Web Service Design & Implementation](https://github.com/Mar7inD/DND_Course_Project/blob/main/Software_Blog/2.%20Web%20Service%20Design%20%26%20Implementation.md) \
 [#3 Web Application](https://github.com/Mar7inD/DND_Course_Project/blob/main/Software_Blog/3.%20WebApplication.md) \
 [#4 User Management](https://github.com/Mar7inD/DND_Course_Project/blob/main/Software_Blog/4.%20UserManagement.md) \
