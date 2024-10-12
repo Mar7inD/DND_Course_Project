@@ -1,94 +1,59 @@
 using Backend.Models;
 using Newtonsoft.Json.Linq;
+using System.IO;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace Backend.Services;
+namespace Backend.Services
+{
+    /// <summary>
+    public class WasteReportService
+    {
+        private readonly string filePath;
+        private readonly DatabaseService _databaseService;
 
-public class WasteReportService() {
-
-    private string filePath = Path.Combine("Database", "WasteReport.json");
-    
-    public void CheckDB() {
-        // Check if database directory exists
-        if (!Directory.Exists("Database"))
+        public WasteReportService()
         {
-            throw new DirectoryNotFoundException("Database directory not found.");
+            filePath = Path.Combine("Database", "WasteReport.json");
+            _databaseService = new DatabaseService(filePath);
         }
-    }
 
-    public async Task<JArray> ReadDB() {
+        public async Task<bool> PostWasteReport(WasteReport wasteReport)
+        {
+            var wasteReports = await _databaseService.ReadDB();
 
-        // Create the file content variable
-        var wasteReports = new JArray();
-
-        try
-        {    
-            CheckDB();
-
-            // Read the file
-            var jsonContent = await File.ReadAllTextAsync(filePath);
-
-            // Check if file is empty
-            if (string.IsNullOrWhiteSpace(jsonContent))
+            if (wasteReports.Any(report => report["id"]?.Value<int>() == wasteReport.id))
             {
-                wasteReports = new JArray();
+                throw new System.Exception("Waste report with the same id already exists");
             }
-            else
-            {
-                wasteReports = JArray.Parse(jsonContent);
-            }
-        }
-        catch (DirectoryNotFoundException e)
-        {
-            throw new Exception("Database read error occurred.", e);
-        }
-
-        return wasteReports;
-    }
-
-    public async Task<bool> AddWasteReport(WasteReport wasteReport) {
-
-        try 
-        {
-            // Read the file
-            var wasteReports = await ReadDB();
-
-            // Add the new waste report to the list
             wasteReports.Add(JObject.FromObject(wasteReport));
-            
-            // Write the new list to the file
-            await File.WriteAllTextAsync(filePath, wasteReports.ToString());
+            return await _databaseService.WriteDB(wasteReports);
         }
-        catch (DirectoryNotFoundException e) 
+
+        public async Task<string> GetAllWasteReports()
         {
-            throw new Exception("Database update error occurred.", e);
+            JArray wasteReports = await _databaseService.ReadDB();
+            return wasteReports.ToString();
         }
 
-        return true;
-    }
+        public async Task<WasteReport?> GetWasteReportById(int id)
+        {
+            JArray wasteReports = await _databaseService.ReadDB();
+            var wasteReportToken = wasteReports
+                .FirstOrDefault(report => report["id"]?.Value<int?>() == id);
+            var wasteReport = wasteReportToken?.ToObject<WasteReport>();
+            return wasteReport;
+        }
 
-    public async Task<string> GetAllWasteReports() {
-        JArray wasteReports = await ReadDB();
-        return wasteReports.ToString();
-    }
-
-    public async Task<WasteReport?> GetWasteReportById(int id) {
-        JArray wasteReports = await ReadDB();
-        
-        var wasteReportToken = wasteReports
-            .FirstOrDefault(report => report["id"]?.Value<int?>() == id);
-
-        var wasteReport = wasteReportToken?.ToObject<WasteReport>();
-        return wasteReport;
-    }
-
-    public async Task<IEnumerable<WasteReport>> GetWasteReportByType(string type) {
-        JArray wasteReports = await ReadDB();
-        
-        var matchingReports = wasteReports
-            .Where(report => report["wasteType"]?.Value<string>() == type)
-            .Select(report => report.ToObject<WasteReport>())
-            .Where(report => report != null);
-
-        return matchingReports!;
+        public async Task<IEnumerable<WasteReport>> GetWasteReportByType(string type)
+        {
+            JArray wasteReports = await _databaseService.ReadDB();
+            var matchingReports = wasteReports
+                .Where(report => report["wasteType"]?.Value<string>() == type)
+                .Select(report => report.ToObject<WasteReport>())
+                .Where(report => report != null);
+            return matchingReports!;
+        }
     }
 }

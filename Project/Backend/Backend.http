@@ -9,7 +9,7 @@ POST {{Backend_HostAddress}}/api/WasteReports/
 Content-Type: application/json
 
 {
-    "id": 7,
+    "id": 9,
     "wasteType": "Plastic",
     "wasteAmount": 20,
     "wasteDate": "2024-12-05T00:00:00",
@@ -22,8 +22,29 @@ GET {{Backend_HostAddress}}/api/WasteReports/
 
 ###
 
-GET {{Backend_HostAddress}}/api/WasteReports/1
+GET {{Backend_HostAddress}}/api/WasteReports/8
 
 ###
 
 GET {{Backend_HostAddress}}/api/WasteReports/?type=Plastic
+
+###
+
+POST {{Backend_HostAddress}}/api/People
+Content-Type: application/json
+
+{
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "employeeId": "123456",
+    "password": "password123",
+    "role": "Manager"
+}
+
+###
+
+GET {{Backend_HostAddress}}/api/People
+
+###
+
+GET {{Backend_HostAddress}}/api/People/?role=Employee

@@ -47,5 +47,26 @@
     "wasteAmount": 20.0,
     "wasteDate": "2021-05-05T00:00:00",
     "wasteCollector": "string"
+  },
+  {
+    "id": 7,
+    "wasteType": "Plastic",
+    "wasteAmount": 20.0,
+    "wasteCollector": "string",
+    "wasteDate": "2024-12-05T00:00:00"
+  },
+  {
+    "id": 8,
+    "wasteType": "Plastic",
+    "wasteAmount": 20.0,
+    "wasteCollector": "string",
+    "wasteDate": "2024-12-05T00:00:00"
+  },
+  {
+    "id": 9,
+    "wasteType": "Plastic",
+    "wasteAmount": 20.0,
+    "wasteCollector": "string",
+    "wasteDate": "2024-12-05T00:00:00"
   }
 ]

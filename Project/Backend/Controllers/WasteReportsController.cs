@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 using Backend.Models;
 using Backend.Services;
+using System.Threading.Tasks;
 
 namespace Backend.Controllers;
 
@@ -10,22 +10,22 @@ namespace Backend.Controllers;
 public class WasteReportsController : ControllerBase
 {
     private readonly ILogger<WasteReportsController> _logger;
-
-    private WasteReportService _wasteReportService = new WasteReportService();
-
-    private WasteTypes _wasteTypes = new WasteTypes();
+    private readonly WasteReportService _wasteReportService;
+    private readonly WasteTypes _wasteTypes;
 
     public WasteReportsController(ILogger<WasteReportsController> logger)
     {
         _logger = logger;
+        _wasteReportService = new WasteReportService();
+        _wasteTypes = new WasteTypes();
     }
 
-    //Get all waste reports or by type
+    // Get all waste reports or by type
     [HttpGet]
-    public async Task<ActionResult<WasteReport>> Get([FromQuery] string type) {
-
+    public async Task<ActionResult> Get([FromQuery] string? type)
+    {
         // Check if type is specified and retrieve waste reports by type
-        if(type != null)
+        if (type != null)
         {
             return Ok(await _wasteReportService.GetWasteReportByType(type));
         }
@@ -33,22 +33,30 @@ public class WasteReportsController : ControllerBase
         return Ok(await _wasteReportService.GetAllWasteReports());
     }
 
-    //Get waste report by id
+    // Get waste report by id
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<WasteReport>> Get(int id) {
+    public async Task<ActionResult<WasteReport>> Get(int id)
+    {
         return Ok(await _wasteReportService.GetWasteReportById(id));
     }
-    
-    [HttpPost]
-    public async Task<IActionResult> PostWasteReport([FromBody] WasteReport wasteReport) {
 
-        if(!_wasteTypes.IsValidWasteType(wasteReport.wasteType))
+    [HttpPost]
+    public async Task<IActionResult> PostWasteReport([FromBody] WasteReport wasteReport)
+    {
+        if (!_wasteTypes.IsValidWasteType(wasteReport.wasteType))
         {
             return BadRequest("Invalid waste type");
         }
-
-        var result = await _wasteReportService.AddWasteReport(wasteReport);
-        return result ? Ok() : BadRequest();
+        
+        try 
+        {
+            await _wasteReportService.PostWasteReport(wasteReport);
+            return Ok();
+        }
+        catch (System.Exception e) {
+            _logger.LogError(e, "Failed to post waste report");
+            return BadRequest(e.Message);
+        }
     }
 }
 
