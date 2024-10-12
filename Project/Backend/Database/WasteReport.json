@@ -1,0 +1,51 @@
+[
+  {
+    "id": 0,
+    "wasteType": "Plastic",
+    "wasteAmount": 0.0,
+    "wasteDate": "2021-06-07T14:00:00Z",
+    "wasteCollector": "string"
+  },
+  {
+    "id": 1,
+    "wasteType": "Wood",
+    "wasteAmount": 0.0,
+    "wasteDate": "2021-06-07T14:00:00Z",
+    "wasteCollector": "string"
+  },
+  {
+    "id": 2,
+    "wasteType": "Inceneration",
+    "wasteAmount": 0.0,
+    "wasteDate": "2021-06-07T14:00:00Z",
+    "wasteCollector": "string"
+  },
+  {
+    "id": 3,
+    "wasteType": "Plastic",
+    "wasteAmount": 10.0,
+    "wasteDate": "2021-06-07T14:00:00Z",
+    "wasteCollector": "string"
+  },
+  {
+    "id": 4,
+    "wasteType": "Wood",
+    "wasteAmount": 10.0,
+    "wasteDate": "2021-06-07T14:00:00Z",
+    "wasteCollector": "string"
+  },
+  {
+    "id": 5,
+    "wasteType": "Wood",
+    "wasteAmount": 20.0,
+    "wasteDate": "2024-10-12T07:03:33.6168289+02:00",
+    "wasteCollector": "string"
+  },
+  {
+    "id": 6,
+    "wasteType": "Plastic",
+    "wasteAmount": 20.0,
+    "wasteDate": "2021-05-05T00:00:00",
+    "wasteCollector": "string"
+  }
+]

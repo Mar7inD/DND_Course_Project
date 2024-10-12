@@ -1,0 +1,29 @@
+@Backend_HostAddress = http://localhost:5257
+
+GET {{Backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
+POST {{Backend_HostAddress}}/api/WasteReports/
+Content-Type: application/json
+
+{
+    "id": 7,
+    "wasteType": "Plastic",
+    "wasteAmount": 20,
+    "wasteDate": "2024-12-05T00:00:00",
+    "wasteCollector": "string"
+}
+
+###
+
+GET {{Backend_HostAddress}}/api/WasteReports/
+
+###
+
+GET {{Backend_HostAddress}}/api/WasteReports/1
+
+###
+
+GET {{Backend_HostAddress}}/api/WasteReports/?type=Plastic
