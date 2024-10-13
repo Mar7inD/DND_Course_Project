@@ -2,9 +2,9 @@
 # .NET Core project specific files
 
 # Auto-generated files by build process
-bin/
-obj/
-out/
+**/bin/
+**/obj/
+**/out/
 
 # Logs and debugging
 *.log
