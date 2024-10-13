@@ -2,6 +2,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Backend.Models;
 using Backend.Converters;
+using System.Diagnostics.Eventing.Reader;
 
 namespace Backend.Services;
     public class PersonService
@@ -53,18 +54,55 @@ namespace Backend.Services;
             }
         }
 
-        public async Task<bool> PostPerson(IPerson person)
+        public async Task<string> PostPerson(IPerson person)
         {
             try
             {
                 var peopleArray = await _databaseService.ReadDB();
+                if (peopleArray.Any(p => p["employeeId"]?.Value<string>() == person.employeeId.ToString()))
+                {
+                    throw new Exception("Employee ID already exists.");
+                }
                 peopleArray.Add(JObject.FromObject(person));
-                return await _databaseService.WriteDB(peopleArray);
+                await _databaseService.WriteDB(peopleArray);
+                Console.WriteLine(person.isActive);
+                return "Success";
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error in PostPerson: {ex.Message}");
-                return false;
+                return ex.Message;
+            }
+        }
+
+        public async Task<string> PutPerson(int employeeId, IPersonDTO person)
+        {
+            try
+            {
+                var peopleArray = await _databaseService.ReadDB();
+                var existingPerson = peopleArray.FirstOrDefault(p => p["employeeId"]?.Value<string>() == employeeId.ToString());
+        
+                // Check if the employee ID exists
+                if (existingPerson != null)
+                {
+                    foreach (var property in JObject.FromObject(person).Properties())
+                    {
+                        existingPerson[property.Name] = property.Value;
+                    }
+                }
+                else
+                {
+                    throw new Exception("Employee ID not found.");
+                }
+
+                // Write the updated array back to the database
+                await _databaseService.WriteDB(peopleArray);
+                return "Success";
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in PutPerson: {ex.Message}");
+                return ex.Message;
             }
         }
 }

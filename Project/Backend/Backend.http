@@ -36,7 +36,7 @@ Content-Type: application/json
 {
     "name": "John Doe",
     "email": "john.doe@example.com",
-    "employeeId": "123456",
+    "employeeId": "123459",
     "password": "password123",
     "role": "Manager"
 }
@@ -48,3 +48,26 @@ GET {{Backend_HostAddress}}/api/People
 ###
 
 GET {{Backend_HostAddress}}/api/People/?role=Employee
+
+###
+
+GET {{Backend_HostAddress}}/api/People/?active=true
+
+###
+
+GET {{Backend_HostAddress}}/api/People/?role=Employee&active=true
+
+###
+
+PUT {{Backend_HostAddress}}/api/People/123456
+Content-Type: application/json
+
+{
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "password": "password",
+    "role": "Employee"
+}
+
+###
+
