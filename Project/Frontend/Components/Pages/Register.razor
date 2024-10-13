@@ -2,23 +2,28 @@
 
 <h2>Register</h2>
 
-<EditForm Model="@registerModel" OnValidSubmit="@HandleRegister">
+<EditForm Model="@registerModel" OnValidSubmit="@HandleRegister" FormName="registerForm">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
     <div class="form-group">
-        <label for="username">Username</label>
-        <InputText id="username" class="form-control" @bind-Value="registerModel.Username" />
+        <label for="name">Full Name</label>
+        <InputText id="name" class="form-control" @bind-Value="registerModel.name" />
+    </div>
+
+    <div class="form-group">
+        <label for="email">Email</label>
+        <InputText id="email" class="form-control" @bind-Value="registerModel.email" />
     </div>
 
     <div class="form-group">
         <label for="password">Password</label>
-        <InputText id="password" class="form-control" type="password" @bind-Value="registerModel.Password" />
+        <InputText id="password" class="form-control" type="password" @bind-Value="registerModel.password" />
     </div>
 
     <div class="form-group">
-        <label for="confirmPassword">Confirm Password</label>
-        <InputText id="confirmPassword" class="form-control" type="password" @bind-Value="registerModel.ConfirmPassword" />
+        <label for="role">Role (Employee or Manager)</label>
+        <InputText id="role" class="form-control" @bind-Value="registerModel.role" />
     </div>
 
     <button type="submit" class="btn btn-secondary">Register</button>
@@ -27,16 +32,40 @@
 @code {
     private RegisterModel registerModel = new RegisterModel();
 
+    // Inject the HttpClient service with the named instance "BackendAPI"
+    [Inject] private IHttpClientFactory? ClientFactory { get; set; }
+
     private async Task HandleRegister()
     {
-        // Call backend API to register
-        // Implement this part later with HTTPClient
+        try
+        {
+            // Create a client using the "BackendAPI" configuration
+            var client = ClientFactory.CreateClient("BackendAPI");
+
+            // Send the registration data to the backend API
+            var response = await client.PostAsJsonAsync("api/People", registerModel);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Register was successful"); // If successful
+            }
+            else
+            {
+                Console.WriteLine("Register unsuccessful"); // Not successful register
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}"); // Handle error
+        }
     }
+
 
     public class RegisterModel
     {
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string ConfirmPassword { get; set; }
+        public string name { get; set; } = string.Empty;
+        public string email {get; set; } = string.Empty;
+        public string password { get; set; } = string.Empty;
+        public string role { get; set; } = string.Empty;
     }
 }

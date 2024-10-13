@@ -25,6 +25,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// allow cross-origin requests (CORS)
+app.UseCors(x => x
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());
+
 app.UseAuthorization();
 
 app.MapControllers();
