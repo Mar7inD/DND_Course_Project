@@ -1,0 +1,42 @@
+@page "/register"
+
+<h2>Register</h2>
+
+<EditForm Model="@registerModel" OnValidSubmit="@HandleRegister">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="username">Username</label>
+        <InputText id="username" class="form-control" @bind-Value="registerModel.Username" />
+    </div>
+
+    <div class="form-group">
+        <label for="password">Password</label>
+        <InputText id="password" class="form-control" type="password" @bind-Value="registerModel.Password" />
+    </div>
+
+    <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <InputText id="confirmPassword" class="form-control" type="password" @bind-Value="registerModel.ConfirmPassword" />
+    </div>
+
+    <button type="submit" class="btn btn-secondary">Register</button>
+</EditForm>
+
+@code {
+    private RegisterModel registerModel = new RegisterModel();
+
+    private async Task HandleRegister()
+    {
+        // Call backend API to register
+        // Implement this part later with HTTPClient
+    }
+
+    public class RegisterModel
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string ConfirmPassword { get; set; }
+    }
+}

@@ -1,2 +1,13 @@
-# Ignore the obj folder in Git
-Project/Frontend/obj/
+# Ignore Visual Studio temporary files, build results, and
+# .NET Core project specific files
+
+# Auto-generated files by build process
+bin/
+obj/
+out/
+
+# Logs and debugging
+*.log
+*.tlog
+*.log.*
+*.cache
