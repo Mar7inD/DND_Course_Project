@@ -1,18 +1,14 @@
 @Backend_HostAddress = http://localhost:5257
 
-GET {{Backend_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
 
 POST {{Backend_HostAddress}}/api/WasteReports/
 Content-Type: application/json
 
 {
-    "id": 9,
+    "id": 13,
     "wasteType": "Plastic",
     "wasteAmount": 20,
-    "wasteDate": "2024-12-05T00:00:00",
+    "wasteProcessingFacility": "Recycling",
     "wasteCollector": "string"
 }
 

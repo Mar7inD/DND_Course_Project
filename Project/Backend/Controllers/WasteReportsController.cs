@@ -11,13 +11,11 @@ public class WasteReportsController : ControllerBase
 {
     private readonly ILogger<WasteReportsController> _logger;
     private readonly WasteReportService _wasteReportService;
-    private readonly WasteTypes _wasteTypes;
 
     public WasteReportsController(ILogger<WasteReportsController> logger)
     {
         _logger = logger;
         _wasteReportService = new WasteReportService();
-        _wasteTypes = new WasteTypes();
     }
 
     // Get all waste reports or by type
@@ -43,11 +41,6 @@ public class WasteReportsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> PostWasteReport([FromBody] WasteReport wasteReport)
     {
-        if (!_wasteTypes.IsValidWasteType(wasteReport.wasteType))
-        {
-            return BadRequest("Invalid waste type");
-        }
-        
         try 
         {
             await _wasteReportService.PostWasteReport(wasteReport);

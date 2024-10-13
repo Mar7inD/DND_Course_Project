@@ -12,23 +12,34 @@ namespace Backend.Services
     {
         private readonly string filePath;
         private readonly DatabaseService _databaseService;
-
+        private readonly WasteTypes _wasteTypes;
+        
         public WasteReportService()
         {
             filePath = Path.Combine("Database", "WasteReport.json");
             _databaseService = new DatabaseService(filePath);
+            _wasteTypes = new WasteTypes();
         }
 
-        public async Task<bool> PostWasteReport(WasteReport wasteReport)
+        public async Task<string> PostWasteReport(WasteReport wasteReport)
         {
             var wasteReports = await _databaseService.ReadDB();
+
+            
+            if(!await _wasteTypes.isValidWaste(wasteReport.wasteType, wasteReport.wasteProcessingFacility))
+            {
+                throw new System.Exception("Invalid waste type, processing facility or potential mismatch between the two.");
+            }
+            
 
             if (wasteReports.Any(report => report["id"]?.Value<int>() == wasteReport.id))
             {
                 throw new System.Exception("Waste report with the same id already exists");
             }
             wasteReports.Add(JObject.FromObject(wasteReport));
-            return await _databaseService.WriteDB(wasteReports);
+            await _databaseService.WriteDB(wasteReports);
+
+            return "Success";
         }
 
         public async Task<string> GetAllWasteReports()

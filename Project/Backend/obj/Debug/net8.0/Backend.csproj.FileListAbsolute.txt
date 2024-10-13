@@ -34,3 +34,4 @@ C:\Users\Dotev\Desktop\Repositories\DND_Course_Project\Project\Backend\obj\Debug
 C:\Users\Dotev\Desktop\Repositories\DND_Course_Project\Project\Backend\bin\Debug\net8.0\Database\WasteReport.json
 C:\Users\Dotev\Desktop\Repositories\DND_Course_Project\Project\Backend\bin\Debug\net8.0\Newtonsoft.Json.dll
 C:\Users\Dotev\Desktop\Repositories\DND_Course_Project\Project\Backend\bin\Debug\net8.0\Database\People.json
+C:\Users\Dotev\Desktop\Repositories\DND_Course_Project\Project\Backend\bin\Debug\net8.0\Database\WasteProcessing.json

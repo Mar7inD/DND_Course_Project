@@ -3,9 +3,11 @@ namespace Backend.Models;
 public class WasteReport {
     public int id { get; set; }
     public string wasteType { get; set; } = string.Empty;
+    public string wasteProcessingFacility { get; set; } = string.Empty;
     public double wasteAmount { get; set; }
     private DateTime _wasteDate = DateTime.Now;
     public string? wasteCollector { get; set; }
+    public bool isActive { get; set; } = true;
 
     public DateTime wasteDate {
         get {

@@ -3,70 +3,117 @@
     "id": 0,
     "wasteType": "Plastic",
     "wasteAmount": 0.0,
+    "wasteProcessingFacility": "Recycling",
     "wasteDate": "2021-06-07T14:00:00Z",
-    "wasteCollector": "string"
+    "wasteCollector": "string",
+    "isActive": true
   },
   {
     "id": 1,
     "wasteType": "Wood",
     "wasteAmount": 0.0,
+    "wasteProcessingFacility": "Recycling",
     "wasteDate": "2021-06-07T14:00:00Z",
-    "wasteCollector": "string"
+    "wasteCollector": "string",
+    "isActive": true
   },
   {
     "id": 2,
     "wasteType": "Inceneration",
-    "wasteAmount": 0.0,
+    "wasteAmount": 25.4,
+    "wasteProcessingFacility": "Inceneration",
     "wasteDate": "2021-06-07T14:00:00Z",
-    "wasteCollector": "string"
+    "wasteCollector": "string",
+    "isActive": true
   },
   {
     "id": 3,
     "wasteType": "Plastic",
+    "wasteProcessingFacility": "Recycling",
     "wasteAmount": 10.0,
     "wasteDate": "2021-06-07T14:00:00Z",
-    "wasteCollector": "string"
+    "wasteCollector": "string",
+    "isActive": true
   },
   {
     "id": 4,
     "wasteType": "Wood",
+    "wasteProcessingFacility": "Recycling",
     "wasteAmount": 10.0,
     "wasteDate": "2021-06-07T14:00:00Z",
-    "wasteCollector": "string"
+    "wasteCollector": "string",
+    "isActive": true
   },
   {
     "id": 5,
     "wasteType": "Wood",
+    "wasteProcessingFacility": "Landfill",
     "wasteAmount": 20.0,
     "wasteDate": "2024-10-12T07:03:33.6168289+02:00",
-    "wasteCollector": "string"
+    "wasteCollector": "string",
+    "isActive": true
   },
   {
     "id": 6,
     "wasteType": "Plastic",
+    "wasteProcessingFacility": "Inceneration",
     "wasteAmount": 20.0,
     "wasteDate": "2021-05-05T00:00:00",
-    "wasteCollector": "string"
+    "wasteCollector": "string",
+    "isActive": true
   },
   {
     "id": 7,
     "wasteType": "Plastic",
+    "wasteProcessingFacility": "Recycling",
     "wasteAmount": 20.0,
     "wasteCollector": "string",
-    "wasteDate": "2024-12-05T00:00:00"
+    "wasteDate": "2024-12-05T00:00:00",
+    "isActive": true
   },
   {
     "id": 8,
     "wasteType": "Plastic",
+    "wasteProcessingFacility": "Recycling",
     "wasteAmount": 20.0,
     "wasteCollector": "string",
-    "wasteDate": "2024-12-05T00:00:00"
+    "wasteDate": "2024-12-05T00:00:00",
+    "isActive": true
   },
   {
     "id": 9,
     "wasteType": "Plastic",
+    "wasteProcessingFacility": "Recycling",
     "wasteAmount": 20.0,
     "wasteCollector": "string",
-    "wasteDate": "2024-12-05T00:00:00"
+    "wasteDate": "2024-12-05T00:00:00",
+    "isActive": true
+  },
+  {
+    "id": 10,
+    "wasteType": "Plastic",
+    "wasteProcessingFacility": "Recycling",
+    "wasteAmount": 20.0,
+    "wasteCollector": "string",
+    "wasteDate": "2024-12-05T00:00:00",
+    "isActive": true
+  },
+  {
+    "id": 11,
+    "wasteType": "Plastic",
+    "wasteProcessingFacility": "Recycling",
+    "wasteAmount": 20.0,
+    "wasteCollector": "string",
+    "wasteDate": "2024-12-05T00:00:00",
+    "isActive": true
+  },
+  {
+    "id": 12,
+    "wasteType": "Plastic",
+    "wasteProcessingFacility": "Recycling",
+    "wasteAmount": 20.0,
+    "wasteCollector": "string",
+    "wasteDate": "2024-12-05T00:00:00",
+    "isActive": true
   }
 ]

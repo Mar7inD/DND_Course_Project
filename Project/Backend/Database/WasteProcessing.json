@@ -1,0 +1,46 @@
+[   
+    {
+        "Organic": {
+            "Recycling": null,
+            "Incineration": 0.7,
+            "Landfill": 1.3,
+            "Composting": 0.1
+        },
+        "Plastic": {
+            "Recycling": -1,
+            "Incineration": 1.1,
+            "Landfill": 0.05,
+            "Composting": null
+        },
+        "Metal": {
+            "Recycling": -1.75,
+            "Incineration": 0.75,
+            "Landfill": 0.05,
+            "Composting": null
+        },
+        "Wood": {
+            "Recycling": -0.5,
+            "Incineration": 0.9,
+            "Landfill": 0.3,
+            "Composting": 0.1
+        },
+        "Paper": {
+            "Recycling": -1.3,
+            "Incineration": 1.1,
+            "Landfill": 1.2,
+            "Composting": 0.15
+        },
+        "Electronic": {
+            "Recycling": -1.75,
+            "Incineration": 1.2,
+            "Landfill": 0.1,
+            "Composting": null
+        },
+        "General": {
+            "Recycling": null,
+            "Incineration": 1.05,
+            "Landfill": 1.5,
+            "Composting": null
+        }
+    }
+]
