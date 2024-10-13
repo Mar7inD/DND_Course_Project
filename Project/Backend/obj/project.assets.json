@@ -472,24 +472,26 @@
     ]
   },
   "packageFolders": {
-    "/home/dimitar/.nuget/packages/": {}
+    "C:\\Users\\Dotev\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/dimitar/Projects/DND_Course_Project/Project/Backend/Backend.csproj",
+      "projectUniqueName": "C:\\Users\\Dotev\\Desktop\\Repositories\\DND_Course_Project\\Project\\Backend\\Backend.csproj",
       "projectName": "Backend",
-      "projectPath": "/home/dimitar/Projects/DND_Course_Project/Project/Backend/Backend.csproj",
-      "packagesPath": "/home/dimitar/.nuget/packages/",
-      "outputPath": "/home/dimitar/Projects/DND_Course_Project/Project/Backend/obj/",
+      "projectPath": "C:\\Users\\Dotev\\Desktop\\Repositories\\DND_Course_Project\\Project\\Backend\\Backend.csproj",
+      "packagesPath": "C:\\Users\\Dotev\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Dotev\\Desktop\\Repositories\\DND_Course_Project\\Project\\Backend\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/dimitar/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\Dotev\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -502,6 +504,11 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -536,7 +543,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.110/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.206/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
