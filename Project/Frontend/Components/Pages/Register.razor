@@ -9,23 +9,28 @@
     <ValidationSummary />
 
     <div class="form-group">
+        <label for="employeeId">Id</label>
+        <InputText id="employeeId" class="form-control" @bind-Value="@registerModel.employeeId" />
+    </div>
+
+    <div class="form-group">
         <label for="name">Full Name</label>
-        <InputText id="name" class="form-control" @bind-Value="registerModel.name" />
+        <InputText id="name" class="form-control" @bind-Value="@registerModel.name" />
     </div>
 
     <div class="form-group">
         <label for="email">Email</label>
-        <InputText id="email" class="form-control" @bind-Value="registerModel.email" />
+        <InputText id="email" class="form-control" @bind-Value="@registerModel.email" />
     </div>
 
     <div class="form-group">
         <label for="password">Password</label>
-        <InputText id="password" class="form-control" type="password" @bind-Value="registerModel.password" />
+        <InputText id="password" class="form-control" type="password" @bind-Value="@registerModel.password" />
     </div>
 
     <div class="form-group">
         <label for="role">Role (Employee or Manager)</label>
-        <InputSelect id="role" class="form-control" @bind-Value="registerModel.role">
+        <InputSelect id="role" class="form-control" @bind-Value="@registerModel.role">
             <option value="">Select a role</option>
             <option value="Employee">Employee</option>
             <option value="Manager">Manager</option>
@@ -43,15 +48,21 @@
 }
 
 @code {
-    private string? message;
+    private string message;
     private string messageClass = string.Empty;
 
-    private Backend.Models.EmployeeDTO registerModel = new Backend.Models.EmployeeDTO();
+    private Person registerModel = new Person();
 
     private async Task HandleRegister()
     {
+        // Log the initial state of registerModel
+        Console.WriteLine($"Initial registerModel: Id={registerModel.employeeId}, Name={registerModel.name}, Email={registerModel.email}, Password={registerModel.password}, Role={registerModel.role}");
+
         try
         {
+            // Log each field value just before sending the request
+            Console.WriteLine($"Sending request with: Id={registerModel.employeeId}, Name={registerModel.name}, Email={registerModel.email}, Password={registerModel.password}, Role={registerModel.role}");
+
             var client = ClientFactory.CreateClient("BackendAPI");
 
             var response = await client.PostAsJsonAsync("api/People", registerModel);
@@ -65,13 +76,32 @@
             {
                 message = "Registration failed!";
                 messageClass = "alert-danger";
+
+                // Log the response status code and content
+                Console.WriteLine($"Failed registration. Status Code: {response.StatusCode}, Content: {await response.Content.ReadAsStringAsync()}");
             }
         }
         catch (Exception ex)
         {
             message = $"Error: {ex.Message}";
             messageClass = "alert-danger";
+
+            // Log the exception details
+            Console.WriteLine($"Exception occurred: {ex.Message} | StackTrace: {ex.StackTrace}");
         }
+
+        // Log the final state of registerModel
+        Console.WriteLine($"Final registerModel: Id={registerModel.employeeId}, Name={registerModel.name}, Email={registerModel.email}, Password={registerModel.password}, Role={registerModel.role}");
+    }
+
+    public class Person
+    {
+        public string name { get; set; } = string.Empty;
+        public string email { get; set; } = string.Empty;
+        public string employeeId { get; set; } = string.Empty;
+        public string password { get; set; } = string.Empty;
+        public string role { get; set; } = string.Empty;
+        public bool isActive { get; set; } = true;
     }
 }
 
