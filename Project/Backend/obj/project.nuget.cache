@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "8+QhgtOfD5w=",
+  "dgSpecHash": "75+QySO/J+Y820ox7Ne6W1pztEEWzaUWGEdjvkk3hyW4mNE3M/PxW5/fucwczssAatlbq1p2c9ZcmLKaECEV/w==",
   "success": true,
-  "projectFilePath": "C:\\Users\\marin\\Desktop\\DND\\project\\DND_Course_Project\\Project\\Backend\\Backend.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "/home/dimitar/Projects/DND_Course_Project/Project/Backend/Backend.csproj",
+  "expectedPackageFiles": [
+    "/home/dimitar/.nuget/packages/newtonsoft.json/13.0.3/newtonsoft.json.13.0.3.nupkg.sha512"
+  ],
   "logs": []
 }

@@ -46,7 +46,7 @@ public class PeopleController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> PostPerson([FromBody] IPerson person)
+    public async Task<IActionResult> PostPerson([FromBody] Employee person)
     {
         var result = await _peopleService.PostPerson(person);
         return result == "Success" ? Ok() : BadRequest(result);

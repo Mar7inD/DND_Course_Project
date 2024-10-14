@@ -20,6 +20,10 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+app.MapControllers();
+
+app.UseDeveloperExceptionPage();  // Enable detailed error pages for development
+
 app.MapRazorPages();
 
 app.Run();

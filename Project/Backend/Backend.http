@@ -1,4 +1,4 @@
-@Backend_HostAddress = https://localhost:5001
+@Backend_HostAddress = http://localhost:5001
 
 
 POST {{Backend_HostAddress}}/api/WasteReports/
@@ -37,13 +37,13 @@ GET {{Backend_HostAddress}}/api/wastereports/co2emission
 POST {{Backend_HostAddress}}/api/People
 Content-Type: application/json
 
-{
-    "name": "John Doe",
-    "email": "john.doe@example.com",
-    "employeeId": "123459",
-    "password": "password123",
-    "role": "Manager"
-}
+# {
+#     "name": "John Doe",
+#     "email": "john.doe@example.com",
+#     "employeeId": "566345",
+#     "password": "password123",
+#     "role": "Manager"
+# }
 
 ###
 

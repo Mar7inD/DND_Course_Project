@@ -1,36 +1,50 @@
-@* @page "/login"
+@page "/login"
+
+@inject HttpClient Http
 
 <h2>Login</h2>
 
-<EditForm Model="@loginModel" OnValidSubmit="@HandleLogin">
+<EditForm Model="@loginModel" OnValidSubmit="@HandleLogin" FormName="loginForm">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
     <div class="form-group">
-        <label for="username">Username</label>
-        <InputText id="username" class="form-control" @bind-Value="loginModel.Username" />
+        <label for="email">Email</label>
+        <InputText id="email" class="form-control" @bind-Value="loginModel.email" />
     </div>
 
     <div class="form-group">
         <label for="password">Password</label>
-        <InputText id="password" class="form-control" type="password" @bind-Value="loginModel.Password" />
+        <InputText id="password" class="form-control" type="password" @bind-Value="loginModel.password" />
     </div>
 
     <button type="submit" class="btn btn-primary">Login</button>
 </EditForm>
 
 @code {
-    private LoginModel loginModel = new LoginModel();
+    // Use the Backend's model for login
+    private Backend.Models.IPersonDTO loginModel = new Backend.Models.EmployeeDTO();
 
     private async Task HandleLogin()
     {
-        // Call backend API to authenticate
-        // You will implement this part later with HTTPClient
-    }
+        try
+        {
+            // Send the login data to the backend API
+            var response = await Http.PostAsJsonAsync("api/People/login", loginModel);
 
-    public class LoginModel
-    {
-        public string Username { get; set; }
-        public string Password { get; set; }
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Login successful");
+                // You can handle token storage, redirection, etc.
+            }
+            else
+            {
+                Console.WriteLine("Login failed");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
     }
-} *@
+}

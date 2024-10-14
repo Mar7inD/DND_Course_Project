@@ -1,5 +1,7 @@
 @page "/register"
 
+@inject IHttpClientFactory ClientFactory
+
 <h2>Register</h2>
 
 <EditForm Model="@registerModel" OnValidSubmit="@HandleRegister" FormName="registerForm">
@@ -23,49 +25,53 @@
 
     <div class="form-group">
         <label for="role">Role (Employee or Manager)</label>
-        <InputText id="role" class="form-control" @bind-Value="registerModel.role" />
+        <InputSelect id="role" class="form-control" @bind-Value="registerModel.role">
+            <option value="">Select a role</option>
+            <option value="Employee">Employee</option>
+            <option value="Manager">Manager</option>
+        </InputSelect>
     </div>
 
     <button type="submit" class="btn btn-secondary">Register</button>
 </EditForm>
 
-@code {
-    private RegisterModel registerModel = new RegisterModel();
+@if (message != null)
+{
+    <div class="alert @messageClass">
+        @message
+    </div>
+}
 
-    // Inject the HttpClient service with the named instance "BackendAPI"
-    [Inject] private IHttpClientFactory? ClientFactory { get; set; }
+@code {
+    private string? message;
+    private string messageClass = string.Empty;
+
+    private Backend.Models.EmployeeDTO registerModel = new Backend.Models.EmployeeDTO();
 
     private async Task HandleRegister()
     {
         try
         {
-            // Create a client using the "BackendAPI" configuration
             var client = ClientFactory.CreateClient("BackendAPI");
 
-            // Send the registration data to the backend API
             var response = await client.PostAsJsonAsync("api/People", registerModel);
 
             if (response.IsSuccessStatusCode)
             {
-                Console.WriteLine("Register was successful"); // If successful
+                message = "Registration successful!";
+                messageClass = "alert-success";
             }
             else
             {
-                Console.WriteLine("Register unsuccessful"); // Not successful register
+                message = "Registration failed!";
+                messageClass = "alert-danger";
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error: {ex.Message}"); // Handle error
+            message = $"Error: {ex.Message}";
+            messageClass = "alert-danger";
         }
     }
-
-
-    public class RegisterModel
-    {
-        public string name { get; set; } = string.Empty;
-        public string email {get; set; } = string.Empty;
-        public string password { get; set; } = string.Empty;
-        public string role { get; set; } = string.Empty;
-    }
 }
+
