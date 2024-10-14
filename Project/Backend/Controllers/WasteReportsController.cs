@@ -12,10 +12,13 @@ public class WasteReportsController : ControllerBase
     private readonly ILogger<WasteReportsController> _logger;
     private readonly WasteReportService _wasteReportService;
 
+    private readonly Co2CalculatorService _co2CalculatorService;
+
     public WasteReportsController(ILogger<WasteReportsController> logger)
     {
         _logger = logger;
         _wasteReportService = new WasteReportService();
+        _co2CalculatorService = new Co2CalculatorService();
     }
 
     // Get all waste reports or by type
@@ -36,6 +39,19 @@ public class WasteReportsController : ControllerBase
     public async Task<ActionResult<WasteReport>> Get(int id)
     {
         return Ok(await _wasteReportService.GetWasteReportById(id));
+    }
+
+    [HttpGet("co2emission")]
+    public async Task<ActionResult<double>> GetCo2EmissionTotal([FromQuery] DateOnly startDate, [FromQuery] DateOnly? endDate, [FromQuery] int? userId, [FromQuery] string? type)
+    {
+        var effectiveEndDate = endDate ?? DateOnly.FromDateTime(DateTime.Now);
+        return Ok(await _co2CalculatorService.GetCo2EmissionTotal(startDate, effectiveEndDate, userId, type));
+    }
+
+    [HttpGet("co2emission/{id:int}")]
+    public async Task<ActionResult<double>> GetCo2EmissionForReport(int id)
+    {
+        return Ok(await _co2CalculatorService.GetCo2EmissionForReport(id));
     }
 
     [HttpPost]

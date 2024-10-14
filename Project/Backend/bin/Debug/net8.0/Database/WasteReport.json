@@ -6,7 +6,8 @@
     "wasteProcessingFacility": "Recycling",
     "wasteDate": "2021-06-07T14:00:00Z",
     "wasteCollector": "string",
-    "isActive": true
+    "isActive": true,
+    "co2Emission": 10.0
   },
   {
     "id": 1,
@@ -15,7 +16,8 @@
     "wasteProcessingFacility": "Recycling",
     "wasteDate": "2021-06-07T14:00:00Z",
     "wasteCollector": "string",
-    "isActive": true
+    "isActive": true,
+    "co2Emission": 20.0
   },
   {
     "id": 2,
@@ -24,7 +26,8 @@
     "wasteProcessingFacility": "Inceneration",
     "wasteDate": "2021-06-07T14:00:00Z",
     "wasteCollector": "string",
-    "isActive": true
+    "isActive": true,
+    "co2Emission": 20.0
   },
   {
     "id": 3,
@@ -33,7 +36,8 @@
     "wasteAmount": 10.0,
     "wasteDate": "2021-06-07T14:00:00Z",
     "wasteCollector": "string",
-    "isActive": true
+    "isActive": true,
+    "co2Emission": 20.0
   },
   {
     "id": 4,
@@ -42,7 +46,8 @@
     "wasteAmount": 10.0,
     "wasteDate": "2021-06-07T14:00:00Z",
     "wasteCollector": "string",
-    "isActive": true
+    "isActive": true,
+    "co2Emission": 20.0
   },
   {
     "id": 5,
@@ -51,7 +56,8 @@
     "wasteAmount": 20.0,
     "wasteDate": "2024-10-12T07:03:33.6168289+02:00",
     "wasteCollector": "string",
-    "isActive": true
+    "isActive": true,
+    "co2Emission": 20.0
   },
   {
     "id": 6,
@@ -60,7 +66,8 @@
     "wasteAmount": 20.0,
     "wasteDate": "2021-05-05T00:00:00",
     "wasteCollector": "string",
-    "isActive": true
+    "isActive": true,
+    "co2Emission": 20.0
   },
   {
     "id": 7,
@@ -69,7 +76,8 @@
     "wasteAmount": 20.0,
     "wasteCollector": "string",
     "wasteDate": "2024-12-05T00:00:00",
-    "isActive": true
+    "isActive": true,
+    "co2Emission": 20.0
   },
   {
     "id": 8,
@@ -78,7 +86,8 @@
     "wasteAmount": 20.0,
     "wasteCollector": "string",
     "wasteDate": "2024-12-05T00:00:00",
-    "isActive": true
+    "isActive": true,
+    "co2Emission": 20.0
   },
   {
     "id": 9,
@@ -87,7 +96,8 @@
     "wasteAmount": 20.0,
     "wasteCollector": "string",
     "wasteDate": "2024-12-05T00:00:00",
-    "isActive": true
+    "isActive": true,
+    "co2Emission": 20.0
   },
   {
     "id": 10,
@@ -96,7 +106,8 @@
     "wasteAmount": 20.0,
     "wasteCollector": "string",
     "wasteDate": "2024-12-05T00:00:00",
-    "isActive": true
+    "isActive": true,
+    "co2Emission": 20.0
   },
   {
     "id": 11,
@@ -105,7 +116,8 @@
     "wasteAmount": 20.0,
     "wasteCollector": "string",
     "wasteDate": "2024-12-05T00:00:00",
-    "isActive": true
+    "isActive": true,
+    "co2Emission": 20.0
   },
   {
     "id": 12,
@@ -114,6 +126,27 @@
     "wasteAmount": 20.0,
     "wasteCollector": "string",
     "wasteDate": "2024-12-05T00:00:00",
-    "isActive": true
+    "isActive": true,
+    "co2Emission": 20.0
+  },
+  {
+    "id": 13,
+    "wasteType": "Plastic",
+    "wasteProcessingFacility": "Recycling",
+    "wasteAmount": 20.0,
+    "wasteCollector": "string",
+    "isActive": true,
+    "wasteDate": "2024-10-14T08:00:00",
+    "co2Emission": 20.0
+  },
+  {
+    "id": 14,
+    "wasteType": "Plastic",
+    "wasteProcessingFacility": "Landfill",
+    "wasteAmount": 20.0,
+    "wasteCollector": "string",
+    "isActive": true,
+    "wasteDate": "2024-10-14T08:01:00",
+    "co2Emission": -1.0
   }
 ]

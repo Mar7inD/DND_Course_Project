@@ -21,8 +21,23 @@ public class WasteTypes {
         _databaseService = new DatabaseService("Database/WasteProcessing.json");
     }
 
-    public async Task<bool> isValidWaste(string candidateWasteType, string wasteProcessingFacility)
+    public async Task<double> isValidWasteReturnCo2Emissions(string wasteType, string wasteProcessingFacility, double wasteAmount)
     {
+        double calculatedEmission = 0.0;
+
+        double co2emissionIndex = await GetWasteTypesByFacilityIndex(wasteType, wasteProcessingFacility);
+        
+        calculatedEmission = co2emissionIndex * wasteAmount;
+
+        return calculatedEmission; 
+    }
+
+    public List<string> GetWasteTypes() {
+        return AllowedWasteTypes.ToList();
+    }
+
+    // Compare and return CO2 emission index
+    public async Task<double> GetWasteTypesByFacilityIndex(string candidateWasteType, string wasteProcessingFacility) {
         var wasteProcessingFacilities = await _databaseService.ReadDB();
 
         foreach (JObject wasteObject in wasteProcessingFacilities)
@@ -41,26 +56,19 @@ public class WasteTypes {
 
                         if (facilityName.Equals(wasteProcessingFacility, StringComparison.OrdinalIgnoreCase))
                         {   
-                            if(facilityValue.Type == JTokenType.Null)
+                            if (facilityValue == null || facilityValue.Type == JTokenType.Null)
                             {
-                                // Can reuse to send also the value in future
-                                throw new Exception("Waste type and processing facility missmatch.");
+                                throw new Exception("Waste type and processing facility mismatch.");
                             }
                             else 
                             {
-                                return true;
+                                return facilityValue.ToObject<double>();
                             }
                         }
-                        
-                    }
+                    }   
                 }
             }
-            throw new Exception("Waste type not found.");
         }
-        return false;
-    }
-
-    public List<string> GetWasteTypes() {
-        return AllowedWasteTypes.ToList();
+        throw new Exception("Waste type not found.");
     }
 }

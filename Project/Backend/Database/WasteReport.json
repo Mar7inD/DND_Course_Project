@@ -5,8 +5,9 @@
     "wasteAmount": 0.0,
     "wasteProcessingFacility": "Recycling",
     "wasteDate": "2021-06-07T14:00:00Z",
-    "wasteCollector": "string",
-    "isActive": true
+    "wasteCollectorId": 1,
+    "isActive": true,
+    "co2Emission": 10.0
   },
   {
     "id": 1,
@@ -14,8 +15,9 @@
     "wasteAmount": 0.0,
     "wasteProcessingFacility": "Recycling",
     "wasteDate": "2021-06-07T14:00:00Z",
-    "wasteCollector": "string",
-    "isActive": true
+    "wasteCollectorId": 2,
+    "isActive": true,
+    "co2Emission": 20.0
   },
   {
     "id": 2,
@@ -23,8 +25,9 @@
     "wasteAmount": 25.4,
     "wasteProcessingFacility": "Inceneration",
     "wasteDate": "2021-06-07T14:00:00Z",
-    "wasteCollector": "string",
-    "isActive": true
+    "wasteCollectorId": 2,
+    "isActive": true,
+    "co2Emission": 20.0
   },
   {
     "id": 3,
@@ -32,8 +35,9 @@
     "wasteProcessingFacility": "Recycling",
     "wasteAmount": 10.0,
     "wasteDate": "2021-06-07T14:00:00Z",
-    "wasteCollector": "string",
-    "isActive": true
+    "wasteCollectorId": 2,
+    "isActive": true,
+    "co2Emission": 20.0
   },
   {
     "id": 4,
@@ -41,8 +45,9 @@
     "wasteProcessingFacility": "Recycling",
     "wasteAmount": 10.0,
     "wasteDate": "2021-06-07T14:00:00Z",
-    "wasteCollector": "string",
-    "isActive": true
+    "wasteCollectorId": 1,
+    "isActive": true,
+    "co2Emission": 20.0
   },
   {
     "id": 5,
@@ -50,8 +55,9 @@
     "wasteProcessingFacility": "Landfill",
     "wasteAmount": 20.0,
     "wasteDate": "2024-10-12T07:03:33.6168289+02:00",
-    "wasteCollector": "string",
-    "isActive": true
+    "wasteCollectorId": 1,
+    "isActive": true,
+    "co2Emission": 20.0
   },
   {
     "id": 6,
@@ -59,61 +65,88 @@
     "wasteProcessingFacility": "Inceneration",
     "wasteAmount": 20.0,
     "wasteDate": "2021-05-05T00:00:00",
-    "wasteCollector": "string",
-    "isActive": true
+    "wasteCollectorId": 1,
+    "isActive": true,
+    "co2Emission": 20.0
   },
   {
     "id": 7,
     "wasteType": "Plastic",
     "wasteProcessingFacility": "Recycling",
     "wasteAmount": 20.0,
-    "wasteCollector": "string",
+    "wasteCollectorId": 1,
     "wasteDate": "2024-12-05T00:00:00",
-    "isActive": true
+    "isActive": true,
+    "co2Emission": 20.0
   },
   {
     "id": 8,
     "wasteType": "Plastic",
     "wasteProcessingFacility": "Recycling",
     "wasteAmount": 20.0,
-    "wasteCollector": "string",
+    "wasteCollectorId": 2,
     "wasteDate": "2024-12-05T00:00:00",
-    "isActive": true
+    "isActive": true,
+    "co2Emission": 20.0
   },
   {
     "id": 9,
     "wasteType": "Plastic",
     "wasteProcessingFacility": "Recycling",
     "wasteAmount": 20.0,
-    "wasteCollector": "string",
+    "wasteCollectorId": 2,
     "wasteDate": "2024-12-05T00:00:00",
-    "isActive": true
+    "isActive": true,
+    "co2Emission": 20.0
   },
   {
     "id": 10,
     "wasteType": "Plastic",
     "wasteProcessingFacility": "Recycling",
     "wasteAmount": 20.0,
-    "wasteCollector": "string",
+    "wasteCollectorId": 2,
     "wasteDate": "2024-12-05T00:00:00",
-    "isActive": true
+    "isActive": true,
+    "co2Emission": 20.0
   },
   {
     "id": 11,
     "wasteType": "Plastic",
     "wasteProcessingFacility": "Recycling",
     "wasteAmount": 20.0,
-    "wasteCollector": "string",
+    "wasteCollectorId": 3,
     "wasteDate": "2024-12-05T00:00:00",
-    "isActive": true
+    "isActive": true,
+    "co2Emission": 20.0
   },
   {
     "id": 12,
     "wasteType": "Plastic",
     "wasteProcessingFacility": "Recycling",
     "wasteAmount": 20.0,
-    "wasteCollector": "string",
+    "wasteCollectorId": 1,
     "wasteDate": "2024-12-05T00:00:00",
-    "isActive": true
+    "isActive": true,
+    "co2Emission": 20.0
+  },
+  {
+    "id": 13,
+    "wasteType": "Plastic",
+    "wasteProcessingFacility": "Recycling",
+    "wasteAmount": 20.0,
+    "wasteCollectorId": 1,
+    "isActive": true,
+    "wasteDate": "2024-10-14T08:00:00",
+    "co2Emission": 20.0
+  },
+  {
+    "id": 14,
+    "wasteType": "Plastic",
+    "wasteProcessingFacility": "Landfill",
+    "wasteAmount": 20.0,
+    "wasteCollectorId": 1,
+    "isActive": true,
+    "wasteDate": "2024-10-14T08:01:00",
+    "co2Emission": -1.0
   }
 ]

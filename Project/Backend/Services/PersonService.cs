@@ -1,8 +1,6 @@
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Backend.Models;
-using Backend.Converters;
-using System.Diagnostics.Eventing.Reader;
 
 namespace Backend.Services;
     public class PersonService

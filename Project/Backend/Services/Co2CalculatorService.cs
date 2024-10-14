@@ -8,71 +8,42 @@ namespace Backend.Services;
 
 public class Co2CalculatorService {
     private readonly DatabaseService _databaseService;
-    private readonly WasteTypes _wasteTypes;
 
     public Co2CalculatorService()
     {
-        _databaseService = new DatabaseService("Database/WasteReports.json");
-        _wasteTypes = new WasteTypes();
+        _databaseService = new DatabaseService("Database/WasteReport.json");
     }
 
-    public double CalculateCo2Emission(List<JToken> wasteReports) {
-        
-        var co2EmissionTotal = new List<double>();
+    public async Task<double> GetCo2EmissionTotal(DateOnly? startDate, DateOnly? endDate, int? userId, string? wasteType) {
+        var wasteReports = (await _databaseService.ReadDB()).ToList();
+        double totalCo2Emission;
 
-        foreach (var wasteType in _wasteTypes.GetWasteTypes())
-        {   
-            double totalTons = 0.0;
-            
-            
-            foreach (var wasteReport in wasteReports)
-            {
-                if (wasteReport[wasteType]!.Value<string>() == wasteType)
-                {
-                    totalTons += wasteReport["wasteAmount"]!.Value<double>();
-                    
-                }
-
-                switch (wasteType)
-                {
-                    case "Organic":
-                        co2EmissionTotal.Add(totalTons * 0.5);
-                        break;
-                    case "Plastic":
-                        co2EmissionTotal.Add(totalTons * 6);
-                        break;
-                    case "Metal":
-                        co2EmissionTotal.Add(totalTons * 5);
-                        break;
-                    case "Wood":
-                        co2EmissionTotal.Add(totalTons * 1.5);
-                        break;
-                    case "Paper":
-                        co2EmissionTotal.Add(totalTons * 2);
-                        break;
-                    case "Electronic":
-                        co2EmissionTotal.Add(totalTons * 10);
-                        break;
-                    case "Inceneration":
-                        co2EmissionTotal.Add(totalTons * 3);
-                        break;
+        // Filter reports 
+        wasteReports = wasteReports.Where(wr => {
+            var wasteDateToken = wr["wasteDate"];
+            if (wasteDateToken != null) {
+                var wasteDateTime = wasteDateToken.Value<DateTime>();
+                var wasteDateOnly = DateOnly.FromDateTime(wasteDateTime);
+                if (wasteDateOnly >= startDate && wasteDateOnly <= endDate) {
+                    var userIdToken = wr["wasteCollectorId"];
+                    var wasteTypeToken = wr["wasteType"];
+                    bool userIdMatches = userId == null || (userIdToken != null && userIdToken.Value<int>() == userId);
+                    bool wasteTypeMatches = wasteType == null || (wasteTypeToken != null && wasteTypeToken.Value<string>() == wasteType);
+                    return userIdMatches && wasteTypeMatches;
                 }
             }
+            return false;
+        }).ToList();
 
-            
-        }
+        // Sum all CO2 emissions
+        totalCo2Emission = wasteReports.Sum(wr => wr["co2Emission"]!.Value<double>());
 
-        return co2EmissionTotal.Sum();
+        return totalCo2Emission;
     }
 
-    public async Task<double> GetCo2EmissionTotalByPeriod(DateOnly startDate, DateOnly endDate) {
-        var wasteReports = (await _databaseService.ReadDB()).ToList();
-        var totalCo2Emission = 0.0;
+    public async Task<double> GetCo2EmissionForReport(int id = 13) {
+        var report = (await _databaseService.ReadDB()).FirstOrDefault(wr => wr["id"]?.Value<int>() == id);
 
-        wasteReports = wasteReports.Where(wr => wr["wasteDate"] != null && wr["wasteDate"]?.Value<DateOnly>() >= startDate && wr["wasteDate"]?.Value<DateOnly>() <= endDate).ToList();
-
-            totalCo2Emission = CalculateCo2Emission(wasteReports);
-
-        return 2;
+        return report?["co2Emission"]?.Value<double>() ?? 0.0;
     }
 }
