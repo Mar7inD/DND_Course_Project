@@ -39,23 +39,23 @@ namespace Backend.Models
         }
     }
 
-    // Class Person
-    public class Person : PersonBase
-    {
-        public string name { get; set; } = string.Empty;
-        public string email { get; set; } = string.Empty;
-        public string employeeId { get; set; } = string.Empty;
-        public string password { get; set; } = string.Empty;
-        public string role { get; set; } = string.Empty;
-        public bool isActive { get; set; } = true;
-    }
+    // // Class Person
+    // public class Person : PersonBase
+    // {
+    //     public string name { get; set; } = string.Empty;
+    //     public string email { get; set; } = string.Empty;
+    //     public string employeeId { get; set; } = string.Empty;
+    //     public string password { get; set; } = string.Empty;
+    //     public string role { get; set; } = string.Empty;
+    //     public bool isActive { get; set; } = true;
+    // }
 
-    public class Employee : Person
+    public class Employee : PersonBase
     {
         // Additional properties and methods specific to Employee
     }
 
-    public class Manager : Person
+    public class Manager : PersonBase
     {
         // Additional properties and methods specific to Manager
     }
