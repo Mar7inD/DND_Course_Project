@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Dotev\\Desktop\\Repositories\\DND_Course_Project\\Project\\Frontend\\Frontend.csproj": {}
+    "C:\\Users\\marin\\Desktop\\DND\\project\\DND_Course_Project\\Project\\Frontend\\Frontend.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Dotev\\Desktop\\Repositories\\DND_Course_Project\\Project\\Backend\\Backend.csproj": {
+    "C:\\Users\\marin\\Desktop\\DND\\project\\DND_Course_Project\\Project\\Backend\\Backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Dotev\\Desktop\\Repositories\\DND_Course_Project\\Project\\Backend\\Backend.csproj",
+        "projectUniqueName": "C:\\Users\\marin\\Desktop\\DND\\project\\DND_Course_Project\\Project\\Backend\\Backend.csproj",
         "projectName": "Backend",
-        "projectPath": "C:\\Users\\Dotev\\Desktop\\Repositories\\DND_Course_Project\\Project\\Backend\\Backend.csproj",
-        "packagesPath": "C:\\Users\\Dotev\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Dotev\\Desktop\\Repositories\\DND_Course_Project\\Project\\Backend\\obj\\",
+        "projectPath": "C:\\Users\\marin\\Desktop\\DND\\project\\DND_Course_Project\\Project\\Backend\\Backend.csproj",
+        "packagesPath": "C:\\Users\\marin\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\marin\\Desktop\\DND\\project\\DND_Course_Project\\Project\\Backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Dotev\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\marin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -44,16 +44,6 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
-          "dependencies": {
-            "Newtonsoft.Json": {
-              "target": "Package",
-              "version": "[13.0.3, )"
-            },
-            "Swashbuckle.AspNetCore": {
-              "target": "Package",
-              "version": "[6.4.0, )"
-            }
-          },
           "imports": [
             "net461",
             "net462",
@@ -73,21 +63,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.206/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Dotev\\Desktop\\Repositories\\DND_Course_Project\\Project\\Frontend\\Frontend.csproj": {
+    "C:\\Users\\marin\\Desktop\\DND\\project\\DND_Course_Project\\Project\\Frontend\\Frontend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Dotev\\Desktop\\Repositories\\DND_Course_Project\\Project\\Frontend\\Frontend.csproj",
+        "projectUniqueName": "C:\\Users\\marin\\Desktop\\DND\\project\\DND_Course_Project\\Project\\Frontend\\Frontend.csproj",
         "projectName": "Frontend",
-        "projectPath": "C:\\Users\\Dotev\\Desktop\\Repositories\\DND_Course_Project\\Project\\Frontend\\Frontend.csproj",
-        "packagesPath": "C:\\Users\\Dotev\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Dotev\\Desktop\\Repositories\\DND_Course_Project\\Project\\Frontend\\obj\\",
+        "projectPath": "C:\\Users\\marin\\Desktop\\DND\\project\\DND_Course_Project\\Project\\Frontend\\Frontend.csproj",
+        "packagesPath": "C:\\Users\\marin\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\marin\\Desktop\\DND\\project\\DND_Course_Project\\Project\\Frontend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Dotev\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\marin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -101,8 +91,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Dotev\\Desktop\\Repositories\\DND_Course_Project\\Project\\Backend\\Backend.csproj": {
-                "projectPath": "C:\\Users\\Dotev\\Desktop\\Repositories\\DND_Course_Project\\Project\\Backend\\Backend.csproj"
+              "C:\\Users\\marin\\Desktop\\DND\\project\\DND_Course_Project\\Project\\Backend\\Backend.csproj": {
+                "projectPath": "C:\\Users\\marin\\Desktop\\DND\\project\\DND_Course_Project\\Project\\Backend\\Backend.csproj"
               }
             }
           }
@@ -140,7 +130,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.206/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
