@@ -14,29 +14,5 @@
     "isActive": true,
     "role": "Employee",
     "employeeId": "123456"
-  },
-  {
-    "name": "John Doe",
-    "email": "john.doe@example.com",
-    "password": "password123",
-    "role": "Manager",
-    "isActive": false,
-    "employeeId": "123459"
-  },
-  {
-    "name": "John Doe",
-    "email": "john.doe@example.com",
-    "employeeId": "566348",
-    "password": "password123",
-    "role": "Manager",
-    "isActive": true
-  },
-  {
-    "name": "",
-    "email": "",
-    "employeeId": "",
-    "password": "",
-    "role": "",
-    "isActive": true
   }
 ]

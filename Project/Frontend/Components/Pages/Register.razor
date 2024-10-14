@@ -48,10 +48,12 @@
 }
 
 @code {
-    private string message;
-    private string messageClass = string.Empty;
+    [SupplyParameterFromForm]
+    private Backend.Models.PersonBase registerModel { get; set; } = new Backend.Models.PersonBase();
 
-    private Person registerModel = new Person();
+    //protected override void OnInitialized() => registerModel = new();
+    private string? message;
+    private string messageClass = string.Empty;
 
     private async Task HandleRegister()
     {
@@ -92,16 +94,6 @@
 
         // Log the final state of registerModel
         Console.WriteLine($"Final registerModel: Id={registerModel.employeeId}, Name={registerModel.name}, Email={registerModel.email}, Password={registerModel.password}, Role={registerModel.role}");
-    }
-
-    public class Person
-    {
-        public string name { get; set; } = string.Empty;
-        public string email { get; set; } = string.Empty;
-        public string employeeId { get; set; } = string.Empty;
-        public string password { get; set; } = string.Empty;
-        public string role { get; set; } = string.Empty;
-        public bool isActive { get; set; } = true;
     }
 }
 

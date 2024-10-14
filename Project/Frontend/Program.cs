@@ -9,7 +9,7 @@ builder.Services.AddRazorComponents()
 // Make HTTP requests to the backend
 builder.Services.AddHttpClient("BackendAPI", client => 
 {
-    client.BaseAddress = new Uri("http://localhost:5001");
+    client.BaseAddress = new Uri("https://localhost:5001");
 });
 
 var app = builder.Build();

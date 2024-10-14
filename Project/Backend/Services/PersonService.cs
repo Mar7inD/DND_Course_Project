@@ -56,7 +56,6 @@ namespace Backend.Services;
         {
             try
             {
-                Console.WriteLine($"Post person name: {person.name}");
                 var peopleArray = await _databaseService.ReadDB();
                 if (peopleArray.Any(p => p["employeeId"]?.Value<string>() == person.employeeId.ToString()))
                 {
