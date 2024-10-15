@@ -1,119 +1,107 @@
-/* General reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+* {
+    font-family: "Afacad Flux", sans-serif;
+}
 
-        body {
-            font-family: Arial, sans-serif;
-            background-image: url('background.jpg'); /* Replace with your actual image */
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            color: #333;
-            height: 100vh;
-        }
+header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        background-color: white;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        width: 100%;
+        z-index: 2;
+    }
 
-        /* Header styling */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 5%;
-            background-color: white;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 10;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
+    .logo img {
+        width: 180px;
+    }
 
-        .logo {
-            font-weight: bold;
-            font-size: 24px;
-            color: #333;
-        }
+    .buttons {
+        display: flex;
+        gap: 15px;
+    }
 
-        nav {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-        }
+    .login-btn, .signup-btn {
+        padding: 10px 20px;
+        border: 1px solid #014a63;
+        color: #014a63;
+        text-decoration: none;
+        background-color: transparent;
+        border-radius: 20px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: .3s ease;
+    }
 
-        nav a {
-            text-decoration: none;
-            color: #333;
-            font-size: 16px;
-        }
+    .login-btn-2 {
+        padding: 10px 20px;
+        border: 1px solid white;
+        color: white;
+        text-decoration: none;
+        background-color: transparent;
+        border-radius: 20px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: .3s ease;
+    }
 
-        .buttons {
-            display: flex;
-            gap: 15px;
-        }
+    .signup-btn {
+        background-color: #014a63;
+        color: white;
+    }
 
-        .buttons a {
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-            text-decoration: none;
-        }
+    .login-btn:hover, .login-btn-2:hover, .signup-btn:hover {
+        background-color: #4c7c8f;
+        color: white;
+        border-color: #4c7c8f;
+    }
 
-        .login-btn {
-            background-color: white;
-            border: 1px solid #333;
-            color: #333;
-        }
+    .hero {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* Adjust height minus header */
+        text-align: center;
+        background-image: url('/images/hero-bg.jpg'); /* Path to your background image */
+        background-size: cover; /* Ensures the image covers the entire section */
+        background-position: center; /* Centers the image */
+        background-repeat: no-repeat; /* Prevents the image from repeating */
+        color: white; /* Adjust text color to ensure readability */
+        padding: 20px;
+    }
 
-        .demo-btn {
-            background-color: #333;
-            color: white;
-            border-radius: 20px;
-        }
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.2); /* Black overlay with 50% opacity */
+        z-index: 1; /* Make sure it's behind the text */
+    }
 
-        /* Hero section styling */
-        .hero {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
-            padding-top: 80px; /* To push below the fixed header */
-        }
+    .hero h1, .hero p, .hero .buttons {
+        position: relative;
+        z-index: 2; /* Ensure text is above the overlay */
+    }
 
-        .hero h1 {
-            font-size: 64px;
-            color: #333;
-        }
+    .hero h1 {
+        font-size: 4.5rem;
+        margin-bottom: 20px;
+        color: white; /* Change text color for better contrast */
+        width: 64%;
+    }
 
-        .hero p {
-            font-size: 18px;
-            margin: 20px 0;
-        }
-
-        .search-bar {
-            margin: 20px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .search-bar input {
-            width: 300px;
-            padding: 10px;
-            border-radius: 20px;
-            border: 1px solid #ccc;
-        }
-
-        .cta-btn {
-            margin-top: 20px;
-            padding: 15px 30px;
-            background-color: #333;
-            color: white;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 16px;
-        }
+    .hero p {
+        font-size: 1.5rem;
+        line-height: 2rem;
+        margin-bottom: 40px;
+        color: white; /* Change text color for better contrast */
+        width: 36%;
+    }
