@@ -1,29 +1,27 @@
 @page "/"
+@layout EmptyLayout
 
-<h1>Welcome to Our Platform</h1>
+<!-- Header -->
+<header>
+    <div class="logo">Proof.</div>
+    <nav>
+        <a href="#">Products</a>
+        <a href="#">Use Cases</a>
+        <a href="#">Pricing</a>
+        <a href="#">Contact us</a>
+    </nav>
+    <div class="buttons">
+        <a href="/login" class="login-btn">Login</a>
+        <a href="/register" class="demo-btn">Request Demo</a>
+    </div>
+</header>
 
-<p>Please choose an option below:</p>
-
-<div class="buttons">
-    <a class="btn btn-primary" href="/login">Login</a>
-    <a class="btn btn-secondary" href="/register">Register</a>
-</div>
-
-<style>
-    .buttons {
-        margin-top: 20px;
-    }
-    .btn {
-        margin-right: 10px;
-        padding: 10px 20px;
-        text-decoration: none;
-    }
-    .btn-primary {
-        background-color: #007bff;
-        color: white;
-    }
-    .btn-secondary {
-        background-color: #6c757d;
-        color: white;
-    }
-</style>
+<!-- Hero Section -->
+<section class="hero">
+    <div class="search-bar">
+        <input type="text" placeholder="Where's your proof?">
+    </div>
+    <h1>Proof of Impact</h1>
+    <p>Use sustainability data to outperform the market. Unlock ESG + impact benchmarking, insights and data-driven recommendations.</p>
+    <button class="cta-btn">Request Demo</button>
+</section>
