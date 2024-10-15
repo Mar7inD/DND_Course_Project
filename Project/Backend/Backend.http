@@ -1,14 +1,14 @@
-@Backend_HostAddress = http://localhost:5001
+@Backend_HostAddress = https://localhost:5001
 
 
 POST {{Backend_HostAddress}}/api/WasteReports/
 Content-Type: application/json
 
 {
-    "id": 14,
     "wasteType": "Plastic",
     "wasteAmount": 20,
     "wasteProcessingFacility": "Landfill",
+    "wasteDate": "2023-01-01",
     "wasteCollector": "string"
 }
 

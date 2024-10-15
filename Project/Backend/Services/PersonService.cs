@@ -26,7 +26,7 @@ namespace Backend.Services;
         {
             try
             {
-                var peopleArray = await _databaseService.ReadDB();
+                var peopleArray = await _databaseService.ReadDBAsync();
                 var peopleList = JsonConvert.DeserializeObject<List<IPerson>>(peopleArray.ToString(), settings);
                 return peopleList!;
             }
@@ -56,14 +56,14 @@ namespace Backend.Services;
         {
             try
             {
-                var peopleArray = await _databaseService.ReadDB();
+                Console.WriteLine(person.isActive);
+                var peopleArray = await _databaseService.ReadDBAsync();
                 if (peopleArray.Any(p => p["employeeId"]?.Value<string>() == person.employeeId.ToString()))
                 {
                     throw new Exception("Employee ID already exists.");
                 }
                 peopleArray.Add(JObject.FromObject(person));
-                await _databaseService.WriteDB(peopleArray);
-                Console.WriteLine(person.isActive);
+                await _databaseService.WriteDBAsync(peopleArray);
                 return "Success";
             }
             catch (Exception ex)
@@ -77,7 +77,7 @@ namespace Backend.Services;
         {
             try
             {
-                var peopleArray = await _databaseService.ReadDB();
+                var peopleArray = await _databaseService.ReadDBAsync();
                 var existingPerson = peopleArray.FirstOrDefault(p => p["employeeId"]?.Value<string>() == employeeId.ToString());
         
                 // Check if the employee ID exists
@@ -94,7 +94,7 @@ namespace Backend.Services;
                 }
 
                 // Write the updated array back to the database
-                await _databaseService.WriteDB(peopleArray);
+                await _databaseService.WriteDBAsync(peopleArray);
                 return "Success";
             }
             catch (Exception ex)

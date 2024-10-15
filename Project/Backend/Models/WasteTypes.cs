@@ -38,7 +38,7 @@ public class WasteTypes {
 
     // Compare and return CO2 emission index
     public async Task<double> GetWasteTypesByFacilityIndex(string candidateWasteType, string wasteProcessingFacility) {
-        var wasteProcessingFacilities = await _databaseService.ReadDB();
+        var wasteProcessingFacilities = await _databaseService.ReadDBAsync();
 
         foreach (JObject wasteObject in wasteProcessingFacilities)
         {   

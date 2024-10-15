@@ -23,35 +23,30 @@ namespace Backend.Services
 
         public async Task<string> PostWasteReport(WasteReport wasteReport)
         {
-            var wasteReports = await _databaseService.ReadDB();
+            var wasteReports = await _databaseService.ReadDBAsync();
 
-            // Check if waste report with the same id already exists
-            if (wasteReports.Any(report => report["id"]?.Value<int>() == wasteReport.id))
-            {
-                throw new System.Exception("Waste report with the same id already exists");
-            }
 
             // Check if waste type is valid and return CO2 emissions if valid
             double co2Emissions = await _wasteTypes.isValidWasteReturnCo2Emissions
-                                (wasteReport.wasteType, wasteReport.wasteProcessingFacility, wasteReport.wasteAmount);
+                                (wasteReport.WasteType, wasteReport.WasteProcessingFacility, wasteReport.WasteAmount);
 
-            wasteReport.co2Emission = co2Emissions;
+            wasteReport.Co2Emission = co2Emissions;
 
             wasteReports.Add(JObject.FromObject(wasteReport));
-            await _databaseService.WriteDB(wasteReports);
+            await _databaseService.WriteDBAsync(wasteReports);
 
             return "Success";
         }
 
         public async Task<string> GetAllWasteReports()
         {
-            JArray wasteReports = await _databaseService.ReadDB();
+            JArray wasteReports = await _databaseService.ReadDBAsync();
             return wasteReports.ToString();
         }
 
         public async Task<WasteReport?> GetWasteReportById(int id)
         {
-            JArray wasteReports = await _databaseService.ReadDB();
+            JArray wasteReports = await _databaseService.ReadDBAsync();
             var wasteReportToken = wasteReports
                 .FirstOrDefault(report => report["id"]?.Value<int?>() == id);
             var wasteReport = wasteReportToken?.ToObject<WasteReport>();
@@ -60,7 +55,7 @@ namespace Backend.Services
 
         public async Task<IEnumerable<WasteReport>> GetWasteReportByType(string type)
         {
-            JArray wasteReports = await _databaseService.ReadDB();
+            JArray wasteReports = await _databaseService.ReadDBAsync();
             var matchingReports = wasteReports
                 .Where(report => report["wasteType"]?.Value<string>() == type)
                 .Select(report => report.ToObject<WasteReport>())

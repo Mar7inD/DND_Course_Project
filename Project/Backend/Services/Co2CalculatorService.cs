@@ -15,7 +15,7 @@ public class Co2CalculatorService {
     }
 
     public async Task<double> GetCo2EmissionTotal(DateOnly? startDate, DateOnly? endDate, int? userId, string? wasteType) {
-        var wasteReports = (await _databaseService.ReadDB()).ToList();
+        var wasteReports = (await _databaseService.ReadDBAsync()).ToList();
         double totalCo2Emission;
 
         // Filter reports 
@@ -42,7 +42,7 @@ public class Co2CalculatorService {
     }
 
     public async Task<double> GetCo2EmissionForReport(int id = 13) {
-        var report = (await _databaseService.ReadDB()).FirstOrDefault(wr => wr["id"]?.Value<int>() == id);
+        var report = (await _databaseService.ReadDBAsync()).FirstOrDefault(wr => wr["id"]?.Value<int>() == id);
 
         return report?["co2Emission"]?.Value<double>() ?? 0.0;
     }

@@ -21,10 +21,10 @@ public class DatabaseService
         }
     }
 
-    public async Task<JArray> ReadDB()
+    public async Task<JArray> ReadDBAsync()
     {
         // Create the file content variable
-        var content = new JArray();
+        var content = new JArray();//
 
         try
         {
@@ -53,12 +53,12 @@ public class DatabaseService
 
     public async Task<JArray> ReadDBByRole(string role)
     {
-        var content = await ReadDB();
+        var content = await ReadDBAsync();
         var filteredContent = new JArray(content.Where(p => p["role"]?.Value<string>() == role));
         return filteredContent;
     }
 
-    public async Task<bool> WriteDB(JArray content)
+    public async Task<bool> WriteDBAsync(JArray content)
     {
         try
         {
