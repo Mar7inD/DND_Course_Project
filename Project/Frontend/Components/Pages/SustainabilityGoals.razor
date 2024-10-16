@@ -1,0 +1,122 @@
+@page "/sustainability-goals"
+@inject IHttpClientFactory ClientFactory
+
+<PageTitle>Sustainability Goals</PageTitle>
+
+<h2>Sustainability Goals</h2>
+
+<p>Set your sustainability goals. Use the format "Reduce waste by 10% by 2024-12-31".</p>
+
+<div class="d-flex flex-column justify-content-between vh-75">
+    <div class="task-list">
+        @if (goals.Count > 0)
+        {
+            <ul class="list-group">
+                @foreach (var goal in goals)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <input type="checkbox" @onchange="() => ToggleCompleted(goal)" checked="@goal.Completed" />
+                            <span class="@goal.Completed ? "completed-task" : "">@goal.GoalName - Target: @goal.TargetPercentage% by @goal.Deadline.ToString("yyyy-MM-dd")</span>
+                        </div>
+                        <button @onclick="() => RemoveGoal(goal)" class="btn btn-danger">Remove</button>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>No sustainability goals set yet.</p>
+        }
+    </div>
+
+    <!-- Single input field for new goal -->
+    <div class="input-group mt-3">
+        <input type="text" class="form-control" placeholder="Enter your goal (e.g., Reduce waste by 10% by 2024-12-31)" @bind="newGoalInput" />
+        <button @onclick="AddGoal" class="btn btn-secondary">Add Goal</button>
+    </div>
+</div>
+
+@code {
+    private List<SustainabilityGoal> goals = new List<SustainabilityGoal>();
+    private string newGoalInput = string.Empty;
+
+    private void AddGoal()
+    {
+        var parsedGoal = ParseGoal(newGoalInput);
+        if (parsedGoal != null)
+        {
+            goals.Insert(0, parsedGoal);
+            newGoalInput = string.Empty; // Reset the input field
+
+            // Log the newly added goal to the console
+            Console.WriteLine($"Goal Added: {parsedGoal.GoalName}, Target: {parsedGoal.TargetPercentage}%, Deadline: {parsedGoal.Deadline:yyyy-MM-dd}");
+        }
+        else
+        {
+            Console.WriteLine("Invalid format. Please use the format 'Reduce waste by X% by YYYY-MM-DD'.");
+        }
+
+        // Log the current state of all goals
+        LogCurrentGoals();
+    }
+
+    private void RemoveGoal(SustainabilityGoal goal)
+    {
+        goals.Remove(goal);
+
+        // Log removal to the console
+        Console.WriteLine($"Goal Removed: {goal.GoalName}");
+
+        // Log the current state of all goals
+        LogCurrentGoals();
+    }
+
+    private void ToggleCompleted(SustainabilityGoal goal)
+    {
+        goal.Completed = !goal.Completed;
+
+        // Log toggling to the console
+        Console.WriteLine($"Goal Toggled: {goal.GoalName}, Completed: {goal.Completed}");
+
+        // Log the current state of all goals
+        LogCurrentGoals();
+    }
+
+    // Method to parse the user input using regex
+    private SustainabilityGoal? ParseGoal(string input)
+    {
+        var goalRegex = new System.Text.RegularExpressions.Regex(@"^(?<goal>.+?)\sby\s(?<percent>\d+)%\sby\s(?<date>\d{4}-\d{2}-\d{2})$");
+        var match = goalRegex.Match(input);
+
+        if (match.Success)
+        {
+            return new SustainabilityGoal
+            {
+                GoalName = match.Groups["goal"].Value,
+                TargetPercentage = int.Parse(match.Groups["percent"].Value),
+                Deadline = DateTime.Parse(match.Groups["date"].Value),
+                Completed = false
+            };
+        }
+
+        return null; // Return null if the input doesn't match the expected format
+    }
+
+    private void LogCurrentGoals()
+    {
+        Console.WriteLine("Current Goals:");
+        foreach (var goal in goals)
+        {
+            Console.WriteLine($"Goal: {goal.GoalName}, Target: {goal.TargetPercentage}%, Deadline: {goal.Deadline:yyyy-MM-dd}, Completed: {goal.Completed}");
+        }
+    }
+
+    private class SustainabilityGoal
+    {
+        public string GoalName { get; set; } = string.Empty;
+        public int TargetPercentage { get; set; }
+        public DateTime Deadline { get; set; }
+        public bool Completed { get; set; } = false;
+    }
+}
