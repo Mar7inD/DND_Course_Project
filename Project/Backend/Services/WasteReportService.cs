@@ -10,14 +10,12 @@ namespace Backend.Services
     /// <summary>
     public class WasteReportService
     {
-        private readonly string filePath;
         private readonly DatabaseService _databaseService;
         private readonly WasteTypes _wasteTypes;
-        
+
         public WasteReportService()
         {
-            filePath = Path.Combine("Database", "WasteReport.json");
-            _databaseService = new DatabaseService(filePath);
+            _databaseService = new DatabaseService("Database/WasteReport.json");
             _wasteTypes = new WasteTypes();
         }
 
@@ -25,11 +23,14 @@ namespace Backend.Services
         {
             var wasteReports = await _databaseService.ReadDBAsync();
 
+            // Assign new ID
+            int newId = wasteReports.Any() ? wasteReports.Max(wr => (int)(wr["Id"] ?? 0)) + 1 : 1;
+            wasteReport.Id = newId;
 
             // Check if waste type is valid and return CO2 emissions if valid
-            double co2Emissions = await _wasteTypes.isValidWasteReturnCo2Emissions
-                                (wasteReport.WasteType, wasteReport.WasteProcessingFacility, wasteReport.WasteAmount);
-
+            double co2Emissions = await _wasteTypes.isValidWasteReturnCo2Emissions(
+                wasteReport.WasteType, wasteReport.WasteProcessingFacility, wasteReport.WasteAmount
+            );
             wasteReport.Co2Emission = co2Emissions;
 
             wasteReports.Add(JObject.FromObject(wasteReport));
@@ -38,29 +39,30 @@ namespace Backend.Services
             return "Success";
         }
 
-        public async Task<string> GetAllWasteReports()
+        public async Task<List<WasteReport>> GetAllWasteReports()
         {
-            JArray wasteReports = await _databaseService.ReadDBAsync();
-            return wasteReports.ToString();
+            JArray wasteReportsArray = await _databaseService.ReadDBAsync();
+
+            // Deserialize the JArray to a list of WasteReport objects
+            return wasteReportsArray.ToObject<List<WasteReport>>() ?? new List<WasteReport>();
         }
 
         public async Task<WasteReport?> GetWasteReportById(int id)
         {
             JArray wasteReports = await _databaseService.ReadDBAsync();
-            var wasteReportToken = wasteReports
-                .FirstOrDefault(report => report["id"]?.Value<int?>() == id);
-            var wasteReport = wasteReportToken?.ToObject<WasteReport>();
-            return wasteReport;
+            var wasteReportToken = wasteReports.FirstOrDefault(report => report["Id"]?.Value<int>() == id);
+            return wasteReportToken?.ToObject<WasteReport>();
         }
 
         public async Task<IEnumerable<WasteReport>> GetWasteReportByType(string type)
         {
             JArray wasteReports = await _databaseService.ReadDBAsync();
             var matchingReports = wasteReports
-                .Where(report => report["wasteType"]?.Value<string>() == type)
+                .Where(report => report["WasteType"]?.Value<string>() == type)
                 .Select(report => report.ToObject<WasteReport>())
                 .Where(report => report != null);
             return matchingReports!;
         }
     }
+
 }

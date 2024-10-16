@@ -1,0 +1,64 @@
+@page "/waste-report"
+@inject IHttpClientFactory ClientFactory
+
+<h3>Waste Management Report - CO2 Emissions Over Time</h3>
+<p>Probably add a line chart here...</p>
+<p>[Line Chart Here]</p>
+
+@if (wasteReports != null && wasteReports.Count > 0)
+{
+    <h4>Waste Report Details</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Waste Type</th>
+                <th>Processing Facility</th>
+                <th>Waste Amount (kg)</th>
+                <th>Waste Date</th>
+                <th>CO2 Emission (kg)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var report in wasteReports)
+            {
+                <tr>
+                    <td>@report.WasteType</td>
+                    <td>@report.WasteProcessingFacility</td>
+                    <td>@report.WasteAmount</td>
+                    <td>@report.WasteDate.ToString("yyyy-MM-dd")</td>
+                    <td>@(report.Co2Emission ?? 0)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Loading data...</p>
+}
+
+@code {
+    private List<Backend.Models.WasteReport> wasteReports = new List<Backend.Models.WasteReport>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("BackendAPI");
+            var response = await client.GetFromJsonAsync<List<Backend.Models.WasteReport>>("api/WasteReports/");
+
+            if (response != null)
+            {
+                wasteReports = response;
+            }
+            else
+            {
+                Console.WriteLine("No data returned from API.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading waste reports: {ex.Message}");
+        }
+    }
+}

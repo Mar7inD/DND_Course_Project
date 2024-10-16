@@ -23,15 +23,26 @@ public class WasteReportsController : ControllerBase
 
     // Get all waste reports or by type
     [HttpGet]
-    public async Task<ActionResult> Get([FromQuery] string? type)
+    public async Task<ActionResult<List<WasteReport>>> Get([FromQuery] string? type)
     {
-        // Check if type is specified and retrieve waste reports by type
-        if (type != null)
+        try
         {
-            return Ok(await _wasteReportService.GetWasteReportByType(type));
-        }
+            // Check if type is specified and retrieve waste reports by type
+            if (type != null)
+            {
+                var filteredReports = await _wasteReportService.GetWasteReportByType(type);
+                return Ok(filteredReports);
+            }
 
-        return Ok(await _wasteReportService.GetAllWasteReports());
+            // Retrieve all waste reports
+            var allReports = await _wasteReportService.GetAllWasteReports();
+            return Ok(allReports);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while retrieving waste reports");
+            return StatusCode(500, "An error occurred while processing your request.");
+        }
     }
 
     // Get waste report by id
