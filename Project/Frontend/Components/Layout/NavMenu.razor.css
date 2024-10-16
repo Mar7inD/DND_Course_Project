@@ -20,8 +20,11 @@
     background-color: rgba(0,0,0,0.4);
 }
 
-.navbar-brand {
-    font-size: 1.1rem;
+.navbar-brand img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 10vw;
 }
 
 .bi {
@@ -57,7 +60,7 @@
     }
 
     .nav-item ::deep .nav-link {
-        color: #d7d7d7;
+        color: white;
         background: none;
         border: none;
         border-radius: 4px;
@@ -69,7 +72,7 @@
     }
 
 .nav-item ::deep a.active {
-    background-color: rgba(255,255,255,0.37);
+    background-color: #014a63;
     color: white;
 }
 

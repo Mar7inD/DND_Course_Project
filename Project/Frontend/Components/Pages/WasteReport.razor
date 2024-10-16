@@ -1,12 +1,13 @@
 @page "/waste-report"
+@inject IJSRuntime JS
 @inject IHttpClientFactory ClientFactory
 
 <h3>Waste Management Report - CO2 Emissions Over Time</h3>
-<p>Probably add a line chart here...</p>
-<p>[Line Chart Here]</p>
 
-@if (wasteReports != null && wasteReports.Count > 0)
+@if (isInitialized && wasteReports.Count > 0)
 {
+    <canvas id="co2Chart" width="400" height="200"></canvas> <!-- Canvas for the chart -->
+
     <h4>Waste Report Details</h4>
     <table class="table">
         <thead>
@@ -32,13 +33,19 @@
         </tbody>
     </table>
 }
-else
+else if (!isInitialized)
 {
     <p>Loading data...</p>
 }
+else
+{
+    <p>No data available.</p>
+}
 
 @code {
+
     private List<Backend.Models.WasteReport> wasteReports = new List<Backend.Models.WasteReport>();
+    private bool isInitialized = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -50,15 +57,42 @@ else
             if (response != null)
             {
                 wasteReports = response;
+                isInitialized = true;  // Mark that data is loaded
+                Console.WriteLine("Data initialized: " + isInitialized);
+                StateHasChanged(); // Force a re-render so OnAfterRenderAsync can call JS
             }
             else
             {
                 Console.WriteLine("No data returned from API.");
+                isInitialized = true; // Set to true to stop the loading message
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error loading waste reports: {ex.Message}");
+            isInitialized = true; // Set to true to stop the loading message
         }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // Ensure that the chart is rendered only after data is loaded and it's the first render
+        if (firstRender && isInitialized && wasteReports.Count > 0)
+        {
+            Console.WriteLine("OnAfterRenderAsync is triggered");
+            await GenerateCo2Chart();
+        }
+    }
+
+    private async Task GenerateCo2Chart()
+    {
+        var co2Data = wasteReports.Select(r => r.Co2Emission ?? 0).ToArray();
+        var dates = wasteReports.Select(r => r.WasteDate.ToString("yyyy-MM-dd")).ToArray();
+
+        Console.WriteLine($"Dates: {string.Join(", ", dates)}");
+        Console.WriteLine($"CO2 Data: {string.Join(", ", co2Data)}");
+
+        // Call JavaScript function to create the chart
+        await JS.InvokeVoidAsync("createCo2Chart", dates, co2Data);
     }
 }
