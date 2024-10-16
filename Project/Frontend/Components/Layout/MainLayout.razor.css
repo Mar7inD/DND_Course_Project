@@ -12,6 +12,103 @@ main {
     background-color: #4c7c8f;
 }
 
+button {
+    border: none;
+    background: transparent;
+    color: #212529;
+    transition: .3s ease;
+}
+
+button:hover {
+    color: #4c7c8f;
+}
+
+/* Style for the navbar-toggler (checkbox) */
+.navbar-toggler {
+    display: none;
+    cursor: pointer;
+    width: 3.5rem;
+    height: 2.5rem;
+    position: absolute;
+    top: 0.5rem;
+    right: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") no-repeat center/1.75rem rgba(255, 255, 255, 0.1);
+}
+
+/* Change appearance when the checkbox is checked */
+.navbar-toggler:checked {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Hidden dropdown list */
+.dropdown-list {
+    display: none;
+    position: absolute;
+    background-color: white;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    min-width: 250px;
+    top: 3rem;
+    right: 1rem;
+    z-index: 1;
+    padding: 0;
+    border-radius: 8px;
+    margin: 0;
+}
+
+.dropdown-item:first-of-type {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+/* When checkbox is checked, show the dropdown */
+.navbar-toggler:checked ~ .dropdown-list {
+    display: block;
+}
+
+/* Styling for dropdown items */
+.dropdown-item {
+    padding: 10px 20px;
+    list-style: none;
+    border-bottom: 1px solid #ddd;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+/* Prevent blue background on click */
+.notification-item {
+    background-color: white;
+    cursor: default;
+    padding: 10px 15px;
+    list-style: none;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Remove focus/active styles */
+.notification-item:focus,
+.notification-item:active {
+    background-color: white;
+    color: black;
+    outline: none;
+}
+
+/* Notification items hover effect (optional) */
+.notification-item:hover {
+    background-color: #f1f1f1;
+}
+
+/* Styling for the Clear All button */
+.btn-danger {
+    margin: 10px;
+}
+
+.rounded-circle {
+    left: 73%;
+    top: 18px;
+}
+
 .top-row {
     background-color: #f7f7f7;
     border-bottom: 1px solid #d6d5d5;
@@ -43,6 +140,20 @@ main {
 
     .top-row ::deep a, .top-row ::deep .btn-link {
         margin-left: 0;
+    }
+
+    .dropdown-list {
+        display: none;
+        position: absolute;
+        background-color: white;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        min-width: 250px;
+        top: 6.5rem;
+        left: 1rem;
+        z-index: 1;
+        padding: 0;
+        border-radius: 8px;
+        margin: 0;
     }
 }
 

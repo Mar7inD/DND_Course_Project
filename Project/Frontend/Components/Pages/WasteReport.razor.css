@@ -1,0 +1,85 @@
+.no-data-available-text {
+    font-size: 1.5rem;
+}
+
+.no-data-available-image {
+    width: 16vw;
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+}
+
+.table th, 
+.table td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}
+
+.table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table tbody + tbody {
+    border-top: 2px solid #dee2e6;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.075);
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.table-rounded {
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.table th {
+    background-color: #014a63;
+    color: white;
+    text-align: left;
+}
+
+.table td {
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.table td,
+.table th {
+    border: none; /* Remove inner borders */
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #eeeeee;
+}
+
+.shadow-sm {
+    box-shadow: 0 .125rem .25rem rgba(0, 0, 0, 0.075);
+}
+
+th:first-of-type {
+  border-top-left-radius: 10px;
+}
+th:last-of-type {
+  border-top-right-radius: 10px;
+}
+tr:last-of-type td:first-of-type {
+  border-bottom-left-radius: 10px;
+}
+tr:last-of-type td:last-of-type {
+  border-bottom-right-radius: 10px;
+}
+
+h4 {
+    margin-top: 2rem;
+    color: #212529;
+    font-weight: bold;
+}
