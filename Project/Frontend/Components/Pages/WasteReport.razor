@@ -1,12 +1,12 @@
 @page "/waste-report"
-@inject IJSRuntime JS
 @inject IHttpClientFactory ClientFactory
+
 
 <h3>Waste Management Report - CO2 Emissions Over Time</h3>
 
 @if (isInitialized && wasteReports.Count > 0)
 {
-    <canvas id="co2Chart" width="400" height="200"></canvas> <!-- Canvas for the chart -->
+    <img src="images/plot.png" id="co2Chart" width="400" height="200" />
 
     <h4>Waste Report Details</h4>
     <table class="table">
@@ -46,20 +46,37 @@ else
 
     private List<Backend.Models.WasteReport> wasteReports = new List<Backend.Models.WasteReport>();
     private bool isInitialized = false;
+    private bool isInitializedOnce = false;
+    string? chartPath;
 
     protected override async Task OnInitializedAsync()
     {
+        if (isInitializedOnce)
+        {
+            return;
+        }
+
+        isInitializedOnce = true;
+
         try
         {
             var client = ClientFactory.CreateClient("BackendAPI");
-            var response = await client.GetFromJsonAsync<List<Backend.Models.WasteReport>>("api/WasteReports/");
+            var reportResponse = await client.GetFromJsonAsync<List<Backend.Models.WasteReport>>("api/WasteReports/");
 
-            if (response != null)
+            if (reportResponse != null)
             {
-                wasteReports = response;
+                wasteReports = reportResponse;
                 isInitialized = true;  // Mark that data is loaded
-                Console.WriteLine("Data initialized: " + isInitialized);
-                StateHasChanged(); // Force a re-render so OnAfterRenderAsync can call JS
+                var chartResponse = await GenerateChart();
+                if(chartResponse.IsSuccessStatusCode)
+                {
+                    chartPath = await chartResponse.Content.ReadAsStringAsync();
+                    Console.WriteLine("Chart generated: " + chartPath);
+                }
+                else
+                {
+                    Console.WriteLine("Error generating chart: " + chartResponse.StatusCode);
+                }
             }
             else
             {
@@ -74,25 +91,21 @@ else
         }
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        // Ensure that the chart is rendered only after data is loaded and it's the first render
-        if (firstRender && isInitialized && wasteReports.Count > 0)
-        {
-            Console.WriteLine("OnAfterRenderAsync is triggered");
-            await GenerateCo2Chart();
-        }
-    }
 
-    private async Task GenerateCo2Chart()
+    private async Task<HttpResponseMessage> GenerateChart()
     {
+        Console.WriteLine("Generating chart...");
         var co2Data = wasteReports.Select(r => r.Co2Emission ?? 0).ToArray();
         var dates = wasteReports.Select(r => r.WasteDate.ToString("yyyy-MM-dd")).ToArray();
+        
+        var chartRequest = new
+        {
+            Dates = dates,
+            Co2Data = co2Data
+        };
 
-        Console.WriteLine($"Dates: {string.Join(", ", dates)}");
-        Console.WriteLine($"CO2 Data: {string.Join(", ", co2Data)}");
-
-        // Call JavaScript function to create the chart
-        await JS.InvokeVoidAsync("createCo2Chart", dates, co2Data);
+        var client = ClientFactory.CreateClient("BackendAPI");
+        var chartResponse = await client.PostAsJsonAsync("api/PythonChart", chartRequest);
+        return chartResponse;
     }
 }
