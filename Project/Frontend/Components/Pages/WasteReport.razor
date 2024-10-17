@@ -9,8 +9,8 @@
     <img src="images/plot.png" id="co2Chart" width="400" height="200" />
 
     <h4>Waste Report Details</h4>
-    <table class="table">
-        <thead>
+    <table class="table table-striped table-hover shadow-sm rounded">
+        <thead class="bg-dark text-light">
             <tr>
                 <th>Waste Type</th>
                 <th>Processing Facility</th>
@@ -26,20 +26,24 @@
                     <td>@report.WasteType</td>
                     <td>@report.WasteProcessingFacility</td>
                     <td>@report.WasteAmount</td>
-                    <td>@report.WasteDate.ToString("yyyy-MM-dd")</td>
+                    <td>@report.WasteDate.ToString("dd-MM-yyyy hh:mm:ss")</td>
                     <td>@(report.Co2Emission ?? 0)</td>
                 </tr>
             }
         </tbody>
     </table>
 }
+
 else if (!isInitialized)
 {
     <p>Loading data...</p>
 }
 else
-{
-    <p>No data available.</p>
+{   
+    <div class="d-flex flex-column justify-content-center align-items-center vh-75">
+        <img src="images/no-data-available.png" alt="no-data-available" class="no-data-available-image">
+        <p class="no-data-available-text">No data available.</p>
+    </div>
 }
 
 @code {

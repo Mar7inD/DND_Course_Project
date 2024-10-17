@@ -1,0 +1,8 @@
+* {
+    font-family: "Afacad Flux", sans-serif;
+}
+
+.completed-task {
+    text-decoration: line-through;
+    color: gray;
+}
