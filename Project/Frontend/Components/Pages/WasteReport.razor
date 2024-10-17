@@ -1,12 +1,16 @@
 @page "/waste-report"
 @inject IHttpClientFactory ClientFactory
-
+@using ScottPlot
+@using ScottPlot.Plottable
+@using ScottPlot.Drawing
 
 <h3>Waste Management Report - CO2 Emissions Over Time</h3>
 
 @if (isInitialized && wasteReports.Count > 0)
 {
-    <img src="images/plot.png" id="co2Chart" width="400" height="200" />
+    <div>
+        <img src="data:image/png;base64,@PlotBase64" alt="Waste CO2 Emissions Chart" />
+    </div>
 
     <h4>Waste Report Details</h4>
     <table class="table table-striped table-hover shadow-sm rounded">
@@ -33,13 +37,12 @@
         </tbody>
     </table>
 }
-
 else if (!isInitialized)
 {
     <p>Loading data...</p>
 }
 else
-{   
+{
     <div class="d-flex flex-column justify-content-center align-items-center vh-75">
         <img src="images/no-data-available.png" alt="no-data-available" class="no-data-available-image">
         <p class="no-data-available-text">No data available.</p>
@@ -52,6 +55,8 @@ else
     private bool isInitialized = false;
     private bool isInitializedOnce = false;
     string? chartPath;
+
+    public string? PlotBase64 { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -71,16 +76,7 @@ else
             {
                 wasteReports = reportResponse;
                 isInitialized = true;  // Mark that data is loaded
-                var chartResponse = await GenerateChart();
-                if(chartResponse.IsSuccessStatusCode)
-                {
-                    chartPath = await chartResponse.Content.ReadAsStringAsync();
-                    Console.WriteLine("Chart generated: " + chartPath);
-                }
-                else
-                {
-                    Console.WriteLine("Error generating chart: " + chartResponse.StatusCode);
-                }
+                GeneratePlot();  // Generate the plot with ScottPlot
             }
             else
             {
@@ -95,21 +91,21 @@ else
         }
     }
 
-
-    private async Task<HttpResponseMessage> GenerateChart()
+    private void GeneratePlot()
     {
-        Console.WriteLine("Generating chart...");
-        var co2Data = wasteReports.Select(r => r.Co2Emission ?? 0).ToArray();
-        var dates = wasteReports.Select(r => r.WasteDate.ToString("yyyy-MM-dd")).ToArray();
+        var plt = new ScottPlot.Plot(600, 400);
         
-        var chartRequest = new
-        {
-            Dates = dates,
-            Co2Data = co2Data
-        };
+        double[] xs = wasteReports.Select(r => r.WasteDate.ToOADate()).ToArray(); // Convert DateTime to OADate for plotting
+        double[] ys = wasteReports.Select(r => r.Co2Emission ?? 0).ToArray();
+        
+        plt.AddScatter(xs, ys);
+        plt.XAxis.DateTimeFormat(true);
+        plt.Title("CO2 Emissions Over Time");
+        plt.XLabel("Date");
+        plt.YLabel("CO2 Emission (kg)");
 
-        var client = ClientFactory.CreateClient("BackendAPI");
-        var chartResponse = await client.PostAsJsonAsync("api/PythonChart", chartRequest);
-        return chartResponse;
+        // Convert the plot to a base64 string to display in an <img> tag
+        byte[] imageBytes = plt.GetImageBytes();
+        PlotBase64 = Convert.ToBase64String(imageBytes);
     }
 }

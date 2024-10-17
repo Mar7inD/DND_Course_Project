@@ -1,5 +1,4 @@
 using Backend.Converters;
-using Python.Runtime;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,19 +22,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-// Specify the path to the Python DLL
-Runtime.PythonDLL = @"C:\Users\Dotev\AppData\Local\Programs\Python\Python312\python312.dll";
-PythonEngine.Initialize();
-PythonEngine.BeginAllowThreads();
-
-
-// Register the shutdown event before running the app
-AppDomain.CurrentDomain.ProcessExit += (s, e) =>
-{
-    PythonEngine.Shutdown();
-    Console.WriteLine("Python Engine Shut Down");
-};
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
