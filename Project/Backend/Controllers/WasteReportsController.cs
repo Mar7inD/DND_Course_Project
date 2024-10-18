@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Backend.Models;
 using Backend.Services;
 using System.Threading.Tasks;
 
@@ -56,13 +55,13 @@ public class WasteReportsController : ControllerBase
     public async Task<ActionResult<double>> GetCo2EmissionTotal([FromQuery] DateOnly startDate, [FromQuery] DateOnly? endDate, [FromQuery] int? userId, [FromQuery] string? type)
     {
         var effectiveEndDate = endDate ?? DateOnly.FromDateTime(DateTime.Now);
-        return Ok(await _co2CalculatorService.GetCo2EmissionTotal(startDate, effectiveEndDate, userId, type));
+        return Ok(await _co2CalculatorService.GetCo2EmissionTotalAsync(startDate, effectiveEndDate, userId, type));
     }
 
     [HttpGet("co2emission/{id:int}")]
     public async Task<ActionResult<double>> GetCo2EmissionForReport(int id)
     {
-        return Ok(await _co2CalculatorService.GetCo2EmissionForReport(id));
+        return Ok(await _co2CalculatorService.GetCo2EmissionForReportAsync(id));
     }
 
     [HttpPost]
@@ -75,6 +74,20 @@ public class WasteReportsController : ControllerBase
         }
         catch (System.Exception e) {
             _logger.LogError(e, "Failed to post waste report");
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> PutWasteReport(int id, [FromBody] WasteReport wasteReport)
+    {
+        try 
+        {
+            await _wasteReportService.PutWasteReport(id, wasteReport);
+            return Ok();
+        }
+        catch (System.Exception e) {
+            _logger.LogError(e, "Failed to update waste report");
             return BadRequest(e.Message);
         }
     }

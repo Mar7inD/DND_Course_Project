@@ -1,54 +1,38 @@
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-using Backend.Models;
 
 namespace Backend.Services;
     public class PersonService
     {
-        private readonly string filePath;
         private readonly DatabaseService _databaseService;
         public JsonSerializerSettings settings = new JsonSerializerSettings();
         
 
         public PersonService()
-        {
-            // Set the file path
-            filePath = Path.Combine("Database", "People.json");
-            
+        {            
             // Initialize the database service
-            _databaseService = new DatabaseService(filePath);
-            
+            _databaseService = new DatabaseService("Database/People.json");
+
             // Add the custom converter to the settings
             settings.Converters.Add(new PersonConverter());
         }
 
-        public async Task<List<IPerson>> GetPeople()
+        public async Task<List<PersonBase>> GetPeople(string? role, string? active)
         {
             try
             {
                 var peopleArray = await _databaseService.ReadDBAsync();
-                var peopleList = JsonConvert.DeserializeObject<List<IPerson>>(peopleArray.ToString(), settings);
+                peopleArray = new JArray(peopleArray
+                                            .Where(p => (role == null || p["Role"]?.Value<string>() == role) && 
+                                                        (active == null || p["IsActive"]!.Value<bool>() == bool.Parse(active))));
+                
+                var peopleList = JsonConvert.DeserializeObject<List<PersonBase>>(peopleArray.ToString(), settings);
                 return peopleList!;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error in GetPeople: {ex.Message}");
-                return new List<IPerson>();
-            }
-        }
-
-        public async Task<List<IPerson>> GetPeopleByRole(string role)
-        {
-             try
-            {
-                var peopleArray = await _databaseService.ReadDBByRole(role);
-                var peopleList = JsonConvert.DeserializeObject<List<IPerson>>(peopleArray.ToString(), settings);
-                return peopleList!;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error in GetPeopleByRole: {ex.Message}");
-                return new List<IPerson>();
+                return new List<PersonBase>();
             }
         }
 
@@ -56,9 +40,9 @@ namespace Backend.Services;
         {
             try
             {
-                Console.WriteLine(person.isActive);
+                Console.WriteLine(person.IsActive);
                 var peopleArray = await _databaseService.ReadDBAsync();
-                if (peopleArray.Any(p => p["employeeId"]?.Value<string>() == person.employeeId.ToString()))
+                if (peopleArray.Any(p => p["EmployeeId"]?.Value<string>() == person.EmployeeId.ToString()))
                 {
                     throw new Exception("Employee ID already exists.");
                 }

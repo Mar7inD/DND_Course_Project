@@ -1,3 +1,4 @@
+global using Shared.Models;
 using Frontend.Components;
 
 var builder = WebApplication.CreateBuilder(args);

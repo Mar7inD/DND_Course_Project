@@ -3,6 +3,7 @@
 @using ScottPlot
 @using ScottPlot.Plottable
 @using ScottPlot.Drawing
+@using Shared.Models
 
 <h3>Waste Management Report - CO2 Emissions Over Time</h3>
 
@@ -51,10 +52,9 @@ else
 
 @code {
 
-    private List<Backend.Models.WasteReport> wasteReports = new List<Backend.Models.WasteReport>();
+    private List<Shared.Models.WasteReport> wasteReports = new List<Shared.Models.WasteReport>();
     private bool isInitialized = false;
     private bool isInitializedOnce = false;
-    string? chartPath;
 
     public string? PlotBase64 { get; set; }
 
@@ -70,11 +70,11 @@ else
         try
         {
             var client = ClientFactory.CreateClient("BackendAPI");
-            var reportResponse = await client.GetFromJsonAsync<List<Backend.Models.WasteReport>>("api/WasteReports/");
-
+            var reportResponse = await client.GetFromJsonAsync<List<Shared.Models.WasteReport>>("api/WasteReports/");
+            
             if (reportResponse != null)
             {
-                wasteReports = reportResponse;
+                wasteReports = reportResponse.OrderBy( report => report.WasteDate).ToList();
                 isInitialized = true;  // Mark that data is loaded
                 GeneratePlot();  // Generate the plot with ScottPlot
             }
@@ -95,8 +95,18 @@ else
     {
         var plt = new ScottPlot.Plot(600, 400);
         
-        double[] xs = wasteReports.Select(r => r.WasteDate.ToOADate()).ToArray(); // Convert DateTime to OADate for plotting
-        double[] ys = wasteReports.Select(r => r.Co2Emission ?? 0).ToArray();
+        var groupedReports = wasteReports
+        .GroupBy(r => r.WasteDate.Date)
+        .Select(g => new 
+            {
+                WasteDate = g.Key,
+                TotalCo2Emission = g.Sum(r => r.Co2Emission ?? 0)
+            })
+        .OrderBy(g => g.WasteDate)
+        .ToList();
+
+        double[] xs = groupedReports.Select(r => r.WasteDate.ToOADate()).ToArray(); // Convert DateTime to OADate for plotting
+        double[] ys = groupedReports.Select(r => r.TotalCo2Emission).ToArray();
         
         plt.AddScatter(xs, ys);
         plt.XAxis.DateTimeFormat(true);

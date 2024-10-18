@@ -5,9 +5,9 @@ POST {{Backend_HostAddress}}/api/WasteReports/
 Content-Type: application/json
 
 {
-    "wasteType": "Plastic",
+    "wasteType": "Wood",
     "wasteAmount": 20,
-    "wasteProcessingFacility": "Landfill",
+    "wasteProcessingFacility": "Recycling",
     "wasteDate": "2023-01-01",
     "wasteCollector": "string"
 }
@@ -34,6 +34,19 @@ GET {{Backend_HostAddress}}/api/wastereports/co2emission
 
 ###
 
+PUT {{Backend_HostAddress}}/api/WasteReports/1
+Content-Type: application/json
+
+{
+    "wasteType": "Plastic",
+    "wasteAmount": 20,
+    "wasteProcessingFacility": "Recycling",
+    "wasteDate": "2023-01-01",
+    "wasteCollector": "string"
+}
+
+###
+
 POST {{Backend_HostAddress}}/api/People
 Content-Type: application/json
 
@@ -55,7 +68,7 @@ GET {{Backend_HostAddress}}/api/People/?role=Employee
 
 ###
 
-GET {{Backend_HostAddress}}/api/People/?active=true
+GET {{Backend_HostAddress}}/api/People/?active=True
 
 ###
 

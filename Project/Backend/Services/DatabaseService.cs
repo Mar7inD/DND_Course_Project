@@ -51,13 +51,6 @@ public class DatabaseService
         return content;
     }
 
-    public async Task<JArray> ReadDBByRole(string role)
-    {
-        var content = await ReadDBAsync();
-        var filteredContent = new JArray(content.Where(p => p["role"]?.Value<string>() == role));
-        return filteredContent;
-    }
-
     public async Task<bool> WriteDBAsync(JArray content)
     {
         try

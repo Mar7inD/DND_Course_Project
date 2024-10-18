@@ -1,3 +1,4 @@
+global using Shared.Models;
 using Backend.Converters;
 
 var builder = WebApplication.CreateBuilder(args);

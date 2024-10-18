@@ -10,12 +10,12 @@
 
     <div class="form-group">
         <label for="email">Email</label>
-        <InputText id="email" class="form-control" @bind-Value="loginModel.email" />
+        <InputText id="email" class="form-control" @bind-Value="loginModel.Email" />
     </div>
 
     <div class="form-group">
         <label for="password">Password</label>
-        <InputText id="password" class="form-control" type="password" @bind-Value="loginModel.password" />
+        <InputText id="password" class="form-control" type="password" @bind-Value="loginModel.Password" />
     </div>
 
     <button type="submit" class="btn btn-primary">Login</button>
@@ -23,7 +23,7 @@
 
 @code {
     // Use the Backend's model for login
-    private Backend.Models.IPersonDTO loginModel = new Backend.Models.EmployeeDTO();
+    private IPersonDTO loginModel = new EmployeeDTO();
 
     private async Task HandleLogin()
     {

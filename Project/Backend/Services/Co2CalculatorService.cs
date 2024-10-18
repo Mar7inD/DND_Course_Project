@@ -1,8 +1,4 @@
 using Newtonsoft.Json.Linq;
-using Backend.Models;
-using Backend.Services;
-using System.Numerics;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Backend.Services;
 
@@ -14,7 +10,7 @@ public class Co2CalculatorService {
         _databaseService = new DatabaseService("Database/WasteReport.json");
     }
 
-    public async Task<double> GetCo2EmissionTotal(DateOnly? startDate, DateOnly? endDate, int? userId, string? wasteType) {
+    public async Task<double> GetCo2EmissionTotalAsync(DateOnly? startDate, DateOnly? endDate, int? userId, string? wasteType) {
         var wasteReports = (await _databaseService.ReadDBAsync()).ToList();
         double totalCo2Emission;
 
@@ -41,7 +37,7 @@ public class Co2CalculatorService {
         return totalCo2Emission;
     }
 
-    public async Task<double> GetCo2EmissionForReport(int id = 13) {
+    public async Task<double> GetCo2EmissionForReportAsync(int id = 13) {
         var report = (await _databaseService.ReadDBAsync()).FirstOrDefault(wr => wr["id"]?.Value<int>() == id);
 
         return report?["co2Emission"]?.Value<double>() ?? 0.0;

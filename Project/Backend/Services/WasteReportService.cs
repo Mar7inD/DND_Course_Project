@@ -1,9 +1,5 @@
-using Backend.Models;
 using Newtonsoft.Json.Linq;
-using System.IO;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Linq;
+
 
 namespace Backend.Services
 {
@@ -43,7 +39,6 @@ namespace Backend.Services
         {
             JArray wasteReportsArray = await _databaseService.ReadDBAsync();
 
-            // Deserialize the JArray to a list of WasteReport objects
             return wasteReportsArray.ToObject<List<WasteReport>>() ?? new List<WasteReport>();
         }
 
@@ -62,6 +57,27 @@ namespace Backend.Services
                 .Select(report => report.ToObject<WasteReport>())
                 .Where(report => report != null);
             return matchingReports!;
+        }
+
+        public async Task PutWasteReport(int id, WasteReport wasteReport)
+        {
+            JArray wasteReports = await _databaseService.ReadDBAsync();
+            var existingReport = wasteReports.FirstOrDefault(report => report["Id"]?.Value<int>() == id);
+
+            if (existingReport == null)
+            {
+                throw new KeyNotFoundException("Waste report not found");
+            }
+
+            existingReport["WasteType"] = wasteReport.WasteType;
+            existingReport["WasteProcessingFacility"] = wasteReport.WasteProcessingFacility;
+            existingReport["WasteAmount"] = wasteReport.WasteAmount;
+            existingReport["WasteDate"] = wasteReport.WasteDate;
+            existingReport["WasteCollectorId"] = wasteReport.WasteCollectorId;
+            existingReport["IsActive"] = wasteReport.IsActive;
+            existingReport["Co2Emission"] = wasteReport.Co2Emission;
+
+            await _databaseService.WriteDBAsync(wasteReports);
         }
     }
 

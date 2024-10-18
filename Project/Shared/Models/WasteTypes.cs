@@ -1,10 +1,8 @@
-using Backend.Services;
 using Newtonsoft.Json.Linq;
-namespace Backend.Models;
+namespace Shared.Models;
 
 public class WasteTypes {
 
-    private DatabaseService _databaseService;
     private static readonly HashSet<string> AllowedWasteTypes = new HashSet<string>
     {
         "Organic",
@@ -16,18 +14,11 @@ public class WasteTypes {
         "Inceneration"
     };
 
-    public WasteTypes()
-    {
-        _databaseService = new DatabaseService("Database/WasteProcessing.json");
-    }
-
     public async Task<double> isValidWasteReturnCo2Emissions(string wasteType, string wasteProcessingFacility, double wasteAmount)
     {
-        double calculatedEmission = 0.0;
-
         double co2emissionIndex = await GetWasteTypesByFacilityIndex(wasteType, wasteProcessingFacility);
         
-        calculatedEmission = co2emissionIndex * wasteAmount;
+        double calculatedEmission = co2emissionIndex * wasteAmount;
 
         return calculatedEmission; 
     }
@@ -37,8 +28,11 @@ public class WasteTypes {
     }
 
     // Compare and return CO2 emission index
-    public async Task<double> GetWasteTypesByFacilityIndex(string candidateWasteType, string wasteProcessingFacility) {
-        var wasteProcessingFacilities = await _databaseService.ReadDBAsync();
+    public async Task<double> GetWasteTypesByFacilityIndex(string candidateWasteType, string wasteProcessingFacility) 
+    {
+        string jsonFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Storage", "WasteProcessing.json");
+        string jsonData = await File.ReadAllTextAsync(jsonFilePath);
+        var wasteProcessingFacilities = JArray.Parse(jsonData);
 
         foreach (JObject wasteObject in wasteProcessingFacilities)
         {   

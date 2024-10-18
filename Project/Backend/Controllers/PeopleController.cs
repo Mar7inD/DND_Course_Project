@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Backend.Models;
 using Backend.Services;
-using System.Diagnostics.Eventing.Reader;
 
 namespace Backend.Controllers;
 
@@ -19,30 +17,9 @@ public class PeopleController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<IPerson>>> Get([FromQuery] string? role, string? active)
+    public async Task<ActionResult<List<PersonBase>>> Get([FromQuery] string? role, string? active)
     {   
-        var people = await _peopleService.GetPeople();
-
-        if(role != null && active != null)
-        {
-            
-            return  Ok(people
-                    .Where(p => p.role == role && p.isActive == bool.Parse(active)));
-        }
-        else if(role != null) 
-        {
-            return Ok(people
-                    .Where(p => p.role == role).ToList());
-        }
-        else if(active != null)
-        {
-            return Ok(people
-                    .Where(p => p.isActive == bool.Parse(active))
-                    .ToList());
-        }
-        
-
-        return Ok(people);
+        return Ok(await _peopleService.GetPeople(role, active));
     }
 
     [HttpPost]
