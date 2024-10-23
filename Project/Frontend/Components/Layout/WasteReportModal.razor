@@ -1,0 +1,57 @@
+@page "/new-waste-report"
+@layout Layout.MainLayout
+@using Shared.Models
+
+<div class="container mt-5">
+    <div class="d-flex row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow p-4" style="max-width: 700px;">
+                <div class="card-body">
+                    <h3 class="card-title mb-4">Add New Waste Report</h3>
+
+                    <EditForm Model="newWasteReport" OnValidSubmit="HandleValidSubmit">
+                        <div class="mb-3">
+                            <label for="wasteType" class="form-label">Waste Type</label>
+                            <select id="wasteType" class="form-select" @bind="newWasteReport.WasteType">
+                                @foreach (var wasteType in wasteTypes)
+                                {
+                                    <option value="@wasteType">@wasteType</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="wasteFacility" class="form-label">Processing Facility</label>
+                            <input type="text" id="wasteFacility" class="form-control" @bind="newWasteReport.WasteProcessingFacility" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="wasteAmount" class="form-label">Waste Amount (kg)</label>
+                            <input type="number" id="wasteAmount" class="form-control" @bind="newWasteReport.WasteAmount" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="wasteDate" class="form-label">Date</label>
+                            <input type="date" id="wasteDate" class="form-control" @bind="newWasteReport.WasteDate" />
+                        </div>
+
+                        <button type="submit" class="btn w-100 submit-btn">Submit</button>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private WasteReport newWasteReport = new WasteReport();
+    private List<string> wasteTypes = new List<string> {
+        "Organic", "Plastic", "Metal", "Wood", "Paper", "Electronic", "Incineration"
+    };
+
+    private void HandleValidSubmit()
+    {
+        Console.WriteLine($"New waste report for {newWasteReport.WasteType} added.");
+        // Perform further submission logic (e.g., store in database)
+    }
+}
