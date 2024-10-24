@@ -37,5 +37,32 @@
     "WasteCollectorId": null,
     "IsActive": true,
     "Co2Emission": 10.0
+  },
+  {
+    "WasteType": "Plastic",
+    "WasteProcessingFacility": "Recycling",
+    "WasteAmount": 456.0,
+    "WasteDate": "2024-10-24T11:48:13.4937233",
+    "WasteCollectorId": null,
+    "IsActive": false,
+    "Co2Emission": 456.0
+  },
+  {
+    "WasteType": "Electronic",
+    "WasteProcessingFacility": "Landfill",
+    "WasteAmount": 345.0,
+    "WasteDate": "2024-10-23T11:48:43.9143433",
+    "WasteCollectorId": null,
+    "IsActive": false,
+    "Co2Emission": -34.5
+  },
+  {
+    "WasteType": "Paper",
+    "WasteProcessingFacility": "Incineration",
+    "WasteAmount": 890.0,
+    "WasteDate": "2024-10-25T11:50:55.1595594",
+    "WasteCollectorId": null,
+    "IsActive": false,
+    "Co2Emission": -979.0000000000001
   }
 ]
