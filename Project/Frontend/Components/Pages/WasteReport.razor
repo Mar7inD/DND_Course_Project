@@ -4,6 +4,7 @@
 @using ScottPlot.Plottable
 @using ScottPlot.Drawing
 @using Shared.Models
+@inject NavigationManager NavigationManager
 
 <h3>Waste Management Report - CO2 Emissions Over Time</h3>
 
@@ -22,6 +23,7 @@
                 <th>Waste Amount (kg)</th>
                 <th>Waste Date</th>
                 <th>CO2 Emission (kg)</th>
+                <th>Actions</th> <!-- Add Actions column -->
             </tr>
         </thead>
         <tbody>
@@ -33,6 +35,10 @@
                     <td>@report.WasteAmount</td>
                     <td>@report.WasteDate.ToString("dd-MM-yyyy hh:mm:ss")</td>
                     <td>@(report.Co2Emission ?? 0)</td>
+                    <td>
+                        <button class="btn btn-secondary btn-sm" @onclick="() => EditReport(report.Id)">Edit</button>
+                        <button class="btn btn-danger btn-sm" @onclick="() => DeleteReport(report.Id)">Delete</button>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -50,11 +56,18 @@ else
     </div>
 }
 
-@code {
+@if (errorMessage != null)
+{
+    <div class="alert alert-danger mt-3">
+        @errorMessage
+    </div>
+}
 
+@code {
     private List<Shared.Models.WasteReport> wasteReports = new List<Shared.Models.WasteReport>();
     private bool isInitialized = false;
     private bool isInitializedOnce = false;
+    private string? errorMessage;
 
     public string? PlotBase64 { get; set; }
 
@@ -74,7 +87,7 @@ else
             
             if (reportResponse != null)
             {
-                wasteReports = reportResponse.OrderBy( report => report.WasteDate).ToList();
+                wasteReports = reportResponse.OrderBy(report => report.WasteDate).ToList();
                 isInitialized = true;  // Mark that data is loaded
                 GeneratePlot();  // Generate the plot with ScottPlot
             }
@@ -118,4 +131,39 @@ else
         byte[] imageBytes = plt.GetImageBytes();
         PlotBase64 = Convert.ToBase64String(imageBytes);
     }
+
+    private void EditReport(int id)
+    {
+        Console.WriteLine($"Edit report with ID: {id}");
+        // Redirect to the Edit page for the selected report
+        NavigationManager.NavigateTo($"/edit-waste-report/{id}");
+    }
+
+    private async Task DeleteReport(int id)
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("BackendAPI");
+            var response = await client.DeleteAsync($"api/WasteReports/{id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"Successfully deleted waste report with ID: {id}");
+                wasteReports = wasteReports.Where(r => r.Id != id).ToList(); // Remove the deleted report from the list
+                StateHasChanged(); // Force the UI to refresh
+            }
+            else
+            {
+                errorMessage = $"Failed to delete the waste report. Status code: {response.StatusCode}. Response content: {await response.Content.ReadAsStringAsync()}";
+                Console.WriteLine(errorMessage);
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred while deleting the report: {ex.Message}";
+            Console.WriteLine(errorMessage);
+        }
+    }
+
+
 }

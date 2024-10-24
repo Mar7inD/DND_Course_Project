@@ -81,14 +81,49 @@ public class WasteReportsController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> PutWasteReport(int id, [FromBody] WasteReport wasteReport)
     {
-        try 
+        try
         {
+            if (id != wasteReport.Id)
+                return BadRequest("Waste report ID mismatch.");
+
+            // Calculate new CO2 Emission based on the updated waste report data
+            wasteReport.Co2Emission = await _co2CalculatorService.GetCo2EmissionForReportAsync(id);
+
+            // Update the waste report with the new CO2 value
             await _wasteReportService.PutWasteReport(id, wasteReport);
-            return Ok();
+
+            return Ok("Waste report updated successfully.");
         }
-        catch (System.Exception e) {
+        catch (KeyNotFoundException)
+        {
+            return NotFound("Waste report not found.");
+        }
+        catch (Exception e)
+        {
             _logger.LogError(e, "Failed to update waste report");
-            return BadRequest(e.Message);
+            return BadRequest($"Failed to update waste report: {e.Message}");
+        }
+    }
+
+
+
+    // DELETE - Delete a waste report by id
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> DeleteWasteReport(int id)
+    {
+        try
+        {
+            await _wasteReportService.DeleteWasteReport(id);
+            return Ok("Waste report deleted successfully.");
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound("Waste report not found.");
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to delete waste report");
+            return BadRequest($"Failed to delete waste report: {e.Message}");
         }
     }
 }

@@ -4,7 +4,6 @@ namespace Shared.Models;
 
 public class WasteReport
 {
-    [JsonIgnore]
     public int Id { get; set; }
     public string WasteType { get; set; } = string.Empty;
     public string WasteProcessingFacility { get; set; } = string.Empty;

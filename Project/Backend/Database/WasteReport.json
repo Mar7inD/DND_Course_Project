@@ -1,68 +1,32 @@
 [
   {
-    "Id": 0,
-    "WasteType": "Plastic",
-    "WasteProcessingFacility": "Landfill",
-    "WasteAmount": 20.0,
-    "WasteCollectorId": null,
-    "IsActive": true,
-    "WasteDate": "2023-01-01T00:00:00",
-    "Co2Emission": -1.0
-  },
-  {
     "Id": 1,
-    "WasteType": "Plastic",
+    "WasteType": "Electronic",
     "WasteProcessingFacility": "Recycling",
-    "WasteAmount": 20.0,
+    "WasteAmount": 657.0,
+    "WasteDate": "2024-10-24T14:40:56.6379693+02:00",
     "WasteCollectorId": null,
     "IsActive": true,
-    "WasteDate": "2023-01-01T00:00:00",
-    "Co2Emission": null
+    "Co2Emission": 0.0
   },
   {
     "Id": 2,
-    "WasteType": "Metal",
-    "WasteProcessingFacility": "Recycling",
-    "WasteAmount": 50.0,
+    "WasteType": "Organic",
+    "WasteProcessingFacility": "Composting",
+    "WasteAmount": 78.0,
+    "WasteDate": "2024-10-25T14:55:37.6589615",
     "WasteCollectorId": null,
     "IsActive": true,
-    "WasteDate": "2023-03-01T00:00:00",
-    "Co2Emission": 0.5
+    "Co2Emission": -7.800000000000001
   },
   {
-    "WasteType": "Wood",
-    "WasteProcessingFacility": "Recycling",
-    "WasteAmount": 20.0,
-    "WasteDate": "2023-01-01T00:00:00",
+    "Id": 3,
+    "WasteType": "Organic",
+    "WasteProcessingFacility": "Composting",
+    "WasteAmount": 0.78,
+    "WasteDate": "2024-10-24T14:56:02.4306192+02:00",
     "WasteCollectorId": null,
     "IsActive": true,
-    "Co2Emission": 10.0
-  },
-  {
-    "WasteType": "Plastic",
-    "WasteProcessingFacility": "Recycling",
-    "WasteAmount": 456.0,
-    "WasteDate": "2024-10-24T11:48:13.4937233",
-    "WasteCollectorId": null,
-    "IsActive": false,
-    "Co2Emission": 456.0
-  },
-  {
-    "WasteType": "Electronic",
-    "WasteProcessingFacility": "Landfill",
-    "WasteAmount": 345.0,
-    "WasteDate": "2024-10-23T11:48:43.9143433",
-    "WasteCollectorId": null,
-    "IsActive": false,
-    "Co2Emission": -34.5
-  },
-  {
-    "WasteType": "Paper",
-    "WasteProcessingFacility": "Incineration",
-    "WasteAmount": 890.0,
-    "WasteDate": "2024-10-25T11:50:55.1595594",
-    "WasteCollectorId": null,
-    "IsActive": false,
-    "Co2Emission": -979.0000000000001
+    "Co2Emission": -0.07800000000000001
   }
 ]

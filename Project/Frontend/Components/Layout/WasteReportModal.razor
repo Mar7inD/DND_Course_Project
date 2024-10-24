@@ -40,7 +40,7 @@
 
                         <div class="mb-3">
                             <label for="wasteDate" class="form-label">Date</label>
-                            <InputDate id="wasteDate" class="form-control" @bind-Value="@newWasteReport.WasteDate" />
+                            <InputDate id="wasteDate" class="form-control" @bind-Value="@newWasteReport.WasteDate" min="@DateTime.Now.ToString("yyyy-MM-dd")" />
                         </div>
 
                         <button type="submit" class="btn btn-primary w-100 submit-btn">Submit</button>

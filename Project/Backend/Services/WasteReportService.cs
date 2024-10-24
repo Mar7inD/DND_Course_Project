@@ -19,9 +19,12 @@ namespace Backend.Services
         {
             var wasteReports = await _databaseService.ReadDBAsync();
 
-            // Assign new ID
-            int newId = wasteReports.Any() ? wasteReports.Max(wr => (int)(wr["Id"] ?? 0)) + 1 : 1;
-            wasteReport.Id = newId;
+            // Assign new ID if it's not set
+            if (wasteReport.Id == 0)
+            {
+                int newId = wasteReports.Any() ? wasteReports.Max(wr => (int)(wr["Id"] ?? 0)) + 1 : 1;
+                wasteReport.Id = newId;
+            }
 
             // Check if waste type is valid and return CO2 emissions if valid
             double co2Emissions = await _wasteTypes.isValidWasteReturnCo2Emissions(
@@ -69,16 +72,33 @@ namespace Backend.Services
                 throw new KeyNotFoundException("Waste report not found");
             }
 
+            // Update the waste report properties, including the new CO2 emission value
             existingReport["WasteType"] = wasteReport.WasteType;
             existingReport["WasteProcessingFacility"] = wasteReport.WasteProcessingFacility;
             existingReport["WasteAmount"] = wasteReport.WasteAmount;
             existingReport["WasteDate"] = wasteReport.WasteDate;
             existingReport["WasteCollectorId"] = wasteReport.WasteCollectorId;
             existingReport["IsActive"] = wasteReport.IsActive;
-            existingReport["Co2Emission"] = wasteReport.Co2Emission;
+            existingReport["Co2Emission"] = wasteReport.Co2Emission; // CO2 updated here
 
             await _databaseService.WriteDBAsync(wasteReports);
         }
-    }
 
+
+        // DELETE - Delete a waste report by id
+        public async Task DeleteWasteReport(int id)
+        {
+            JArray wasteReports = await _databaseService.ReadDBAsync();
+            var existingReport = wasteReports.FirstOrDefault(report => report["Id"]?.Value<int>() == id);
+
+            if (existingReport == null)
+            {
+                throw new KeyNotFoundException("Waste report not found");
+            }
+
+            wasteReports.Remove(existingReport); // Remove the report
+            await _databaseService.WriteDBAsync(wasteReports);
+        }
+
+    }
 }
