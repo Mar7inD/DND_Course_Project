@@ -83,3 +83,44 @@ h4 {
     color: #212529;
     font-weight: bold;
 }
+
+/* Make the button round */
+.actions-dropdown-btn {
+    width: 24px; /* Set width */
+    height: 24px; /* Set height */
+    border-radius: 50%; /* Make it a circle */
+    border: none; /* Remove border */
+    background-color: #dfdfdf; /* Background color */
+    display: flex; /* Center content */
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.3s ease; /* Smooth color transition */
+}
+
+    /* Remove blue outline */
+.actions-dropdown-btn:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+    /* Change color on hover */
+.actions-dropdown-btn:hover {
+    background-color: #4c7c8f; /* Change to your preferred hover color */
+    color: #fff; /* Change icon color to white */
+}
+
+    /* Change icon color inside the button */
+.actions-dropdown-btn svg {
+    color: inherit; /* Inherit the color from the button */
+}
+
+.action-button {
+    user-select: none;
+    transition: .3s ease;
+}
+
+.action-button:hover {
+    color: white;
+    background-color: #4c7c8f;
+}

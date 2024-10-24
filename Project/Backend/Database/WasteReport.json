@@ -1,32 +1,12 @@
 [
   {
-    "Id": 1,
-    "WasteType": "Electronic",
-    "WasteProcessingFacility": "Recycling",
-    "WasteAmount": 657.0,
-    "WasteDate": "2024-10-24T14:40:56.6379693+02:00",
-    "WasteCollectorId": null,
-    "IsActive": true,
-    "Co2Emission": 0.0
-  },
-  {
     "Id": 2,
-    "WasteType": "Organic",
-    "WasteProcessingFacility": "Composting",
+    "WasteType": "Metal",
+    "WasteProcessingFacility": "Incineration",
     "WasteAmount": 78.0,
-    "WasteDate": "2024-10-25T14:55:37.6589615",
+    "WasteDate": "2024-10-24T16:11:28.545989+02:00",
     "WasteCollectorId": null,
     "IsActive": true,
-    "Co2Emission": -7.800000000000001
-  },
-  {
-    "Id": 3,
-    "WasteType": "Organic",
-    "WasteProcessingFacility": "Composting",
-    "WasteAmount": 0.78,
-    "WasteDate": "2024-10-24T14:56:02.4306192+02:00",
-    "WasteCollectorId": null,
-    "IsActive": true,
-    "Co2Emission": -0.07800000000000001
+    "Co2Emission": -58.5
   }
 ]
