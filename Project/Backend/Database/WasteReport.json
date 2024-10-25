@@ -1,42 +1,132 @@
 [
-  {
-    "Id": 2,
-    "WasteType": "Metal",
-    "WasteProcessingFacility": "Incineration",
-    "WasteAmount": 78.0,
-    "WasteDate": "2024-10-24T16:11:28.545989+02:00",
-    "WasteCollectorId": null,
-    "IsActive": true,
-    "Co2Emission": -58.5
-  },
-  {
-    "Id": 3,
-    "WasteType": "Organic",
-    "WasteProcessingFacility": "Incineration",
-    "WasteAmount": 200.0,
-    "WasteDate": "2024-10-25T10:03:31.3920378+02:00",
-    "WasteCollectorId": null,
-    "IsActive": true,
-    "Co2Emission": -140.0
-  },
-  {
-    "Id": 4,
-    "WasteType": "Organic",
-    "WasteProcessingFacility": "Composting",
-    "WasteAmount": 100.0,
-    "WasteDate": "2024-10-25T10:12:55.7359718+02:00",
-    "WasteCollectorId": null,
-    "IsActive": true,
-    "Co2Emission": -10.0
-  },
-  {
-    "Id": 5,
-    "WasteType": "Metal",
-    "WasteProcessingFacility": "Recycling",
-    "WasteAmount": 200.0,
-    "WasteDate": "2024-10-31T10:13:59.2017672",
-    "WasteCollectorId": null,
-    "IsActive": true,
-    "Co2Emission": 350.0
-  }
+	{
+		"Id": 2,
+		"WasteType": "Metal",
+		"WasteProcessingFacility": "Incineration",
+		"WasteAmount": 78.0,
+		"WasteDate": "2024-10-24T16:11:28.545989+02:00",
+		"WasteCollectorId": null,
+		"IsActive": true,
+		"Co2Emission": -58.5
+	},
+	{
+		"Id": 3,
+		"WasteType": "Organic",
+		"WasteProcessingFacility": "Incineration",
+		"WasteAmount": 200.0,
+		"WasteDate": "2024-10-25T10:03:31.3920378+02:00",
+		"WasteCollectorId": null,
+		"IsActive": true,
+		"Co2Emission": -140.0
+	},
+	{
+		"Id": 4,
+		"WasteType": "Organic",
+		"WasteProcessingFacility": "Composting",
+		"WasteAmount": 100.0,
+		"WasteDate": "2024-10-25T10:12:55.7359718+02:00",
+		"WasteCollectorId": null,
+		"IsActive": true,
+		"Co2Emission": -10.0
+	},
+	{
+		"Id": 5,
+		"WasteType": "Metal",
+		"WasteProcessingFacility": "Recycling",
+		"WasteAmount": 200.0,
+		"WasteDate": "2024-10-31T10:13:59.2017672",
+		"WasteCollectorId": null,
+		"IsActive": true,
+		"Co2Emission": 350.0
+	},
+	{
+		"Id": 6,
+		"WasteType": "Plastic",
+		"WasteProcessingFacility": "Landfill",
+		"WasteAmount": 150.0,
+		"WasteDate": "2024-10-22T09:45:32.563217+02:00",
+		"WasteCollectorId": null,
+		"IsActive": true,
+		"Co2Emission": 120.0
+	},
+	{
+		"Id": 7,
+		"WasteType": "Glass",
+		"WasteProcessingFacility": "Recycling",
+		"WasteAmount": 50.0,
+		"WasteDate": "2024-10-21T08:32:12.123456+02:00",
+		"WasteCollectorId": null,
+		"IsActive": true,
+		"Co2Emission": -30.0
+	},
+	{
+		"Id": 8,
+		"WasteType": "Electronic",
+		"WasteProcessingFacility": "Recycling",
+		"WasteAmount": 80.0,
+		"WasteDate": "2024-10-20T14:22:15.654321+02:00",
+		"WasteCollectorId": null,
+		"IsActive": true,
+		"Co2Emission": -90.0
+	},
+	{
+		"Id": 9,
+		"WasteType": "Paper",
+		"WasteProcessingFacility": "Incineration",
+		"WasteAmount": 60.0,
+		"WasteDate": "2024-10-23T11:11:30.789654+02:00",
+		"WasteCollectorId": null,
+		"IsActive": true,
+		"Co2Emission": -20.0
+	},
+	{
+		"Id": 10,
+		"WasteType": "Organic",
+		"WasteProcessingFacility": "Composting",
+		"WasteAmount": 300.0,
+		"WasteDate": "2024-10-27T15:03:50.987654+02:00",
+		"WasteCollectorId": null,
+		"IsActive": true,
+		"Co2Emission": -50.0
+	},
+	{
+		"Id": 11,
+		"WasteType": "Metal",
+		"WasteProcessingFacility": "Recycling",
+		"WasteAmount": 220.0,
+		"WasteDate": "2024-10-29T17:45:25.543210+02:00",
+		"WasteCollectorId": null,
+		"IsActive": true,
+		"Co2Emission": 340.0
+	},
+	{
+		"Id": 12,
+		"WasteType": "Plastic",
+		"WasteProcessingFacility": "Recycling",
+		"WasteAmount": 180.0,
+		"WasteDate": "2024-10-30T13:18:05.432109+02:00",
+		"WasteCollectorId": null,
+		"IsActive": true,
+		"Co2Emission": 150.0
+	},
+	{
+		"Id": 13,
+		"WasteType": "Electronic",
+		"WasteProcessingFacility": "Landfill",
+		"WasteAmount": 90.0,
+		"WasteDate": "2024-10-28T19:05:45.876543+02:00",
+		"WasteCollectorId": null,
+		"IsActive": true,
+		"Co2Emission": 200.0
+	},
+	{
+		"Id": 14,
+		"WasteType": "Glass",
+		"WasteProcessingFacility": "Recycling",
+		"WasteAmount": 75.0,
+		"WasteDate": "2024-10-26T10:35:18.109876+02:00",
+		"WasteCollectorId": null,
+		"IsActive": true,
+		"Co2Emission": -45.0
+	}
 ]

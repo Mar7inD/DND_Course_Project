@@ -1,0 +1,40 @@
+@code {
+    [Parameter] public WasteReport? SelectedReport { get; set; } // Accept the selected report as a parameter
+    [Parameter] public EventCallback OnDeleteConfirmed { get; set; } // Event for confirming deletion
+    private Modal deleteModal = default!; // Reference to the modal
+
+    public async Task ShowAsync()
+    {
+        await deleteModal.ShowAsync();
+    }
+
+    public async Task HideAsync()
+    {
+        await deleteModal.HideAsync();
+    }
+
+    private async Task OnConfirmDelete()
+    {
+        await OnDeleteConfirmed.InvokeAsync(); // Trigger the delete event
+        await deleteModal.HideAsync();
+    }
+}
+
+<Modal @ref="deleteModal" title="Delete Waste Report" IsVerticallyCentered="true" UseStaticBackdrop="true" CloseOnEscape="false">
+    <BodyTemplate>
+        @if (SelectedReport != null)
+        {
+            <p><b>You are about to delete the following report:</b></p>
+            <p><b>Type:</b> @SelectedReport.WasteType</p>
+            <p><b>Facility:</b> @SelectedReport.WasteProcessingFacility</p>
+            <p><b>Amount (kg):</b> @SelectedReport.WasteAmount</p>
+            <p><b>Date:</b> @SelectedReport.WasteDate.ToString("dd-MM-yyyy HH:mm:ss")</p>
+            <p><b>CO2 Emission (kg):</b> @(SelectedReport.Co2Emission ?? 0)</p>
+            <p><b>Are you sure you want to delete this report?</b></p>
+        }
+    </BodyTemplate>
+    <FooterTemplate>
+        <Button Color="ButtonColor.Secondary" @onclick="HideAsync">Cancel</Button>
+        <Button Color="ButtonColor.Danger" @onclick="OnConfirmDelete">Delete</Button>
+    </FooterTemplate>
+</Modal>
