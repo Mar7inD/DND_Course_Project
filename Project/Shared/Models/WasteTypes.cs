@@ -30,7 +30,7 @@ public class WasteTypes {
     // Compare and return CO2 emission index
     public async Task<double> GetWasteTypesByFacilityIndex(string candidateWasteType, string wasteProcessingFacility) 
     {
-        string jsonFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Storage", "WasteProcessing.json");
+        string jsonFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "WasteProcessing.json");
         string jsonData = await File.ReadAllTextAsync(jsonFilePath);
         var wasteProcessingFacilities = JArray.Parse(jsonData);
 

@@ -72,6 +72,11 @@ namespace Backend.Services
                 throw new KeyNotFoundException("Waste report not found");
             }
 
+            // Check if waste type is valid and return CO2 emissions if valid
+            double co2Emissions = await _wasteTypes.isValidWasteReturnCo2Emissions(
+                wasteReport.WasteType, wasteReport.WasteProcessingFacility, wasteReport.WasteAmount
+            );
+
             // Update the waste report properties, including the new CO2 emission value
             existingReport["WasteType"] = wasteReport.WasteType;
             existingReport["WasteProcessingFacility"] = wasteReport.WasteProcessingFacility;
@@ -79,7 +84,7 @@ namespace Backend.Services
             existingReport["WasteDate"] = wasteReport.WasteDate;
             existingReport["WasteCollectorId"] = wasteReport.WasteCollectorId;
             existingReport["IsActive"] = wasteReport.IsActive;
-            existingReport["Co2Emission"] = wasteReport.Co2Emission; // CO2 updated here
+            existingReport["Co2Emission"] = co2Emissions; // CO2 updated here
 
             await _databaseService.WriteDBAsync(wasteReports);
         }

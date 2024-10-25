@@ -86,9 +86,6 @@ public class WasteReportsController : ControllerBase
             if (id != wasteReport.Id)
                 return BadRequest("Waste report ID mismatch.");
 
-            // Calculate new CO2 Emission based on the updated waste report data
-            wasteReport.Co2Emission = await _co2CalculatorService.GetCo2EmissionForReportAsync(id);
-
             // Update the waste report with the new CO2 value
             await _wasteReportService.PutWasteReport(id, wasteReport);
 

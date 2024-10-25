@@ -17,7 +17,7 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <div>
                             <input type="checkbox" @onchange="() => ToggleCompleted(goal)" checked="@goal.Completed" />
-                            <span class="@goal.Completed ? "completed-task" : "">@goal.GoalName - Target: @goal.TargetPercentage% by @goal.Deadline.ToString("yyyy-MM-dd")</span>
+                            <span class="@(goal.Completed ? "completed-task" : "")">@goal.GoalName - Target: @goal.TargetPercentage% by @goal.Deadline.ToString("yyyy-MM-dd")</span>
                         </div>
                         <button @onclick="() => RemoveGoal(goal)" class="btn btn-danger">Remove</button>
                     </li>

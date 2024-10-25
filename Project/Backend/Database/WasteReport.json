@@ -8,5 +8,35 @@
     "WasteCollectorId": null,
     "IsActive": true,
     "Co2Emission": -58.5
+  },
+  {
+    "Id": 3,
+    "WasteType": "Organic",
+    "WasteProcessingFacility": "Incineration",
+    "WasteAmount": 200.0,
+    "WasteDate": "2024-10-25T10:03:31.3920378+02:00",
+    "WasteCollectorId": null,
+    "IsActive": true,
+    "Co2Emission": -140.0
+  },
+  {
+    "Id": 4,
+    "WasteType": "Organic",
+    "WasteProcessingFacility": "Composting",
+    "WasteAmount": 100.0,
+    "WasteDate": "2024-10-25T10:12:55.7359718+02:00",
+    "WasteCollectorId": null,
+    "IsActive": true,
+    "Co2Emission": -10.0
+  },
+  {
+    "Id": 5,
+    "WasteType": "Metal",
+    "WasteProcessingFacility": "Recycling",
+    "WasteAmount": 200.0,
+    "WasteDate": "2024-10-31T10:13:59.2017672",
+    "WasteCollectorId": null,
+    "IsActive": true,
+    "Co2Emission": 350.0
   }
 ]

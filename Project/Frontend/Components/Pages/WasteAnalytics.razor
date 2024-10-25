@@ -90,7 +90,7 @@ else
 }
 
 @code {
-    private List<Shared.Models.WasteReport> wasteReports = new List<Shared.Models.WasteReport>();
+    private List<WasteReport> wasteReports = new List<WasteReport>();
     private bool isInitialized = false;
     private bool isInitializedOnce = false;
     private string? errorMessage;
@@ -109,7 +109,7 @@ else
         try
         {
             var client = ClientFactory.CreateClient("BackendAPI");
-            var reportResponse = await client.GetFromJsonAsync<List<Shared.Models.WasteReport>>("api/WasteReports/");
+            var reportResponse = await client.GetFromJsonAsync<List<WasteReport>>("api/WasteReports/");
             
             if (reportResponse != null)
             {
