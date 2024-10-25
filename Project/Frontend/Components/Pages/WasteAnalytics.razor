@@ -212,11 +212,19 @@ else
     }
 
     // Confirm deletion and delete the report
+    // Confirm deletion and refresh the page after deletion
     private async Task ConfirmDeleteReport()
     {
         if (selectedReport != null)
         {
             await DeleteReport(selectedReport.Id); // Delete the selected report
+            RefreshPage(); // Refresh page after deletion
         }
+    }
+
+    private void RefreshPage()
+    {
+        var currentPath = NavigationManager.Uri;
+        NavigationManager.NavigateTo(currentPath, forceLoad: true);
     }
 }

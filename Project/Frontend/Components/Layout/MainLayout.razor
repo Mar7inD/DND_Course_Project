@@ -1,4 +1,5 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
 
 <div class="page">
     <div class="sidebar">
@@ -10,13 +11,13 @@
             <!-- Notification Button with Dropdown, toggled via a checkbox -->
             <div class="header-sign d-flex align-items-center gap-3">
 
-                <NavLink class="add-new d-flex align-items-center" href="/new-waste-report" Match="NavLinkMatch.All">
+                <button class="btn btn-link add-new d-flex align-items-center" @onclick="ShowNewWasteReportModal">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
                     </svg>
                     New Waste Report
-                </NavLink>
+                </button>
 
                 <input type="checkbox" id="dropdownCheckbox" class="navbar-toggler" />
 
@@ -67,7 +68,13 @@
     <a class="dismiss">🗙</a>
 </div>
 
+<!-- New Waste Report Modal -->
+<NewWasteReportModal @ref="newWasteReportModal" OnSubmitSuccess="NavigateToCurrentPath" />
+
 @code {
+
+    private NewWasteReportModal newWasteReportModal = default!;
+
     // List of notifications
     private List<string> notifications = new List<string> {
         "New waste report generated.",
@@ -79,5 +86,15 @@
     private void ClearAllNotifications()
     {
         notifications.Clear();
+    }
+    private async Task NavigateToCurrentPath()
+    {
+        var currentPath = NavigationManager.Uri;
+        NavigationManager.NavigateTo(currentPath, forceLoad: true); // forceLoad reloads the page
+    }
+
+    private async Task ShowNewWasteReportModal()
+    {
+        await newWasteReportModal.ShowModal();
     }
 }
