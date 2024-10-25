@@ -6,6 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+    
+builder.Services.AddBlazorBootstrap();
 
 // Make HTTP requests to the backend
 builder.Services.AddHttpClient("BackendAPI", client => 

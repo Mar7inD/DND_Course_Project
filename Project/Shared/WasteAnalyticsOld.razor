@@ -1,14 +1,17 @@
 @page "/waste-report"
 @inject IHttpClientFactory ClientFactory
-@using ChartJs.Blazor.ChartJS.LineChart
+@using ScottPlot
+@using ScottPlot.Plottable
+@using ScottPlot.Drawing
+@using Shared.Models
 @inject NavigationManager NavigationManager
 
 <h3>Waste Management Report - CO2 Emissions Over Time</h3>
 
 @if (isInitialized && wasteReports.Count > 0)
 {
-    <div class="container-fluid overflow-x-auto">
-        <LineChart @ref="lineChart" Width="800" />
+    <div>
+        <img src="data:image/png;base64,@PlotBase64" alt="Waste CO2 Emissions Chart" />
     </div>
 
     <h4>Waste Report Details</h4>
@@ -30,7 +33,7 @@
                     <td>@report.WasteType</td>
                     <td>@report.WasteProcessingFacility</td>
                     <td>@report.WasteAmount</td>
-                    <td>@report.WasteDate.ToString("dd-MM-yyyy HH:mm:ss")</td> <!-- 24-hour format for the table -->
+                    <td>@report.WasteDate.ToString("dd-MM-yyyy hh:mm:ss")</td>
                     <td>@(report.Co2Emission ?? 0)</td>
                     <td>
                         <!-- Three Dot Menu without the arrow -->
@@ -91,9 +94,8 @@ else
     private bool isInitialized = false;
     private bool isInitializedOnce = false;
     private string? errorMessage;
-    private LineChart lineChart = default!;
-    private LineChartOptions lineChartOptions = default!;
-    private ChartData chartData = default!;
+
+    public string? PlotBase64 { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -113,7 +115,7 @@ else
             {
                 wasteReports = reportResponse.OrderBy(report => report.WasteDate).ToList();
                 isInitialized = true;  // Mark that data is loaded
-                GenerateLineChart();  // Generate the chart data
+                GeneratePlot();  // Generate the plot with ScottPlot
             }
             else
             {
@@ -128,45 +130,32 @@ else
         }
     }
 
-    private void GenerateLineChart()
+    private void GeneratePlot()
     {
-        var colors = ColorUtility.CategoricalTwelveColors;
-        var labels = wasteReports.Select(r => r.WasteDate.ToString("dd-MM-yyyy | HH:mm")).ToList(); // Including hours in the x-axis label
-        var datasets = new List<IChartDataset>();
+        var plt = new ScottPlot.Plot(600, 400);
+        
+        var groupedReports = wasteReports
+        .GroupBy(r => r.WasteDate.Date)
+        .Select(g => new 
+            {
+                WasteDate = g.Key,
+                TotalCo2Emission = g.Sum(r => r.Co2Emission ?? 0)
+            })
+        .OrderBy(g => g.WasteDate)
+        .ToList();
 
-        var dataset = new LineChartDataset
-        {
-            Label = "CO2 Emissions",
-            Data = wasteReports.Select(r => r.Co2Emission.HasValue ? (double?)r.Co2Emission.Value : (double?)0).ToList(),
-            BackgroundColor = colors[0],
-            BorderColor = colors[0],
-            BorderWidth = 2,
-            HoverBorderWidth = 4,
-        };
+        double[] xs = groupedReports.Select(r => r.WasteDate.ToOADate()).ToArray(); // Convert DateTime to OADate for plotting
+        double[] ys = groupedReports.Select(r => r.TotalCo2Emission).ToArray();
+        
+        plt.AddScatter(xs, ys);
+        plt.XAxis.DateTimeFormat(true);
+        plt.Title("CO2 Emissions Over Time");
+        plt.XLabel("Date");
+        plt.YLabel("CO2 Emission (kg)");
 
-        datasets.Add(dataset);
-
-        chartData = new ChartData { Labels = labels, Datasets = datasets };
-
-        lineChartOptions = new();
-        lineChartOptions.Locale = "en-US";
-        lineChartOptions.Responsive = true;
-        lineChartOptions.Interaction = new Interaction { Mode = InteractionMode.Index };
-
-        lineChartOptions.Scales.X!.Title = new ChartAxesTitle { Text = "Date and Time", Display = true };
-        lineChartOptions.Scales.Y!.Title = new ChartAxesTitle { Text = "CO2 Emissions (kg)", Display = true };
-
-        lineChartOptions.Plugins.Title!.Text = "CO2 Emissions Over Time";
-        lineChartOptions.Plugins.Title.Display = true;
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await lineChart.InitializeAsync(chartData, lineChartOptions);
-        }
-        await base.OnAfterRenderAsync(firstRender);
+        // Convert the plot to a base64 string to display in an <img> tag
+        byte[] imageBytes = plt.GetImageBytes();
+        PlotBase64 = Convert.ToBase64String(imageBytes);
     }
 
     private void EditReport(int id)

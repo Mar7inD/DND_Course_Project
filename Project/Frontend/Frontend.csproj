@@ -5,7 +5,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Blazor.Bootstrap" Version="3.0.0" />
+    <PackageReference Include="Blazor.Bootstrap" Version="3.1.0" />
     <PackageReference Include="Blazorise" Version="1.6.2" />
     <PackageReference Include="Blazorise.Charts" Version="1.6.2" />
     <PackageReference Include="ChartJs.Blazor" Version="1.1.0" />
