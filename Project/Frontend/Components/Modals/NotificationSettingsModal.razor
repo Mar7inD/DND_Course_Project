@@ -1,0 +1,45 @@
+<Modal @ref="notificationSettingsModal" title="Notification Settings" IsVerticallyCentered="true" UseStaticBackdrop="true" CloseOnEscape="false">
+    <BodyTemplate>
+        <div class="mb-3">
+            <label for="co2Threshold" class="form-label">CO2 Emission Threshold</label>
+            <InputNumber id="co2Threshold" class="form-control" @bind-Value="co2Threshold" />
+            <small class="form-text text-muted">Set the threshold above which you will receive notifications for CO2 emissions.</small>
+        </div>
+        
+        <div class="mb-3 form-check">
+            <InputCheckbox id="notifyWasteReports" class="form-check-input" @bind-Value="notifyWasteReports" />
+            <label for="notifyWasteReports" class="form-check-label">Receive notifications for new waste reports</label>
+        </div>
+
+        <div class="mb-3 form-check">
+            <InputCheckbox id="notifySustainability" class="form-check-input" @bind-Value="notifySustainability" />
+            <label for="notifySustainability" class="form-check-label">Receive notifications for sustainability goals</label>
+        </div>
+
+        <button class="btn btn-primary w-100" @onclick="SaveSettings">Save Settings</button>
+    </BodyTemplate>
+</Modal>
+
+@code {
+    private Modal notificationSettingsModal = default!;
+    private int co2Threshold;
+    private bool notifyWasteReports = true;
+    private bool notifySustainability = true;
+
+    public async Task ShowModal()
+    {
+        await InvokeAsync(StateHasChanged);
+        await notificationSettingsModal.ShowAsync();
+    }
+
+    public async Task HideModal()
+    {
+        await notificationSettingsModal.HideAsync();
+    }
+
+    private async Task SaveSettings()
+    {
+        // Logic to save settings can be added here
+        await notificationSettingsModal.HideAsync();
+    }
+}

@@ -1,6 +1,6 @@
 @inject IHttpClientFactory ClientFactory
 
-<Modal @ref="editWasteReportModal" title="Edit Waste Report" IsVerticallyCentered="true" UseStaticBackdrop="true">
+<Modal @ref="editWasteReportModal" title="Edit Waste Report" IsVerticallyCentered="true" UseStaticBackdrop="true" CloseOnEscape="false" >
     <BodyTemplate>
         @if (editWasteReport != null)
         {

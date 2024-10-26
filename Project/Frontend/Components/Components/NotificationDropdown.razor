@@ -1,0 +1,63 @@
+@code {
+    [Parameter] public EventCallback ShowSettingsModal { get; set; }
+    [Parameter] public List<string> Notifications { get; set; } = new List<string>();
+
+    private async Task OnSettingsClick()
+    {
+        if (ShowSettingsModal.HasDelegate)
+        {
+            await ShowSettingsModal.InvokeAsync();
+        }
+    }
+
+    private void ClearAllNotifications()
+    {
+        Notifications.Clear();
+    }
+}
+
+<div class="dropdown">
+    <button class="notification-btn btn btn-link position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="margin: 0;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="23" fill="currentColor" class="bi bi-bell-fill" viewBox="0 0 16 16">
+        <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901"/>
+        </svg>
+        @if (Notifications.Count > 0)
+        {
+            <!-- Notification Count Badge -->
+            <span class="position-absolute bottom-0 end-0 rounded-pill bg-danger" style="width: 1rem; height: 1rem; font-size: 0.8rem; padding: 4px; color: white; display: flex; align-items: center; justify-content: center;">
+                @Notifications.Count
+                <span class="visually-hidden">unread messages</span>
+            </span>
+        }
+    </button>
+
+    <!-- Notification List -->
+    <ul class="notification-menu dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
+        @if (Notifications.Count > 0)
+        {
+            @foreach (var notification in Notifications)
+            {
+                <li class="notification dropdown-item">@notification</li>
+            }
+            <hr class="mx-3">
+            <div class="d-flex justify-content-between mt-2 px-3 pb-2">
+                <button class="clear-notifications-btn btn btn-sm" @onclick="ClearAllNotifications">Clear All</button>
+                <button class="notification-settings-btn btn btn-sm" @onclick="OnSettingsClick">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
+                        <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492M5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0"/>
+                        <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115z"/>
+                    </svg>
+                </button>
+            </div>
+        }
+        else
+        {
+            <li class="no-notification dropdown-item text-muted d-flex flex-column justify-content-center align-items-center p-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell-slash" viewBox="0 0 16 16">
+                <path d="M5.164 14H15c-.299-.199-.557-.553-.78-1-.9-1.8-1.22-5.12-1.22-6q0-.396-.06-.776l-.938.938c.02.708.157 2.154.457 3.58.161.767.377 1.566.663 2.258H6.164zm5.581-9.91a4 4 0 0 0-1.948-1.01L8 2.917l-.797.161A4 4 0 0 0 4 7c0 .628-.134 2.197-.459 3.742q-.075.358-.166.718l-1.653 1.653q.03-.055.059-.113C2.679 11.2 3 7.88 3 7c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0c.942.19 1.788.645 2.457 1.284zM10 15a2 2 0 1 1-4 0zm-9.375.625a.53.53 0 0 0 .75.75l14.75-14.75a.53.53 0 0 0-.75-.75z"/>
+                </svg>
+                No notifications
+            </li>
+        }
+    </ul>
+</div>

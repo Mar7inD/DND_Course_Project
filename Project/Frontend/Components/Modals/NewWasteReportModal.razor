@@ -1,7 +1,7 @@
 @inherits LayoutComponentBase
 @inject IHttpClientFactory ClientFactory
 
-<Modal @ref="newWasteReportModal" title="Add New Waste Report" IsVerticallyCentered="true" UseStaticBackdrop="true">
+<Modal @ref="newWasteReportModal" title="Add New Waste Report" IsVerticallyCentered="true" UseStaticBackdrop="true" CloseOnEscape="false">
     <BodyTemplate>
         <EditForm Model="@newWasteReport" OnValidSubmit="@HandleSubmit">
             <DataAnnotationsValidator />
