@@ -1,25 +1,3 @@
-@code {
-    [Parameter] public WasteReport? SelectedReport { get; set; } // Accept the selected report as a parameter
-    [Parameter] public EventCallback OnDeleteConfirmed { get; set; } // Event for confirming deletion
-    private Modal deleteModal = default!; // Reference to the modal
-
-    public async Task ShowAsync()
-    {
-        await deleteModal.ShowAsync();
-    }
-
-    public async Task HideAsync()
-    {
-        await deleteModal.HideAsync();
-    }
-
-    private async Task OnConfirmDelete()
-    {
-        await OnDeleteConfirmed.InvokeAsync(); // Trigger the delete event
-        await deleteModal.HideAsync();
-    }
-}
-
 <Modal @ref="deleteModal" title="Delete Waste Report" IsVerticallyCentered="true" UseStaticBackdrop="true" CloseOnEscape="false">
     <BodyTemplate>
         @if (SelectedReport != null)
@@ -32,9 +10,58 @@
             <p><b>CO2 Emission (kg):</b> @(SelectedReport.Co2Emission ?? 0)</p>
             <p><b>Are you sure you want to delete this report?</b></p>
         }
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-danger mt-3">@errorMessage</div>
+        }
     </BodyTemplate>
     <FooterTemplate>
         <Button Color="ButtonColor.Secondary" @onclick="HideAsync">Cancel</Button>
-        <Button Color="ButtonColor.Danger" @onclick="OnConfirmDelete">Delete</Button>
+        <Button Color="ButtonColor.Danger" @onclick="ConfirmDelete">Delete</Button>
     </FooterTemplate>
 </Modal>
+
+@code {
+    [Parameter] public WasteReport? SelectedReport { get; set; } // The selected report to delete
+    [Parameter] public EventCallback OnDeleteSuccess { get; set; } // Event to notify successful deletion
+    [Inject] private IHttpClientFactory ClientFactory { get; set; } = default!; // Injected HTTP Client Factory
+
+    private Modal deleteModal = default!;
+    private string? errorMessage;
+
+    public async Task ShowAsync()
+    {
+        await deleteModal.ShowAsync();
+    }
+
+    public async Task HideAsync()
+    {
+        await deleteModal.HideAsync();
+    }
+
+    private async Task ConfirmDelete()
+    {
+        if (SelectedReport != null)
+        {
+            try
+            {
+                var client = ClientFactory.CreateClient("BackendAPI");
+                var response = await client.DeleteAsync($"api/WasteReports/{SelectedReport.Id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    await OnDeleteSuccess.InvokeAsync(); // Notify parent component
+                    await HideAsync(); // Hide the modal
+                }
+                else
+                {
+                    errorMessage = "Failed to delete the report. Please try again.";
+                }
+            }
+            catch (Exception ex)
+            {
+                errorMessage = $"An error occurred: {ex.Message}";
+            }
+        }
+    }
+}

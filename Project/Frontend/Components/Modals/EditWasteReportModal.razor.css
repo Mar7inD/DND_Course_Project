@@ -1,0 +1,13 @@
+.submit-btn {
+    background-color: #014a63; /* Custom background color */
+    color: white; /* White text */
+    border: none; /* Remove borders */
+    border-radius: 4px; /* Rounded corners */
+    padding: 10px 15px; /* Padding for better spacing */
+    transition: background-color 0.3s ease; /* Smooth transition on hover */
+}
+
+.submit-btn:hover {
+    background-color: #4c7c8f; /* Custom hover background color */
+    color: white; /* Ensure text stays white on hover */
+}

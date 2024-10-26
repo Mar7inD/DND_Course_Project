@@ -1,0 +1,121 @@
+@inject IHttpClientFactory ClientFactory
+
+<Modal @ref="editWasteReportModal" title="Edit Waste Report" IsVerticallyCentered="true" UseStaticBackdrop="true">
+    <BodyTemplate>
+        @if (editWasteReport != null)
+        {
+            <EditForm Model="@editWasteReport" OnValidSubmit="@HandleSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="mb-3">
+                    <label for="wasteType" class="form-label">Waste Type</label>
+                    <InputSelect id="wasteType" class="form-select" @bind-Value="@editWasteReport.WasteType">
+                        @foreach (var wasteType in wasteTypes)
+                        {
+                            <option value="@wasteType">@wasteType</option>
+                        }
+                    </InputSelect>
+                </div>
+
+                <div class="mb-3">
+                    <label for="wasteFacility" class="form-label">Processing Facility</label>
+                    <InputSelect id="wasteFacility" class="form-select" @bind-Value="@editWasteReport.WasteProcessingFacility">
+                        @foreach (var facility in wasteFacilities)
+                        {
+                            <option value="@facility">@facility</option>
+                        }
+                    </InputSelect>
+                </div>
+
+                <div class="mb-3">
+                    <label for="wasteAmount" class="form-label">Waste Amount (kg)</label>
+                    <InputNumber id="wasteAmount" class="form-control" @bind-Value="@editWasteReport.WasteAmount" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="wasteDate" class="form-label">Date</label>
+                    <InputDate id="wasteDate" class="form-control" @bind-Value="@editWasteReport.WasteDate" />
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 submit-btn">Save Changes</button>
+            </EditForm>
+        }
+        else
+        {
+            <p>Loading waste report data...</p>
+        }
+    </BodyTemplate>
+</Modal>
+
+@if (errorMessage != null)
+{
+    <div class="alert alert-danger mt-3">
+        @errorMessage
+    </div>
+}
+
+@code {
+    [Parameter] public int Id { get; set; } // ID to load the report
+    [Parameter] public EventCallback OnSubmitSuccess { get; set; }
+
+    private WasteReport? editWasteReport;
+    private string? errorMessage;
+    private Modal editWasteReportModal = default!;
+
+    private List<string> wasteTypes = new List<string> { "Organic", "Plastic", "Metal", "Wood", "Paper", "Electronic", "Incineration" };
+    private List<string> wasteFacilities = new List<string> { "Recycling", "Incineration", "Landfill", "Composting" };
+
+    public async Task ShowModal(int id)
+    {
+        Id = id;  // Set the ID for the waste report to load
+        await LoadWasteReportAsync();
+        await editWasteReportModal.ShowAsync();
+    }
+
+    public async Task HideModal()
+    {
+        await editWasteReportModal.HideAsync();
+    }
+
+    private async Task LoadWasteReportAsync()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("BackendAPI");
+            editWasteReport = await client.GetFromJsonAsync<WasteReport>($"api/WasteReports/{Id}");
+
+            if (editWasteReport == null)
+            {
+                errorMessage = "Failed to load waste report.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error loading waste report: {ex.Message}";
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("BackendAPI");
+            var response = await client.PutAsJsonAsync($"api/WasteReports/{editWasteReport!.Id}", editWasteReport);
+
+            if (response.IsSuccessStatusCode)
+            {
+                await HideModal(); // Hide modal on success
+                await OnSubmitSuccess.InvokeAsync(); // Notify parent component of success
+            }
+            else
+            {
+                errorMessage = $"Failed to save changes: {await response.Content.ReadAsStringAsync()}";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred: {ex.Message}";
+        }
+    }
+}

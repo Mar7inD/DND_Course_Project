@@ -40,7 +40,7 @@
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="padding: 0;">
                                 <li>
-                                    <button class="dropdown-item d-flex align-items-center rounded-top action-button" @onclick="() => EditReport(report.Id)" style="padding: 8px 12px; cursor: pointer;">
+                                    <button class="dropdown-item d-flex align-items-center rounded-top action-button" @onclick="() => ShowEditModal(report.Id)" style="padding: 8px 12px; cursor: pointer;">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square me-2" viewBox="0 0 16 16">
                                             <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                                             <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
@@ -49,7 +49,7 @@
                                     </button>
                                 </li>
                                 <li>
-                                    <button class="dropdown-item text-danger d-flex align-items-center rounded-bottom action-button" @onclick="() => OnShowDeleteModal(report)" style="padding: 8px 12px; cursor: pointer;">
+                                    <button class="dropdown-item text-danger d-flex align-items-center rounded-bottom action-button" @onclick="() => ShowDeleteModal(report)" style="padding: 8px 12px; cursor: pointer;">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash me-2" viewBox="0 0 16 16">
                                             <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
                                             <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
@@ -67,7 +67,10 @@
 }
 else if (!isInitialized)
 {
-    <p>Loading data...</p>
+    <div class="d-flex flex-column justify-content-center align-items-center vh-75">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.6rem" height="1.6rem" viewBox="0 0 24 24"><circle cx="12" cy="2" r="0" fill="black"><animate attributeName="r" begin="0" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="12" cy="2" r="0" fill="black" transform="rotate(45 12 12)"><animate attributeName="r" begin="0.125s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="12" cy="2" r="0" fill="black" transform="rotate(90 12 12)"><animate attributeName="r" begin="0.25s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="12" cy="2" r="0" fill="black" transform="rotate(135 12 12)"><animate attributeName="r" begin="0.375s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="12" cy="2" r="0" fill="black" transform="rotate(180 12 12)"><animate attributeName="r" begin="0.5s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="12" cy="2" r="0" fill="black" transform="rotate(225 12 12)"><animate attributeName="r" begin="0.625s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="12" cy="2" r="0" fill="black" transform="rotate(270 12 12)"><animate attributeName="r" begin="0.75s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="12" cy="2" r="0" fill="black" transform="rotate(315 12 12)"><animate attributeName="r" begin="0.875s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle></svg>
+        <p>Loading data...</p>
+    </div>
 }
 else
 {
@@ -77,22 +80,18 @@ else
     </div>
 }
 
-<DeleteReportModal @ref="deleteModal" SelectedReport="selectedReport" OnDeleteConfirmed="ConfirmDeleteReport" />
-
-@if (errorMessage != null)
-{
-    <div class="alert alert-danger mt-3">
-        @errorMessage
-    </div>
-}
+@* Modals for Edit and Delete *@
+<DeleteReportModal @ref="deleteModal" SelectedReport="selectedReport" OnDeleteSuccess="RefreshPage" />
+<EditWasteReportModal @ref="editWasteReportModal" OnSubmitSuccess="RefreshPage" />
 
 @code {
-    private List<Shared.Models.WasteReport> wasteReports = new List<Shared.Models.WasteReport>();
-    private WasteReport? selectedReport; // To store the selected report
+    private List<WasteReport> wasteReports = new();
+    private WasteReport? selectedReport;
     private bool isInitialized = false;
     private bool isInitializedOnce = false;
     private string? errorMessage;
-    private DeleteReportModal deleteModal = default!; // Reference to the modal
+    private DeleteReportModal deleteModal = default!;
+    private EditWasteReportModal editWasteReportModal = default!;
     private LineChart lineChart = default!;
     private LineChartOptions lineChartOptions = default!;
     private ChartData chartData = default!;
@@ -171,60 +170,19 @@ else
         await base.OnAfterRenderAsync(firstRender);
     }
 
-    private void EditReport(int id)
+    private async Task ShowEditModal(int reportId)
     {
-        Console.WriteLine($"Edit report with ID: {id}");
-        // Redirect to the Edit page for the selected report
-        NavigationManager.NavigateTo($"/edit-waste-report/{id}");
+        await editWasteReportModal.ShowModal(reportId);
     }
 
-    private async Task DeleteReport(int id)
-    {
-        try
-        {
-            var client = ClientFactory.CreateClient("BackendAPI");
-            var response = await client.DeleteAsync($"api/WasteReports/{id}");
-
-            if (response.IsSuccessStatusCode)
-            {
-                Console.WriteLine($"Successfully deleted waste report with ID: {id}");
-                wasteReports = wasteReports.Where(r => r.Id != id).ToList(); // Remove the deleted report from the list
-                StateHasChanged(); // Force the UI to refresh
-            }
-            else
-            {
-                errorMessage = $"Failed to delete the waste report. Status code: {response.StatusCode}. Response content: {await response.Content.ReadAsStringAsync()}";
-                Console.WriteLine(errorMessage);
-            }
-        }
-        catch (Exception ex)
-        {
-            errorMessage = $"An error occurred while deleting the report: {ex.Message}";
-            Console.WriteLine(errorMessage);
-        }
-    }
-
-    // Show delete modal and pass selected report
-    private async Task OnShowDeleteModal(WasteReport report)
+    private async Task ShowDeleteModal(WasteReport report)
     {
         selectedReport = report;
         await deleteModal.ShowAsync();
     }
 
-    // Confirm deletion and delete the report
-    // Confirm deletion and refresh the page after deletion
-    private async Task ConfirmDeleteReport()
-    {
-        if (selectedReport != null)
-        {
-            await DeleteReport(selectedReport.Id); // Delete the selected report
-            RefreshPage(); // Refresh page after deletion
-        }
-    }
-
     private void RefreshPage()
     {
-        var currentPath = NavigationManager.Uri;
-        NavigationManager.NavigateTo(currentPath, forceLoad: true);
+        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
     }
 }
