@@ -17,15 +17,18 @@ namespace Backend.Services;
             settings.Converters.Add(new PersonConverter());
         }
 
-        public async Task<List<PersonBase>> GetPeople(string? role, string? active)
+        public async Task<List<PersonBase>> GetPeople(string? role = null, string? active = null, string? employeeId = null)
         {
             try
             {
                 var peopleArray = await _databaseService.ReadDBAsync();
-                peopleArray = new JArray(peopleArray
-                                            .Where(p => (role == null || p["Role"]?.Value<string>() == role) && 
-                                                        (active == null || p["IsActive"]!.Value<bool>() == bool.Parse(active))));
                 
+                // Apply all filters
+                peopleArray = new JArray(peopleArray
+                                            .Where(p => (role == null || p["Role"]?.Value<string>() == role) &&
+                                                        (active == null || p["IsActive"]?.Value<bool>() == bool.Parse(active)) &&
+                                                        (employeeId == null || p["EmployeeId"]?.Value<string>() == employeeId)));
+
                 var peopleList = JsonConvert.DeserializeObject<List<PersonBase>>(peopleArray.ToString(), settings);
                 return peopleList!;
             }

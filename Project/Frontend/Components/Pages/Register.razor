@@ -2,6 +2,7 @@
 @layout EmptyLayout
 
 @inject IHttpClientFactory ClientFactory
+@inject ILocalStorageService LocalStorage
 
 <h2>Register</h2>
 
@@ -10,7 +11,7 @@
     <ValidationSummary />
 
     <div class="form-group">
-        <label for="employeeId">Id</label>
+        <label for="employeeId">Employee Id</label>
         <InputText id="employeeId" class="form-control" @bind-Value="@registerModel.EmployeeId" />
     </div>
 
@@ -52,35 +53,43 @@
     [SupplyParameterFromForm]
     private PersonBase registerModel { get; set; } = new PersonBase();
 
-    //protected override void OnInitialized() => registerModel = new();
     private string? message;
     private string messageClass = string.Empty;
 
     private async Task HandleRegister()
     {
-        // Log the initial state of registerModel
-        Console.WriteLine($"Initial registerModel: Id={registerModel.EmployeeId}, Name={registerModel.Name}, Email={registerModel.Email}, Password={registerModel.Password}, Role={registerModel.Role}");
-
         try
         {
-            // Log each field value just before sending the request
-            Console.WriteLine($"Sending request with: Id={registerModel.EmployeeId}, Name={registerModel.Name}, Email={registerModel.Email}, Password={registerModel.Password}, Role={registerModel.Role}");
-
             var client = ClientFactory.CreateClient("BackendAPI");
 
-            var response = await client.PostAsJsonAsync("api/People", registerModel);
+            // Update endpoint if necessary
+            var response = await client.PostAsJsonAsync("api/People/register", registerModel);
 
             if (response.IsSuccessStatusCode)
             {
-                message = "Registration successful!";
-                messageClass = "alert-success";
+                var responseData = await response.Content.ReadFromJsonAsync<Dictionary<string, string>>();
+                foreach (var kvp in responseData)
+                {
+                    Console.WriteLine($"Key: {kvp.Key}, Value: {kvp.Value}");
+                }
+                
+                if (responseData != null && responseData.TryGetValue("token", out var token)) // Ensure key matches API response
+                {
+                    await LocalStorage.SetItemAsync("authToken", token); // Store the token in local storage
+                    Console.WriteLine("Registration successful! Token stored.");
+                    message = "Registration successful! Token stored.";
+                    messageClass = "alert-success";
+                }
+                else
+                {
+                    message = "Registration succeeded but token was not generated.";
+                    messageClass = "alert-warning";
+                }
             }
             else
             {
                 message = "Registration failed!";
                 messageClass = "alert-danger";
-
-                // Log the response status code and content
                 Console.WriteLine($"Failed registration. Status Code: {response.StatusCode}, Content: {await response.Content.ReadAsStringAsync()}");
             }
         }
@@ -88,13 +97,7 @@
         {
             message = $"Error: {ex.Message}";
             messageClass = "alert-danger";
-
-            // Log the exception details
             Console.WriteLine($"Exception occurred: {ex.Message} | StackTrace: {ex.StackTrace}");
         }
-
-        // Log the final state of registerModel
-        Console.WriteLine($"Final registerModel: Id={registerModel.EmployeeId}, Name={registerModel.Name}, Email={registerModel.Email}, Password={registerModel.Password}, Role={registerModel.Role}");
     }
 }
-

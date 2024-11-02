@@ -1,6 +1,8 @@
 @page "/login"
 @layout Layout.EmptyLayout
-@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject ILocalStorageService LocalStorage
+@inject NavigationManager NavigationManager
 
 <h2>Login</h2>
 
@@ -9,8 +11,8 @@
     <ValidationSummary />
 
     <div class="form-group">
-        <label for="email">Email</label>
-        <InputText id="email" class="form-control" @bind-Value="loginModel.Email" />
+        <label for="employeeId">Employee ID</label>
+        <InputText id="employeeId" class="form-control" @bind-Value="loginModel.EmployeeId" />
     </div>
 
     <div class="form-group">
@@ -22,20 +24,39 @@
 </EditForm>
 
 @code {
-    // Use the Backend's model for login
-    private IPersonDTO loginModel = new EmployeeDTO();
+    [SupplyParameterFromForm]
+    private PersonBase loginModel { get; set; } = new PersonBase();
 
     private async Task HandleLogin()
     {
         try
         {
+            var client = ClientFactory.CreateClient("BackendAPI");
             // Send the login data to the backend API
-            var response = await Http.PostAsJsonAsync("api/People/login", loginModel);
+            var response = await client.PostAsJsonAsync("api/People/login", loginModel);
 
             if (response.IsSuccessStatusCode)
             {
-                Console.WriteLine("Login successful");
-                // You can handle token storage, redirection, etc.
+                // Retrieve the token from the response
+                var responseData = await response.Content.ReadFromJsonAsync<Dictionary<string, string>>();
+                foreach (var kvp in responseData)
+                {
+                    Console.WriteLine($"Login: Key: {kvp.Key}, Value: {kvp.Value}");
+                }
+                if (responseData != null && responseData.TryGetValue("token", out var token))
+                {
+                    Console.WriteLine("Login successful. Token stored.");
+                    
+                    // Store the token in local storage
+                    await LocalStorage.SetItemAsync("authToken", token);
+                    
+                    // Redirect to the dashboard
+                    NavigationManager.NavigateTo("/dashboard");
+                }
+                else
+                {
+                    Console.WriteLine("Login succeeded but token was not received.");
+                }
             }
             else
             {

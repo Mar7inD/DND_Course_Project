@@ -1,5 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 using Backend.Services;
+using BCrypt.Net;
 
 namespace Backend.Controllers;
 
@@ -8,12 +12,13 @@ namespace Backend.Controllers;
 public class PeopleController : ControllerBase
 {
     private readonly ILogger<PeopleController> _logger;
-
+    private readonly IConfiguration _config;
     private PersonService _peopleService = new PersonService();
 
-    public PeopleController(ILogger<PeopleController> logger)
+    public PeopleController(ILogger<PeopleController> logger, IConfiguration config)
     {
         _logger = logger;
+        _config = config;
     }
 
     [HttpGet]
@@ -22,12 +27,72 @@ public class PeopleController : ControllerBase
         return Ok(await _peopleService.GetPeople(role, active));
     }
 
-    [HttpPost]
+    [HttpPost("register")]
     public async Task<IActionResult> PostPerson([FromBody] IPerson person)
     {
+        // Hash the password before sending it to the service
+        person.Password = BCrypt.Net.BCrypt.HashPassword(person.Password);
+        
         var result = await _peopleService.PostPerson(person);
-        return result == "Success" ? Ok() : BadRequest(result);
+        
+        if (result == "Success")
+        {
+            // Generate JWT token directly within this method
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                _config["Jwt:Issuer"],
+                _config["Jwt:Issuer"],
+                null,
+                expires: DateTime.Now.AddMinutes(120),
+                signingCredentials: credentials);
+
+            var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return Ok(new { Token = jwtToken });
+        }
+
+        return BadRequest(result);
     }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] IPerson person)
+    {
+        // Retrieve the active person with the matching EmployeeId
+        var people = await _peopleService.GetPeople(employeeId: person.EmployeeId, active: "true");
+        var foundPerson = people.FirstOrDefault();
+
+        if (foundPerson == null)
+        {
+            return Unauthorized("Invalid employee ID or inactive account.");
+        }
+
+        // Verify the password
+        bool isPasswordValid = BCrypt.Net.BCrypt.Verify(person.Password, foundPerson.Password);
+        
+        if (!isPasswordValid)
+        {
+            return Unauthorized("Invalid password.");
+        }
+
+        // Generate JWT token
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+        var token = new JwtSecurityToken(
+            _config["Jwt:Issuer"],
+            _config["Jwt:Issuer"],
+            null,
+            expires: DateTime.Now.AddMinutes(120),
+            signingCredentials: credentials);
+
+        var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+        return Ok(new { Token = jwtToken });
+    }
+
+
 
     [HttpPut("{employeeId:int}")]
     public async Task<IActionResult> PutPerson([FromBody] IPersonDTO person, int employeeId)

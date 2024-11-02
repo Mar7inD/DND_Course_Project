@@ -3,6 +3,10 @@
     font-size: 1.5rem;
 }
 
+.loading-data-text-recommend {
+    color: #a7a7a7;
+}
+
 .no-data-available-image {
     width: 16vw;
 }

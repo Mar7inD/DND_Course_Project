@@ -1,4 +1,5 @@
 global using Shared.Models;
+using Blazored.LocalStorage;
 using Frontend.Components;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +9,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
     
 builder.Services.AddBlazorBootstrap();
+builder.Services.AddBlazoredLocalStorage();
 
 // Make HTTP requests to the backend
 builder.Services.AddHttpClient("BackendAPI", client => 

@@ -8,11 +8,19 @@
     "EmployeeId": "123458"
   },
   {
-    "Name": "John Doe",
-    "Email": "john.doe@example.com",
-    "Password": "password",
-    "IsActive": true,
+    "Name": "heyhey",
+    "Email": "bnbv@asdssasd.com",
+    "Password": "$2a$11$r2.V/YsNCuL.qEXcPBZSuedKZTbRbUy3Ov/qdWHg2ntwsN7kZ.SR6",
     "Role": "Employee",
+    "IsActive": true,
     "EmployeeId": "123456"
+  },
+  {
+    "Name": "heyhey",
+    "Email": "bnbv@asdssasd.com",
+    "Password": "$2a$11$5FyIQCPs8cn2gTp2qp9FpuGIAxwiZe8TuaAxvZW.Zhx52E54Wyo2C",
+    "Role": "Manager",
+    "IsActive": true,
+    "EmployeeId": "125678"
   }
 ]
