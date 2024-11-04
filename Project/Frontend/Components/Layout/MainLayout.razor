@@ -1,7 +1,8 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
+@inject AuthService AuthService
 
-<div class="page">
+<div class="page" style="display: @(isCheckingAuth ? "none" : "")">
     <div class="sidebar">
         <NavMenu />
     </div>
@@ -19,6 +20,12 @@
 
                 <!-- Notification Dropdown -->
                 <NotificationDropdown Notifications="notifications" ShowSettingsModal="ShowNotificationSettingsModal" />
+
+                <!-- Logout Button -->
+                <button class="btn btn-link m-0" @onclick="Logout">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1.2rem" height="1.2rem" viewBox="0 0 24 24"><path fill="black" d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h7v2H5v14h7v2zm11-4l-1.375-1.45l2.55-2.55H9v-2h8.175l-2.55-2.55L16 7l5 5z"/></svg>
+                    Logout
+                </button>
             </div>
         </div>
 
@@ -27,6 +34,13 @@
         </article>
     </main>
 </div>
+
+@if (isCheckingAuth)
+{
+    <div class="d-flex flex-column justify-content-center align-items-center vh-75">
+        <p class="loading-data-text">Loading...</p>
+    </div>
+}
 
 <!-- New Waste Report Modal -->
 <NewWasteReportModal @ref="newWasteReportModal" OnSubmitSuccess="NavigateToCurrentPath" />
@@ -37,7 +51,8 @@
 @code {
     private NewWasteReportModal newWasteReportModal = default!;
     private NotificationSettingsModal notificationSettingsModal = default!;
-
+    private bool isCheckingAuth = true;
+    
     private List<string> notifications = new List<string>
     {
         "New waste report generated.",
@@ -45,6 +60,23 @@
         "New waste report generated.",
         "Maintenance scheduled for 2024-10-18."
     };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var isAuthenticated = await AuthService.IsAuthenticated();
+            if (!isAuthenticated)
+            {
+                NavigationManager.NavigateTo("/login", forceLoad: true);
+            }
+            else
+            {
+                isCheckingAuth = false; // Allow rendering after the check
+                StateHasChanged();
+            }
+        }
+    }
 
     private async Task NavigateToCurrentPath()
     {
@@ -60,5 +92,10 @@
     private async Task ShowNotificationSettingsModal()
     {
         await notificationSettingsModal.ShowModal();
+    }
+
+    private async Task Logout()
+    {
+        await AuthService.Logout();
     }
 }

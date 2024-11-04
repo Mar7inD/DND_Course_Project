@@ -4,24 +4,33 @@
 @inject ILocalStorageService LocalStorage
 @inject NavigationManager NavigationManager
 
-<h2>Login</h2>
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="p-4" style="width: 100%; max-width: 400px;">
 
-<EditForm Model="@loginModel" OnValidSubmit="@HandleLogin" FormName="loginForm">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+        <div style="display: flex; justify-content: center;">
+            <img src="images/salling-group-logo.png" alt="Salling Group Logo">
+        </div>
+        
+        <h2 class="text-center mb-4">Login</h2>
 
-    <div class="form-group">
-        <label for="employeeId">Employee ID</label>
-        <InputText id="employeeId" class="form-control" @bind-Value="loginModel.EmployeeId" />
+        <EditForm Model="@loginModel" OnValidSubmit="@HandleLogin" FormName="loginForm">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="form-group">
+                <label for="employeeId">Employee ID</label>
+                <InputText id="employeeId" class="form-control" @bind-Value="loginModel.EmployeeId" style="font-size: 18px;" />
+            </div>
+
+            <div class="form-group mt-3">
+                <label for="password">Password</label>
+                <InputText id="password" class="form-control" type="password" @bind-Value="loginModel.Password" style="font-size: 18px;" />
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 mt-4" style="font-size: 20px;">Login</button>
+        </EditForm>
     </div>
-
-    <div class="form-group">
-        <label for="password">Password</label>
-        <InputText id="password" class="form-control" type="password" @bind-Value="loginModel.Password" />
-    </div>
-
-    <button type="submit" class="btn btn-primary">Login</button>
-</EditForm>
+</div>
 
 @code {
     [SupplyParameterFromForm]
@@ -44,11 +53,11 @@
                     Console.WriteLine($"Login: Key: {kvp.Key}, Value: {kvp.Value}");
                 }
                 if (responseData != null && responseData.TryGetValue("token", out var token))
-                {
-                    Console.WriteLine("Login successful. Token stored.");
-                    
+                {                    
                     // Store the token in local storage
                     await LocalStorage.SetItemAsync("authToken", token);
+
+                    Console.WriteLine("Login successful. Token stored.");
                     
                     // Redirect to the dashboard
                     NavigationManager.NavigateTo("/dashboard");
