@@ -123,6 +123,8 @@ h4 {
 .action-button {
     user-select: none;
     transition: .3s ease;
+    padding: 8px 12px; 
+    cursor: pointer;
 }
 
 .action-button:hover {

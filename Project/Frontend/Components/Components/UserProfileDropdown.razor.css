@@ -1,0 +1,42 @@
+.dropdown .user-profile-btn {
+    border: none; /* Remove border */
+    display: flex; /* Center content */
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.3s ease; /* Smooth color transition */
+    color: black;
+    margin: 0;
+}
+
+.btn-link {
+    margin-left: 1rem;
+}
+
+/* Remove blue outline */
+.user-profile-btn:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+/* Change color on hover */
+.user-profile-btn:hover {
+    color: #4c7c8f; /* Change icon color to white */
+}
+
+/* Notification icon color inside the button */
+.user-profile-btn svg {
+    color: inherit; /* Inherit color from button */
+}
+
+.dropdown-menu .action-button {
+    user-select: none;
+    transition: .3s ease;
+    padding: 8px 12px; 
+    cursor: pointer;
+}
+
+.dropdown-menu .action-button:hover {
+    color: white;
+    background-color: #4c7c8f;
+}
