@@ -13,11 +13,16 @@ public class AuthService
         _navigationManager = navigationManager;
     }
 
-    public async Task<bool> IsAuthenticated()
+    public async Task<(bool IsAuthenticated, string? EmployeeId)> IsAuthenticatedAsync()
     {
         var token = await _localStorage.GetItemAsync<string>("authToken");
-        return !string.IsNullOrEmpty(token);
+        var employeeId = await _localStorage.GetItemAsync<string>("employeeId");
+        
+        bool isAuthenticated = !string.IsNullOrEmpty(token) && !string.IsNullOrEmpty(employeeId);
+
+        return (isAuthenticated, employeeId);
     }
+
 
     public async Task Logout()
     {

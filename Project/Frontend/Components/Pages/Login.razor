@@ -46,25 +46,25 @@
 
             if (response.IsSuccessStatusCode)
             {
-                // Retrieve the token from the response
+                // Retrieve the token and EmployeeId from the response
                 var responseData = await response.Content.ReadFromJsonAsync<Dictionary<string, string>>();
-                foreach (var kvp in responseData)
-                {
-                    Console.WriteLine($"Login: Key: {kvp.Key}, Value: {kvp.Value}");
-                }
-                if (responseData != null && responseData.TryGetValue("token", out var token))
+                if (responseData != null &&
+                    responseData.TryGetValue("token", out var token) &&
+                    responseData.TryGetValue("employeeId", out var employeeId))
                 {                    
-                    // Store the token in local storage
+                    // Store the token and EmployeeId in local storage
                     await LocalStorage.SetItemAsync("authToken", token);
+                    await LocalStorage.SetItemAsync("employeeId", employeeId);
+
 
                     Console.WriteLine("Login successful. Token stored.");
                     
-                    // Redirect to the dashboard
-                    NavigationManager.NavigateTo("/dashboard");
+                    // Redirect to the employee's dashboard
+                    NavigationManager.NavigateTo($"/dashboard");
                 }
                 else
                 {
-                    Console.WriteLine("Login succeeded but token was not received.");
+                    Console.WriteLine("Login succeeded but token or EmployeeId was not received.");
                 }
             }
             else

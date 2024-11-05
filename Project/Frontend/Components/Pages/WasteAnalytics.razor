@@ -88,6 +88,7 @@ else
 <EditWasteReportModal @ref="editWasteReportModal" OnSubmitSuccess="RefreshPage" />
 
 @code {
+    [CascadingParameter] public string? EmployeeId { get; set; }
     private List<WasteReport> wasteReports = new();
     private WasteReport? selectedReport;
     private bool isInitialized = false;

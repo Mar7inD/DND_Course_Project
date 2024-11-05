@@ -2,35 +2,38 @@
 @inject NavigationManager NavigationManager
 @inject AuthService AuthService
 
-<div class="page" style="display: @(isCheckingAuth ? "none" : "")">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
-    <main>
-        <div class="top-row px-4">
-            <div class="header-sign d-flex align-items-center gap-3">
-                <button class="btn btn-link add-new d-flex align-items-center" @onclick="ShowNewWasteReportModal">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
-                    </svg>
-                    New Waste Report
-                </button>
-
-                <!-- Notification Dropdown -->
-                <NotificationDropdown Notifications="notifications" ShowSettingsModal="ShowNotificationSettingsModal" />
-
-                <!-- User Profile Dropdown -->
-                <UserProfileDropdown />
-            </div>
+<CascadingValue Value="EmployeeId">
+    <div class="page" style="display: @(isCheckingAuth ? "none" : "")">
+        <div class="sidebar">
+            <NavMenu />
         </div>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+        <main>
+            <div class="top-row px-4">
+                <div class="header-sign d-flex align-items-center gap-3">
+                    <button class="btn btn-link add-new d-flex align-items-center" @onclick="ShowNewWasteReportModal">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                        </svg>
+                        New Waste Report
+                    </button>
+
+                    <!-- Notification Dropdown -->
+                    <NotificationDropdown Notifications="notifications" ShowSettingsModal="ShowNotificationSettingsModal" />
+
+                    <!-- User Profile Dropdown -->
+                    <UserProfileDropdown />
+                </div>
+            </div>
+
+            <article class="content px-4">
+                @Body
+            </article>
+        </main>
+    </div>
+</CascadingValue>
+
 
 @if (isCheckingAuth)
 {
@@ -40,7 +43,7 @@
 }
 
 <!-- New Waste Report Modal -->
-<NewWasteReportModal @ref="newWasteReportModal" OnSubmitSuccess="NavigateToCurrentPath" />
+<NewWasteReportModal @ref="newWasteReportModal" OnSubmitSuccess="RefreshPage" />
 
 <!-- Notification Settings Modal -->
 <NotificationSettingsModal @ref="notificationSettingsModal" />
@@ -49,7 +52,8 @@
     private NewWasteReportModal newWasteReportModal = default!;
     private NotificationSettingsModal notificationSettingsModal = default!;
     private bool isCheckingAuth = true;
-    
+    [CascadingParameter] public string? EmployeeId { get; private set; }
+
     private List<string> notifications = new List<string>
     {
         "New waste report generated.",
@@ -62,23 +66,25 @@
     {
         if (firstRender)
         {
-            var isAuthenticated = await AuthService.IsAuthenticated();
+            var (isAuthenticated, employeeId) = await AuthService.IsAuthenticatedAsync();
+
             if (!isAuthenticated)
             {
                 NavigationManager.NavigateTo("/login", forceLoad: true);
             }
             else
             {
+                this.EmployeeId = employeeId; // Set employeeId in the layout
                 isCheckingAuth = false; // Allow rendering after the check
                 StateHasChanged();
             }
         }
     }
 
-    private async Task NavigateToCurrentPath()
+
+    private async Task RefreshPage()
     {
-        var currentPath = NavigationManager.Uri;
-        NavigationManager.NavigateTo(currentPath, forceLoad: true);
+        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
     }
 
     private async Task ShowNewWasteReportModal()

@@ -59,7 +59,6 @@ public class PeopleController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] IPerson person)
     {
-        // Retrieve the active person with the matching EmployeeId
         var people = await _peopleService.GetPeople(employeeId: person.EmployeeId, active: "true");
         var foundPerson = people.FirstOrDefault();
 
@@ -68,15 +67,12 @@ public class PeopleController : ControllerBase
             return Unauthorized("Invalid employee ID or inactive account.");
         }
 
-        // Verify the password
         bool isPasswordValid = BCrypt.Net.BCrypt.Verify(person.Password, foundPerson.Password);
-        
         if (!isPasswordValid)
         {
             return Unauthorized("Invalid password.");
         }
 
-        // Generate JWT token
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
@@ -89,9 +85,12 @@ public class PeopleController : ControllerBase
 
         var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
 
-        return Ok(new { Token = jwtToken });
-    }
+        // Ensure that the EmployeeId is properly set in the response
+        var response = new { Token = jwtToken, EmployeeId = foundPerson.EmployeeId };
+        Console.WriteLine($"Token: {response.Token}, EmployeeId: {response.EmployeeId}"); // Debugging line
 
+        return Ok(response);
+    }
 
 
     [HttpPut("{employeeId:int}")]
