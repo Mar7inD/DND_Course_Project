@@ -22,5 +22,15 @@
     "Role": "Manager",
     "IsActive": true,
     "EmployeeId": "125678"
+  },
+  {
+    "Name": "Dimitar Terziev",
+    "Email": "bnbv@asdssasd.com",
+    "Password": "$2a$11$rJfUJZ.0EstMttAJfqs2juDQHjoccXP.cnaXF16b73EPwLmeoKCjW",
+    "Role": "Employee",
+    "IsActive": true,
+    "CreatedOn": "2024-11-06T16:23:02.6254026+01:00",
+    "ModifiedOn": "2024-11-06T16:22:43.716555+01:00",
+    "EmployeeId": "654321"
   }
 ]

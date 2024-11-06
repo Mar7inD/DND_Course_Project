@@ -29,10 +29,7 @@ public class PeopleController : ControllerBase
 
     [HttpPost("register")]
     public async Task<IActionResult> PostPerson([FromBody] IPerson person)
-    {
-        // Hash the password before sending it to the service
-        person.Password = BCrypt.Net.BCrypt.HashPassword(person.Password);
-        
+    {        
         var result = await _peopleService.PostPerson(person);
         
         if (result == "Success")
@@ -85,13 +82,11 @@ public class PeopleController : ControllerBase
 
         var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
 
-        // Ensure that the EmployeeId is properly set in the response
-        var response = new { Token = jwtToken, EmployeeId = foundPerson.EmployeeId };
-        Console.WriteLine($"Token: {response.Token}, EmployeeId: {response.EmployeeId}"); // Debugging line
+        // Add Role to the response
+        var response = new { Token = jwtToken, EmployeeId = foundPerson.EmployeeId, Role = foundPerson.Role };
 
         return Ok(response);
     }
-
 
     [HttpPut("{employeeId:int}")]
     public async Task<IActionResult> PutPerson([FromBody] IPersonDTO person, int employeeId)

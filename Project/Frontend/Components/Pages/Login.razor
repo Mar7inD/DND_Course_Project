@@ -41,30 +41,28 @@
         try
         {
             var client = ClientFactory.CreateClient("BackendAPI");
-            // Send the login data to the backend API
             var response = await client.PostAsJsonAsync("api/People/login", loginModel);
 
             if (response.IsSuccessStatusCode)
             {
-                // Retrieve the token and EmployeeId from the response
                 var responseData = await response.Content.ReadFromJsonAsync<Dictionary<string, string>>();
                 if (responseData != null &&
                     responseData.TryGetValue("token", out var token) &&
-                    responseData.TryGetValue("employeeId", out var employeeId))
+                    responseData.TryGetValue("employeeId", out var employeeId) &&
+                    responseData.TryGetValue("role", out var role)) // Retrieve role from response
                 {                    
-                    // Store the token and EmployeeId in local storage
                     await LocalStorage.SetItemAsync("authToken", token);
                     await LocalStorage.SetItemAsync("employeeId", employeeId);
+                    await LocalStorage.SetItemAsync("userRole", role); // Store role in local storage
 
-
-                    Console.WriteLine("Login successful. Token stored.");
+                    Console.WriteLine("Login successful. Token and Role stored.");
                     
                     // Redirect to the employee's dashboard
                     NavigationManager.NavigateTo($"/dashboard");
                 }
                 else
                 {
-                    Console.WriteLine("Login succeeded but token or EmployeeId was not received.");
+                    Console.WriteLine("Login succeeded but token, employeeId, or role was not received.");
                 }
             }
             else

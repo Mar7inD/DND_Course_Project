@@ -1,6 +1,7 @@
 @page "/waste-analytics"
 @inject IHttpClientFactory ClientFactory
 @inject NavigationManager NavigationManager
+@inject ILocalStorageService LocalStorage
 
 <PageTitle>Waste Analytics</PageTitle>
 
@@ -21,7 +22,10 @@
                 <th>Waste Amount (kg)</th>
                 <th>Waste Date</th>
                 <th>CO2 Emission (kg)</th>
-                <th><!-- Actions column Leave Empty! --></th> 
+                @if (userRole == "Manager")
+                {
+                    <th><!-- Actions column Leave Empty! --></th>
+                }
             </tr>
         </thead>
         <tbody>
@@ -33,35 +37,38 @@
                     <td>@report.WasteAmount</td>
                     <td>@report.WasteDate.ToString("dd-MM-yyyy")</td>
                     <td>@(report.Co2Emission ?? 0)</td>
-                    <td>
-                        <div class="dropdown">
-                            <button class="btn btn-link p-0 actions-dropdown-btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
-                                    <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
-                                </svg>
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="padding: 0;">
-                                <li>
-                                    <button class="dropdown-item d-flex align-items-center rounded-top action-button" @onclick="() => ShowEditModal(report.Id)">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square me-2" viewBox="0 0 16 16">
-                                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
-                                        </svg>
-                                        <span>Edit</span>
-                                    </button>
-                                </li>
-                                <li>
-                                    <button class="dropdown-item text-danger d-flex align-items-center rounded-bottom action-button" @onclick="() => ShowDeleteModal(report)">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash me-2" viewBox="0 0 16 16">
-                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
-                                            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
-                                        </svg>
-                                        <span>Delete</span>
-                                    </button>
-                                </li>
-                            </ul>
-                        </div>
-                    </td>
+                    @if (userRole == "Manager")
+                    {
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-link p-0 actions-dropdown-btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                                        <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
+                                    </svg>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="padding: 0;">
+                                    <li>
+                                        <button class="dropdown-item d-flex align-items-center rounded-top action-button" @onclick="() => ShowEditModal(report.Id)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square me-2" viewBox="0 0 16 16">
+                                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                                            </svg>
+                                            <span>Edit</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="dropdown-item text-danger d-flex align-items-center rounded-bottom action-button" @onclick="() => ShowDeleteModal(report)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash me-2" viewBox="0 0 16 16">
+                                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                                            </svg>
+                                            <span>Delete</span>
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    }
                 </tr>
             }
         </tbody>
@@ -94,6 +101,7 @@ else
     private bool isInitialized = false;
     private bool isInitializedOnce = false;
     private string? errorMessage;
+    private string? userRole;
     private DeleteReportModal deleteModal = default!;
     private EditWasteReportModal editWasteReportModal = default!;
     private LineChart lineChart = default!;
@@ -111,6 +119,9 @@ else
 
         try
         {
+            // Get user role from local storage
+            userRole = await LocalStorage.GetItemAsync<string>("userRole");
+
             var client = ClientFactory.CreateClient("BackendAPI");
             var reportResponse = await client.GetFromJsonAsync<List<WasteReport>>("api/WasteReports/");
             
