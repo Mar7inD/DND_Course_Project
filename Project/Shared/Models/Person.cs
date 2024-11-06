@@ -8,6 +8,8 @@ public interface IPersonDTO
     string Password { get; set; }
     string Role { get; set; }
     bool IsActive { get; set; }
+    DateTime CreatedOn { get; set; }
+    DateTime? ModifiedOn { get; set; }
 }
 
 public interface IPerson : IPersonDTO
@@ -23,6 +25,8 @@ public class PersonBase : IPerson
     public string Password { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
     public bool IsActive { get; set; } = true;
+    public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
+    public DateTime? ModifiedOn { get; set; } = DateTime.UtcNow;
 
     public string EmployeeId
     {
@@ -38,6 +42,7 @@ public class PersonBase : IPerson
         }
     }
 }
+
 
 public class Employee : PersonBase
 {
@@ -56,6 +61,8 @@ public class EmployeeDTO : IPersonDTO
     public string Password { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
     public bool IsActive { get; set; } = true;
+    public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
+    public DateTime? ModifiedOn { get; set; } = DateTime.UtcNow;
 }
 
 public class ManagerDTO : IPersonDTO
@@ -65,4 +72,6 @@ public class ManagerDTO : IPersonDTO
     public string Password { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
     public bool IsActive { get; set; } = true;
+    public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
+    public DateTime? ModifiedOn { get; set; } = DateTime.UtcNow;
 }

@@ -43,13 +43,40 @@ namespace Backend.Services;
         {
             try
             {
-                Console.WriteLine(person.IsActive);
+                // Ensure the password is hashed
+                person.Password = BCrypt.Net.BCrypt.HashPassword(person.Password);
+
+                // Read the existing people data from the database
                 var peopleArray = await _databaseService.ReadDBAsync();
-                if (peopleArray.Any(p => p["EmployeeId"]?.Value<string>() == person.EmployeeId.ToString()))
+                
+                // Check if a person with the same EmployeeId exists and is inactive
+                var existingPerson = peopleArray
+                    .FirstOrDefault(p => p["EmployeeId"]?.Value<string>() == person.EmployeeId.ToString());
+
+                if (existingPerson != null)
                 {
-                    throw new Exception("Employee ID already exists.");
+                    if (existingPerson["IsActive"]?.Value<bool>() == false)
+                    {
+                        // Reactivate the existing person by setting IsActive to true
+                        existingPerson["IsActive"] = true;
+                        existingPerson["Password"] = person.Password; // Update password if needed
+                        existingPerson["ModifiedOn"] = DateTime.UtcNow; // Optional: Track reactivation date
+                    }
+                    else
+                    {
+                        // If the person is active, throw an exception
+                        throw new Exception("Employee ID already exists and is active.");
+                    }
                 }
-                peopleArray.Add(JObject.FromObject(person));
+                else
+                {
+                    // Add new person if no record with the EmployeeId exists
+                    var newPerson = JObject.FromObject(person);
+                    newPerson["CreatedOn"] = DateTime.UtcNow; // Optionally add a creation timestamp
+                    peopleArray.Add(newPerson);
+                }
+
+                // Write the updated data back to the database
                 await _databaseService.WriteDBAsync(peopleArray);
                 return "Success";
             }
