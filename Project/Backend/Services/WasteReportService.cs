@@ -1,6 +1,5 @@
 using Newtonsoft.Json.Linq;
 
-
 namespace Backend.Services
 {
     /// <summary>
@@ -42,7 +41,11 @@ namespace Backend.Services
         {
             JArray wasteReportsArray = await _databaseService.ReadDBAsync();
 
-            return wasteReportsArray.ToObject<List<WasteReport>>() ?? new List<WasteReport>();
+            // Filter only active reports and convert the result back to JArray
+            var activeReports = new JArray(wasteReportsArray
+                .Where(report => report["IsActive"]?.Value<bool>() == true));
+
+            return activeReports.ToObject<List<WasteReport>>() ?? new List<WasteReport>();
         }
 
         public async Task<WasteReport?> GetWasteReportById(int id)
@@ -77,18 +80,18 @@ namespace Backend.Services
                 wasteReport.WasteType, wasteReport.WasteProcessingFacility, wasteReport.WasteAmount
             );
 
-            // Update the waste report properties, including the new CO2 emission value
+            // Update the waste report properties
             existingReport["WasteType"] = wasteReport.WasteType;
             existingReport["WasteProcessingFacility"] = wasteReport.WasteProcessingFacility;
             existingReport["WasteAmount"] = wasteReport.WasteAmount;
             existingReport["WasteDate"] = wasteReport.WasteDate;
             existingReport["WasteCollectorId"] = wasteReport.WasteCollectorId;
             existingReport["IsActive"] = wasteReport.IsActive;
-            existingReport["Co2Emission"] = co2Emissions; // CO2 updated here
+            existingReport["Co2Emission"] = co2Emissions;
+            existingReport["ModifiedOn"] = DateTime.Now; // Set the modification timestamp
 
             await _databaseService.WriteDBAsync(wasteReports);
         }
-
 
         // DELETE - Delete a waste report by id
         public async Task DeleteWasteReport(int id)
@@ -101,9 +104,11 @@ namespace Backend.Services
                 throw new KeyNotFoundException("Waste report not found");
             }
 
-            wasteReports.Remove(existingReport); // Remove the report
+            // Mark the report as inactive instead of deleting it
+            existingReport["IsActive"] = false;
+            existingReport["ModifiedOn"] = DateTime.UtcNow; // Optionally set a deletion timestamp
+
             await _databaseService.WriteDBAsync(wasteReports);
         }
-
     }
 }

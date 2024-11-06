@@ -60,7 +60,7 @@ namespace Backend.Services;
                         // Reactivate the existing person by setting IsActive to true
                         existingPerson["IsActive"] = true;
                         existingPerson["Password"] = person.Password; // Update password if needed
-                        existingPerson["ModifiedOn"] = DateTime.UtcNow; // Optional: Track reactivation date
+                        existingPerson["ModifiedOn"] = DateTime.Now; // Optional: Track reactivation date
                     }
                     else
                     {
@@ -72,7 +72,7 @@ namespace Backend.Services;
                 {
                     // Add new person if no record with the EmployeeId exists
                     var newPerson = JObject.FromObject(person);
-                    newPerson["CreatedOn"] = DateTime.UtcNow; // Optionally add a creation timestamp
+                    newPerson["CreatedOn"] = DateTime.Now; // Optionally add a creation timestamp
                     peopleArray.Add(newPerson);
                 }
 

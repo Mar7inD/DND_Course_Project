@@ -11,6 +11,7 @@ public class WasteReport
     public DateTime WasteDate { get; set; } = DateTime.Now;
     public int? WasteCollectorId { get; set; }
     public bool IsActive { get; set; } = true;
-
     public double? Co2Emission { get; set; }
+    public DateTime CreatedOn { get; set; } = DateTime.Now;
+    public DateTime? ModifiedOn { get; set; } = DateTime.Now;
 }

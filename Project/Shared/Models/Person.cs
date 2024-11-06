@@ -25,8 +25,8 @@ public class PersonBase : IPerson
     public string Password { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
     public bool IsActive { get; set; } = true;
-    public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
-    public DateTime? ModifiedOn { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedOn { get; set; } = DateTime.Now;
+    public DateTime? ModifiedOn { get; set; } = DateTime.Now;
 
     public string EmployeeId
     {
@@ -61,8 +61,8 @@ public class EmployeeDTO : IPersonDTO
     public string Password { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
     public bool IsActive { get; set; } = true;
-    public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
-    public DateTime? ModifiedOn { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedOn { get; set; } = DateTime.Now;
+    public DateTime? ModifiedOn { get; set; } = DateTime.Now;
 }
 
 public class ManagerDTO : IPersonDTO
@@ -72,6 +72,6 @@ public class ManagerDTO : IPersonDTO
     public string Password { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
     public bool IsActive { get; set; } = true;
-    public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
-    public DateTime? ModifiedOn { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedOn { get; set; } = DateTime.Now;
+    public DateTime? ModifiedOn { get; set; } = DateTime.Now;
 }

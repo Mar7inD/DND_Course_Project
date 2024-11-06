@@ -31,7 +31,7 @@
                     <td>@report.WasteType</td>
                     <td>@report.WasteProcessingFacility</td>
                     <td>@report.WasteAmount</td>
-                    <td>@report.WasteDate.ToString("dd-MM-yyyy HH:mm:ss")</td>
+                    <td>@report.WasteDate.ToString("dd-MM-yyyy")</td>
                     <td>@(report.Co2Emission ?? 0)</td>
                     <td>
                         <div class="dropdown">
@@ -136,7 +136,7 @@ else
     private void GenerateLineChart()
     {
         var colors = ColorUtility.CategoricalTwelveColors;
-        var labels = wasteReports.Select(r => r.WasteDate.ToString("dd-MM-yyyy | HH:mm")).ToList(); // Including hours in the x-axis label
+        var labels = wasteReports.Select(r => r.WasteDate.ToString("dd-MM-yyyy")).ToList(); // Including hours in the x-axis label
         var datasets = new List<IChartDataset>();
 
         var dataset = new LineChartDataset
