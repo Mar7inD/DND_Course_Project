@@ -1,13 +1,5 @@
 [
   {
-    "Name": "John Doe",
-    "Email": "john.doe@example.com",
-    "Password": "password",
-    "IsActive": true,
-    "Role": "Manager",
-    "EmployeeId": "123458"
-  },
-  {
     "Name": "heyhey",
     "Email": "bnbv@asdssasd.com",
     "Password": "$2a$11$r2.V/YsNCuL.qEXcPBZSuedKZTbRbUy3Ov/qdWHg2ntwsN7kZ.SR6",
@@ -32,5 +24,15 @@
     "CreatedOn": "2024-11-06T16:23:02.6254026+01:00",
     "ModifiedOn": "2024-11-06T16:22:43.716555+01:00",
     "EmployeeId": "654321"
+  },
+  {
+    "Name": "jkglilu",
+    "Email": "asdas@asdasd.com",
+    "Password": "$2a$11$JLXXMu5kiXMgendnsEBop.xqWEHUOXKSpRhmsJBHplvHwKRvKj70W",
+    "Role": "Employee",
+    "IsActive": true,
+    "CreatedOn": "2024-11-06T17:16:29.571719+01:00",
+    "ModifiedOn": "2024-11-06T17:16:01.7871552+01:00",
+    "EmployeeId": "564546"
   }
 ]

@@ -1,0 +1,82 @@
+@page "/users"
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager NavigationManager
+
+<h3>Manage Users</h3>
+
+@if (isLoading)
+{
+    <p>Loading users...</p>
+}
+else if (users.Count == 0)
+{
+    <p>No users found.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Employee ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in users)
+            {
+                <tr>
+                    <td>@user.EmployeeId</td>
+                    <td>@user.Name</td>
+                    <td>@user.Email</td>
+                    <td>@user.Role</td>
+                    <td>@(user.IsActive ? "Active" : "Inactive")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<button class="btn btn-primary mt-3" @onclick="ShowRegisterUserModal">Add New User</button>
+
+<RegisterUserModal @ref="registerUserModal" OnSuccess="LoadUsers" />
+
+@code {
+    private List<PersonBase> users = new();
+    private bool isLoading = true;
+    private RegisterUserModal registerUserModal = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUsers();
+    }
+
+    private async Task LoadUsers()
+    {
+        isLoading = true;
+        try
+        {
+            var client = ClientFactory.CreateClient("BackendAPI");
+            var response = await client.GetFromJsonAsync<List<PersonBase>>("api/People");
+            if (response != null)
+            {
+                users = response;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading users: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void ShowRegisterUserModal()
+    {
+        registerUserModal.ShowModal();
+    }
+}
