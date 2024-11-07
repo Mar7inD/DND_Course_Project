@@ -110,4 +110,12 @@ public class PeopleController : ControllerBase
         var result = await _peopleService.PutPerson(employeeId, person);
         return result == "Success" ? Ok() : BadRequest(result);
     }
+
+    // Delete person
+    [HttpDelete("{employeeId:int}")]
+    public async Task<IActionResult> DeletePerson(int employeeId)
+    {
+        var result = await _peopleService.DeletePerson(employeeId);
+        return result == "Success" ? Ok() : BadRequest(result);
+    }
 }

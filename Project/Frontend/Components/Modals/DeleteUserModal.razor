@@ -1,0 +1,88 @@
+@inject IHttpClientFactory ClientFactory
+
+<Modal @ref="deleteUserModal" title="Delete User" IsVerticallyCentered="true" UseStaticBackdrop="true" CloseOnEscape="false">
+    <BodyTemplate>
+        @if (SelectedUser != null)
+        {
+            <p><b>You are about to delete the following user:</b></p>
+            <p><b>Name:</b> @SelectedUser.Name</p>
+            <p><b>Email:</b> @SelectedUser.Email</p>
+            <p><b>Role:</b> @SelectedUser.Role</p>
+            <p><b>Employee ID:</b> @SelectedUser.EmployeeId</p>
+            <p><b>Are you sure you want to delete this user?</b></p>
+            <button class="btn btn-warning w-100 mt-3" @onclick="ConfirmDelete">Delete User</button>
+        }
+        else
+        {
+            <p>Loading user data...</p>
+        }
+    </BodyTemplate>
+</Modal>
+
+@if (errorMessage != null)
+{
+    <div class="alert alert-danger mt-3">
+        @errorMessage
+    </div>
+}
+
+@code {
+    private PersonBase? SelectedUser { get; set; }
+    private Modal deleteUserModal = default!;
+    private string? errorMessage;
+
+    public async Task ShowModal(string employeeId)
+    {
+        await LoadUser(employeeId);
+        await deleteUserModal.ShowAsync();
+    }
+
+    private async Task LoadUser(string employeeId)
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("BackendAPI");
+            SelectedUser = await client.GetFromJsonAsync<PersonBase>($"api/People/{employeeId}");
+
+            if (SelectedUser == null)
+            {
+                errorMessage = "Failed to load user data.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error loading user: {ex.Message}";
+        }
+    }
+
+    private async Task ConfirmDelete()
+    {
+        if (SelectedUser == null)
+        {
+            errorMessage = "No user selected.";
+            return;
+        }
+
+        try
+        {
+            var client = ClientFactory.CreateClient("BackendAPI");
+            var response = await client.DeleteAsync($"api/People/{SelectedUser.EmployeeId}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                await deleteUserModal.HideAsync();
+                await OnDeleteSuccess.InvokeAsync();
+            }
+            else
+            {
+                errorMessage = $"Failed to deactivate user: {await response.Content.ReadAsStringAsync()}";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred: {ex.Message}";
+        }
+    }
+
+    [Parameter] public EventCallback OnDeleteSuccess { get; set; }
+}

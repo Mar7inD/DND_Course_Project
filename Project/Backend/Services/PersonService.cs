@@ -125,4 +125,31 @@ namespace Backend.Services;
                 return ex.Message;
             }
         }
+
+        // Delete person
+        public async Task<string> DeletePerson(int employeeId)
+        {
+            try
+            {
+                var peopleArray = await _databaseService.ReadDBAsync();
+                var personToUpdate = peopleArray.FirstOrDefault(p => p["EmployeeId"]?.Value<int>() == employeeId);
+
+                if (personToUpdate != null)
+                {
+                    personToUpdate["IsActive"] = false;
+                    personToUpdate["ModifiedOn"] = DateTime.Now;  // update the modified timestamp
+                    await _databaseService.WriteDBAsync(peopleArray);
+                    return "Success";
+                }
+                else
+                {
+                    return "Employee ID not found.";
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in DeletePerson: {ex.Message}");
+                return ex.Message;
+            }
+        }
 }

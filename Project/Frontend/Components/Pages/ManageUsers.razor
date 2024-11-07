@@ -85,15 +85,15 @@ else
 </button>
 
 <RegisterUserModal @ref="registerUserModal" OnSuccess="LoadUsers" />
-
 <EditUserModal @ref="editUserModal" OnSubmitSuccess="LoadUsers" />
+<DeleteUserModal @ref="deleteUserModal" OnDeleteSuccess="LoadUsers" />
 
 @code {
     private List<PersonBase> users = new();
-    private bool isLoading = true;
     private RegisterUserModal registerUserModal = default!;
     private EditUserModal editUserModal = default!;
-    private string? userRole;
+    private DeleteUserModal deleteUserModal = default!;
+    private bool isLoading = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -106,10 +106,10 @@ else
         try
         {
             var client = ClientFactory.CreateClient("BackendAPI");
-            var response = await client.GetFromJsonAsync<List<PersonBase>>("api/People");
+            var response = await client.GetFromJsonAsync<List<PersonBase>>("api/People?active=true"); // Filter on the server side
             if (response != null)
             {
-                users = response;
+                users = response.Where(user => user.IsActive).ToList(); // Filter on the client side if needed
             }
         }
         catch (Exception ex)
@@ -132,8 +132,8 @@ else
         await editUserModal.ShowModal(employeeId);
     }
 
-    private void ShowDeleteModal(string employeeId)
+    private async Task ShowDeleteModal(string employeeId)
     {
-        // Logic to open delete confirmation modal
+        await deleteUserModal.ShowModal(employeeId);
     }
 }
