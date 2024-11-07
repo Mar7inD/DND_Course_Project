@@ -1,0 +1,122 @@
+@inject IHttpClientFactory ClientFactory
+
+<Modal @ref="editUserModal" title="Edit User Information" IsVerticallyCentered="true" UseStaticBackdrop="true" CloseOnEscape="false">
+    <BodyTemplate>
+        @if (editUser != null)
+        {
+            <EditForm Model="@editUser" OnValidSubmit="@HandleSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="mb-3">
+                    <label for="employeeId" class="form-label">Employee ID</label>
+                    <InputText id="employeeId" class="form-control" @bind-Value="@editUser.EmployeeId" disabled="true" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <InputText id="name" class="form-control" @bind-Value="@editUser.Name" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <InputText id="email" class="form-control" @bind-Value="@editUser.Email" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <InputText id="password" class="form-control" type="password" @bind-Value="@editUser.Password" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="role" class="form-label">Role</label>
+                    <InputSelect id="role" class="form-select" @bind-Value="@editUser.Role">
+                        <option value="" hidden selected>Select a role</option>
+                        <option value="Employee">Employee</option>
+                        <option value="Manager">Manager</option>
+                    </InputSelect>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+            </EditForm>
+        }
+        else
+        {
+            <p>Loading user data...</p>
+        }
+    </BodyTemplate>
+</Modal>
+
+@if (errorMessage != null)
+{
+    <div class="alert alert-danger mt-3">
+        @errorMessage
+    </div>
+}
+
+@code {
+    [Parameter] public string? EmployeeId { get; set; } // Employee ID for user to edit
+    [Parameter] public EventCallback OnSubmitSuccess { get; set; }
+
+    private PersonBase? editUser;
+    private string? errorMessage;
+    private Modal editUserModal = default!;
+
+    public async Task ShowModal(string employeeId)
+    {
+        EmployeeId = employeeId;
+        await LoadUserAsync();
+        await editUserModal.ShowAsync();
+    }
+
+    public async Task HideModal()
+    {
+        await editUserModal.HideAsync();
+    }
+
+    private async Task LoadUserAsync()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("BackendAPI");
+            editUser = await client.GetFromJsonAsync<PersonBase>($"api/People/{EmployeeId}");
+
+            if (editUser == null)
+            {
+                errorMessage = "User not found.";
+            }
+             else
+            {
+                // Ensure the password field starts as empty
+                editUser.Password = string.Empty;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error loading user: {ex.Message}";
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("BackendAPI");
+            var response = await client.PutAsJsonAsync($"api/People/{editUser!.EmployeeId}", editUser);
+
+            if (response.IsSuccessStatusCode)
+            {
+                await HideModal();
+                await OnSubmitSuccess.InvokeAsync();
+            }
+            else
+            {
+                errorMessage = $"Failed to save changes: {await response.Content.ReadAsStringAsync()}";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred: {ex.Message}";
+        }
+    }
+}

@@ -21,10 +21,26 @@ public class PeopleController : ControllerBase
         _config = config;
     }
 
+    // Get person by role or status
     [HttpGet]
     public async Task<ActionResult<List<PersonBase>>> Get([FromQuery] string? role, string? active)
     {   
         return Ok(await _peopleService.GetPeople(role, active));
+    }
+
+    // Get person by employeeId
+    [HttpGet("{employeeId:int}")]
+    public async Task<ActionResult<PersonBase>> GetPersonById(string employeeId)
+    {
+        var people = await _peopleService.GetPeople(employeeId: employeeId, active: "true");
+        var foundPerson = people.FirstOrDefault();
+
+        if (foundPerson == null)
+        {
+            return NotFound("User not found.");
+        }
+
+        return Ok(foundPerson);
     }
 
     [HttpPost("register")]

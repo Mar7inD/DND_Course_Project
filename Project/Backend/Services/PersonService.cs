@@ -92,22 +92,28 @@ namespace Backend.Services;
             try
             {
                 var peopleArray = await _databaseService.ReadDBAsync();
-                var existingPerson = peopleArray.FirstOrDefault(p => p["employeeId"]?.Value<string>() == employeeId.ToString());
-        
-                // Check if the employee ID exists
+                var existingPerson = peopleArray.FirstOrDefault(p => p["EmployeeId"]?.Value<int>() == employeeId);
+
                 if (existingPerson != null)
                 {
                     foreach (var property in JObject.FromObject(person).Properties())
                     {
-                        existingPerson[property.Name] = property.Value;
+                        // Only update the password if it is not empty
+                        if (property.Name == "Password" && !string.IsNullOrEmpty(property.Value.ToString()))
+                        {
+                            existingPerson["Password"] = BCrypt.Net.BCrypt.HashPassword(property.Value.ToString());
+                        }
+                        else if (property.Name != "Password")
+                        {
+                            existingPerson[property.Name] = property.Value;
+                        }
                     }
                 }
                 else
                 {
-                    throw new Exception("Employee ID not found.");
+                    return "Employee ID not found.";
                 }
 
-                // Write the updated array back to the database
                 await _databaseService.WriteDBAsync(peopleArray);
                 return "Success";
             }

@@ -2,10 +2,12 @@
   {
     "Name": "heyhey",
     "Email": "bnbv@asdssasd.com",
-    "Password": "$2a$11$r2.V/YsNCuL.qEXcPBZSuedKZTbRbUy3Ov/qdWHg2ntwsN7kZ.SR6",
+    "Password": "",
     "Role": "Employee",
     "IsActive": true,
-    "EmployeeId": "123456"
+    "EmployeeId": "123456",
+    "CreatedOn": "2024-11-07T13:27:34.1613762+01:00",
+    "ModifiedOn": "2024-11-07T13:27:34.1613767+01:00"
   },
   {
     "Name": "heyhey",
@@ -18,7 +20,7 @@
   {
     "Name": "Dimitar Terziev",
     "Email": "bnbv@asdssasd.com",
-    "Password": "$2a$11$rJfUJZ.0EstMttAJfqs2juDQHjoccXP.cnaXF16b73EPwLmeoKCjW",
+    "Password": "$2a$11$5U9uaA8CxNktzqemmn984u4gji4fSC2LE.FszTe0udB/Ri4cLSOsa",
     "Role": "Employee",
     "IsActive": true,
     "CreatedOn": "2024-11-06T16:23:02.6254026+01:00",
@@ -26,9 +28,9 @@
     "EmployeeId": "654321"
   },
   {
-    "Name": "jkglilu",
+    "Name": "aaaaaaaaaa",
     "Email": "asdas@asdasd.com",
-    "Password": "$2a$11$JLXXMu5kiXMgendnsEBop.xqWEHUOXKSpRhmsJBHplvHwKRvKj70W",
+    "Password": "$2a$11$wofxIYRnrjF8DsG/IUDwFu9oKA/DeD3ANzrirV/.FyB9iVIbwdo8O",
     "Role": "Employee",
     "IsActive": true,
     "CreatedOn": "2024-11-06T17:16:29.571719+01:00",
