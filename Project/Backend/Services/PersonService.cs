@@ -98,16 +98,18 @@ namespace Backend.Services;
                 {
                     foreach (var property in JObject.FromObject(person).Properties())
                     {
-                        // Only update the password if it is not empty
                         if (property.Name == "Password" && !string.IsNullOrEmpty(property.Value.ToString()))
                         {
                             existingPerson["Password"] = BCrypt.Net.BCrypt.HashPassword(property.Value.ToString());
                         }
-                        else if (property.Name != "Password")
+                        else if (property.Name != "Password" && property.Name != "CreatedOn")  // Skip CreatedOn
                         {
                             existingPerson[property.Name] = property.Value;
                         }
                     }
+
+                    // Update ModifiedOn field to the current time
+                    existingPerson["ModifiedOn"] = DateTime.Now;
                 }
                 else
                 {
