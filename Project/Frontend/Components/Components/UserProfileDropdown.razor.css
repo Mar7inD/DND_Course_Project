@@ -24,7 +24,6 @@
     color: #4c7c8f; /* Change icon color to white */
 }
 
-/* Notification icon color inside the button */
 .user-profile-btn svg {
     color: inherit; /* Inherit color from button */
 }
