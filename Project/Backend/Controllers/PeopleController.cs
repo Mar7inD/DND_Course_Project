@@ -24,7 +24,7 @@ public class PeopleController : ControllerBase
     // Get person by role or status
     [HttpGet]
     public async Task<ActionResult<List<PersonBase>>> Get([FromQuery] string? role, string? active)
-    {   
+    {
         return Ok(await _peopleService.GetPeople(role, active));
     }
 
@@ -45,25 +45,12 @@ public class PeopleController : ControllerBase
 
     [HttpPost("register")]
     public async Task<IActionResult> PostPerson([FromBody] IPerson person)
-    {        
+    {
         var result = await _peopleService.PostPerson(person);
-        
+
         if (result == "Success")
         {
-            // Generate JWT token directly within this method
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                _config["Jwt:Issuer"],
-                _config["Jwt:Issuer"],
-                null,
-                expires: DateTime.Now.AddMinutes(120),
-                signingCredentials: credentials);
-
-            var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
-
-            return Ok(new { Token = jwtToken });
+            return Ok("User registered successfully.");
         }
 
         return BadRequest(result);
