@@ -5,15 +5,17 @@
 
 <PageTitle>Waste Analytics</PageTitle>
 
-<h3>Waste Management Report - CO2 Emissions Over Time</h3>
+<h1 class="dashboard-title">Waste Analytics and Reports</h1>
+<p class="dashboard-subtitle">Track and analyze waste data and CO2 emissions</p>
 
 @if (isInitialized && wasteReports.Count > 0)
 {
-    <div class="container-fluid overflow-x-auto">
-        <LineChart @ref="lineChart" Width="1100" Height="400"/>
+    <div class="chart-section">
+        <h3 class="chart-title">CO2 Emissions Over Time</h3>
+        <LineChart @ref="lineChart" Width="1100" Height="300"/>
     </div>
 
-    <h4>Waste Report Details</h4>
+    <h3>Waste Report Details</h3>
     <table class="table table-striped table-hover shadow-sm rounded">
         <thead class="bg-dark text-light">
             <tr>
@@ -171,9 +173,6 @@ else
 
         lineChartOptions.Scales.X!.Title = new ChartAxesTitle { Text = "Date and Time", Display = true };
         lineChartOptions.Scales.Y!.Title = new ChartAxesTitle { Text = "CO2 Emissions (kg)", Display = true };
-
-        lineChartOptions.Plugins.Title!.Text = "CO2 Emissions Over Time";
-        lineChartOptions.Plugins.Title.Display = true;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

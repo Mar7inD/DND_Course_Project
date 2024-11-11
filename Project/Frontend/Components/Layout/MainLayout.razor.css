@@ -69,6 +69,10 @@ button:hover {
     text-decoration: none;
 }
 
+.content {
+    padding-bottom: 1.1rem;
+}
+
 @media (max-width: 640.98px) {
     .top-row {
         justify-content: space-between;

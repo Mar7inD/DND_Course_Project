@@ -21,5 +21,53 @@
     "Co2Emission": 465.0,
     "CreatedOn": "2024-11-06T14:43:05.2827845+01:00",
     "ModifiedOn": "2024-11-07T14:55:09.5174828+01:00"
+  },
+  {
+    "Id": 4,
+    "WasteType": "Wood",
+    "WasteProcessingFacility": "Landfill",
+    "WasteAmount": 20.0,
+    "WasteDate": "2024-11-12T14:46:20.5715874",
+    "WasteCollectorId": null,
+    "IsActive": true,
+    "Co2Emission": -6.0,
+    "CreatedOn": "2024-11-11T14:45:55.2825248+01:00",
+    "ModifiedOn": "2024-11-11T14:45:55.2825249+01:00"
+  },
+  {
+    "Id": 5,
+    "WasteType": "Plastic",
+    "WasteProcessingFacility": "Incineration",
+    "WasteAmount": 678.0,
+    "WasteDate": "2024-11-11T15:05:17.1511377+01:00",
+    "WasteCollectorId": null,
+    "IsActive": true,
+    "Co2Emission": -745.8000000000001,
+    "CreatedOn": "2024-11-11T15:04:47.6235435+01:00",
+    "ModifiedOn": "2024-11-11T15:04:47.6235437+01:00"
+  },
+  {
+    "Id": 6,
+    "WasteType": "Paper",
+    "WasteProcessingFacility": "Recycling",
+    "WasteAmount": 889.0,
+    "WasteDate": "2024-11-11T16:25:59.6372463+01:00",
+    "WasteCollectorId": null,
+    "IsActive": true,
+    "Co2Emission": 1155.7,
+    "CreatedOn": "2024-11-11T16:25:25.1030988+01:00",
+    "ModifiedOn": "2024-11-11T16:25:25.1030989+01:00"
+  },
+  {
+    "Id": 7,
+    "WasteType": "Electronic",
+    "WasteProcessingFacility": "Landfill",
+    "WasteAmount": 988.0,
+    "WasteDate": "2024-11-11T16:27:06.0414494+01:00",
+    "WasteCollectorId": null,
+    "IsActive": true,
+    "Co2Emission": -98.80000000000001,
+    "CreatedOn": "2024-11-11T16:26:43.1165089+01:00",
+    "ModifiedOn": "2024-11-11T16:26:43.116509+01:00"
   }
 ]

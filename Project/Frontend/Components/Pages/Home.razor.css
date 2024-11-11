@@ -1,0 +1,42 @@
+.dashboard-title {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: #666;
+}
+
+.responsive-chart {
+    width: 100%; /* Full width of the parent container */
+    max-width: 90vw; /* Maximum width constraint for larger screens */
+}
+
+/* Flex container for Line Chart and Bar Chart side by side */
+.chart-section-row {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.chart-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: fit-content;
+    height: fit-content;
+    padding: 1rem;
+    border: 2px solid #eeeeee;
+    border-radius: 8px;
+}
+
+.chart-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    color: #333;
+}
