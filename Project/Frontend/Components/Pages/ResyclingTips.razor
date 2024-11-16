@@ -1,5 +1,103 @@
 @page "/recycling-tips"
-@layout Layout.MainLayout
+@inject ILocalStorageService LocalStorage
+
+<PageTitle>Recycling Tips</PageTitle>
+
+
+<h1 class="tips-title">Recycling Tips</h1>
+<p class="tips-subtitle">Make a positive impact by following these recycling tips. Check off the ones you've completed!</p>
+
 <div>
-    recycling-tips
+
+    @if (isLoading)
+    {
+        <div class="loading-container">
+            <p class="loading-text">Loading tips...</p>
+        </div>
+    }
+    else
+    {
+        <ul class="recycling-tips-list">
+            @foreach (var tip in recyclingTips)
+            {
+                <li class="recycling-tip-item @(tip.IsChecked ? "checked" : "")">
+                    <label class="tip-label">
+                        <input type="checkbox" checked="@tip.IsChecked" @onchange="(e) => HandleCheckboxChange(e, tip)" />
+                        <span class="tip-text">@tip.Text</span>
+                    </label>
+                </li>
+            }
+        </ul>
+    }
 </div>
+
+@code {
+    private List<RecyclingTip> recyclingTips = new();
+    private bool isLoading = true;
+    private bool isInitializedOnce = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !isInitializedOnce)
+        {
+            isInitializedOnce = true;
+
+            // Get last updated date from local storage
+            var lastUpdatedDate = await LocalStorage.GetItemAsync<string>("lastUpdatedDate");
+            var today = DateTime.UtcNow.Date.ToString("yyyy-MM-dd");
+
+            // If it's a new day, reset all checkboxes
+            if (lastUpdatedDate != today)
+            {
+                recyclingTips = InitializeDefaultTips(); // Reset tips
+                await SaveTipsToLocalStorage(today);     // Save reset tips with today's date
+            }
+            else
+            {
+                // Load tips from local storage if it's the same day
+                var storedTips = await LocalStorage.GetItemAsync<List<RecyclingTip>>("recyclingTips");
+                recyclingTips = storedTips ?? InitializeDefaultTips();
+            }
+
+            isLoading = false;
+            StateHasChanged(); // Trigger re-render to display the loaded tips
+        }
+    }
+
+    private async Task HandleCheckboxChange(ChangeEventArgs e, RecyclingTip tip)
+    {
+        tip.IsChecked = (bool)e.Value;
+        var today = DateTime.UtcNow.Date.ToString("yyyy-MM-dd");
+        await SaveTipsToLocalStorage(today);
+    }
+
+    private List<RecyclingTip> InitializeDefaultTips()
+    {
+        return new List<RecyclingTip>
+        {
+            new RecyclingTip { Id = 1, Text = "Sort cardboard boxes by size for efficient reuse in warehouse operations." },
+            new RecyclingTip { Id = 2, Text = "Compact plastic wraps and shrink films before placing them in recycling bins." },
+            new RecyclingTip { Id = 3, Text = "Separate damaged wooden pallets for repair or recycling." },
+            new RecyclingTip { Id = 4, Text = "Dispose of broken or expired goods in designated recycling containers to avoid contamination." },
+            new RecyclingTip { Id = 5, Text = "Ensure electronic devices and batteries are recycled through authorized channels." },
+            new RecyclingTip { Id = 6, Text = "Collect and recycle used warehouse labels and tags in dedicated bins." },
+            new RecyclingTip { Id = 7, Text = "Place hazardous materials, such as paint or cleaning chemicals, in marked recycling containers." },
+            new RecyclingTip { Id = 8, Text = "Encourage the reuse of bubble wrap and packing materials for future shipments." },
+            new RecyclingTip { Id = 9, Text = "Train warehouse staff to correctly identify recyclable materials in the waste stream." },
+            new RecyclingTip { Id = 10, Text = "Install separate bins for organic waste near break rooms for composting." }
+        };
+    }
+
+    private async Task SaveTipsToLocalStorage(string currentDate)
+    {
+        await LocalStorage.SetItemAsync("recyclingTips", recyclingTips);
+        await LocalStorage.SetItemAsync("lastUpdatedDate", currentDate);
+    }
+
+    private class RecyclingTip
+    {
+        public int Id { get; set; }
+        public string Text { get; set; } = string.Empty;
+        public bool IsChecked { get; set; } = false;
+    }
+}
