@@ -18,6 +18,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("SQLiteConnection")));
 
 // Register services
+builder.Services.AddScoped<PersonService>();
 builder.Services.AddScoped<WasteReportService>();
 builder.Services.AddScoped<Co2CalculatorService>();
 

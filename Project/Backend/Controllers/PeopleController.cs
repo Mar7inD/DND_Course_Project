@@ -3,7 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Backend.Services;
-using BCrypt.Net;
+using Shared.Models;
 
 namespace Backend.Controllers;
 
@@ -12,57 +12,74 @@ namespace Backend.Controllers;
 public class PeopleController : ControllerBase
 {
     private readonly ILogger<PeopleController> _logger;
+    private readonly PersonService _personService;
     private readonly IConfiguration _config;
-    private PersonService _peopleService = new PersonService();
 
-    public PeopleController(ILogger<PeopleController> logger, IConfiguration config)
+    public PeopleController(
+        ILogger<PeopleController> logger,
+        PersonService personService,
+        IConfiguration config)
     {
         _logger = logger;
+        _personService = personService;
         _config = config;
     }
 
-    // Get person by role or status
     [HttpGet]
-    public async Task<ActionResult<List<PersonBase>>> Get([FromQuery] string? role, string? active)
+    public async Task<ActionResult<List<PersonBase>>> Get([FromQuery] string? role, [FromQuery] bool? active)
     {
-        return Ok(await _peopleService.GetPeople(role, active));
+        try
+        {
+            var people = await _personService.GetPeople(role, active);
+            return Ok(people);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving people");
+            return StatusCode(500, "An error occurred while processing your request.");
+        }
     }
 
-    // Get person by employeeId
-    [HttpGet("{employeeId:int}")]
+    [HttpGet("{employeeId}")]
     public async Task<ActionResult<PersonBase>> GetPersonById(string employeeId)
     {
-        var people = await _peopleService.GetPeople(employeeId: employeeId, active: "true");
-        var foundPerson = people.FirstOrDefault();
-
-        if (foundPerson == null)
+        var person = await _personService.GetPersonById(employeeId);
+        if (person == null)
         {
-            return NotFound("User not found.");
+            return NotFound("Person not found.");
         }
-
-        return Ok(foundPerson);
+        return Ok(person);
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> PostPerson([FromBody] IPerson person)
+    public async Task<IActionResult> RegisterPerson([FromBody] PersonBase person)
     {
-        var result = await _peopleService.PostPerson(person);
-
-        if (result == "Success")
+        try
         {
-            return Ok("User registered successfully.");
-        }
+            var result = await _personService.AddPerson(person);
 
-        return BadRequest(result);
+            if (result == "Success" || result.Contains("re-registered"))
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to register person");
+            return StatusCode(500, "An error occurred while processing your request.");
+        }
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] IPerson person)
+    public async Task<IActionResult> Login([FromBody] PersonBase person)
     {
-        var people = await _peopleService.GetPeople(employeeId: person.EmployeeId, active: "true");
-        var foundPerson = people.FirstOrDefault();
+        var foundPerson = await _personService.GetPersonById(person.EmployeeId);
 
-        if (foundPerson == null)
+        if (foundPerson == null || !foundPerson.IsActive)
         {
             return Unauthorized("Invalid employee ID or inactive account.");
         }
@@ -73,6 +90,7 @@ public class PeopleController : ControllerBase
             return Unauthorized("Invalid password.");
         }
 
+        // Generate JWT
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
@@ -91,18 +109,55 @@ public class PeopleController : ControllerBase
         return Ok(response);
     }
 
-    [HttpPut("{employeeId:int}")]
-    public async Task<IActionResult> PutPerson([FromBody] IPersonDTO person, int employeeId)
+    [HttpPut("{employeeId}")]
+    public async Task<IActionResult> UpdatePerson(string employeeId, [FromBody] PersonBase updatedPerson)
     {
-        var result = await _peopleService.PutPerson(employeeId, person);
-        return result == "Success" ? Ok() : BadRequest(result);
+        try
+        {
+            if (employeeId != updatedPerson.EmployeeId)
+            {
+                return BadRequest("Employee ID mismatch.");
+            }
+
+            var result = await _personService.UpdatePerson(employeeId, updatedPerson);
+
+            if (result == "Success")
+            {
+                return Ok("Person successfully updated.");
+            }
+            else
+            {
+                return NotFound(result);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to update person");
+            return StatusCode(500, "An error occurred while processing your request.");
+        }
     }
 
-    // Delete person
-    [HttpDelete("{employeeId:int}")]
-    public async Task<IActionResult> DeletePerson(int employeeId)
+    [HttpDelete("{employeeId}")]
+    public async Task<IActionResult> DeletePerson(string employeeId)
     {
-        var result = await _peopleService.DeletePerson(employeeId);
-        return result == "Success" ? Ok() : BadRequest(result);
+        try
+        {
+            var result = await _personService.DeletePerson(employeeId);
+
+            if (result == "Success")
+            {
+                return Ok("Person successfully deactivated.");
+            }
+            else
+            {
+                return NotFound(result);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to deactivate person");
+            return StatusCode(500, "An error occurred while processing your request.");
+        }
     }
+
 }
