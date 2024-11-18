@@ -1,114 +1,101 @@
-using Newtonsoft.Json.Linq;
+using Backend.Data;
+using Microsoft.EntityFrameworkCore;
+using Shared.Models;
 
 namespace Backend.Services
 {
-    /// <summary>
     public class WasteReportService
     {
-        private readonly DatabaseService _databaseService;
+        private readonly AppDbContext _context;
         private readonly WasteTypes _wasteTypes;
 
-        public WasteReportService()
+        public WasteReportService(AppDbContext context)
         {
-            _databaseService = new DatabaseService("Database/WasteReport.json");
+            _context = context;
             _wasteTypes = new WasteTypes();
         }
 
+        // Create a new waste report
         public async Task<string> PostWasteReport(WasteReport wasteReport)
         {
-            var wasteReports = await _databaseService.ReadDBAsync();
-
-            // Assign new ID if it's not set
-            if (wasteReport.Id == 0)
-            {
-                int newId = wasteReports.Any() ? wasteReports.Max(wr => (int)(wr["Id"] ?? 0)) + 1 : 1;
-                wasteReport.Id = newId;
-            }
-
-            // Check if waste type is valid and return CO2 emissions if valid
-            double co2Emissions = await _wasteTypes.isValidWasteReturnCo2Emissions(
-                wasteReport.WasteType, wasteReport.WasteProcessingFacility, wasteReport.WasteAmount
+            // Check if waste type is valid and calculate CO2 emissions
+            wasteReport.Co2Emission = await _wasteTypes.isValidWasteReturnCo2Emissions(
+                wasteReport.WasteType, 
+                wasteReport.WasteProcessingFacility, 
+                wasteReport.WasteAmount
             );
-            wasteReport.Co2Emission = co2Emissions;
 
-            wasteReports.Add(JObject.FromObject(wasteReport));
-            await _databaseService.WriteDBAsync(wasteReports);
+            // Add waste report to database
+            _context.WasteReports.Add(wasteReport);
+            await _context.SaveChangesAsync();
 
             return "Success";
         }
 
+        // Get all active waste reports
         public async Task<List<WasteReport>> GetAllWasteReports()
         {
-            JArray wasteReportsArray = await _databaseService.ReadDBAsync();
-
-            // Filter only active reports and convert the result back to JArray
-            var activeReports = new JArray(wasteReportsArray
-                .Where(report => report["IsActive"]?.Value<bool>() == true));
-
-            return activeReports.ToObject<List<WasteReport>>() ?? new List<WasteReport>();
+            return await _context.WasteReports
+                .Where(report => report.IsActive)
+                .ToListAsync();
         }
 
+        // Get a waste report by ID
         public async Task<WasteReport?> GetWasteReportById(int id)
         {
-            JArray wasteReports = await _databaseService.ReadDBAsync();
-            var wasteReportToken = wasteReports.FirstOrDefault(report => report["Id"]?.Value<int>() == id);
-            return wasteReportToken?.ToObject<WasteReport>();
+            return await _context.WasteReports.FindAsync(id);
         }
 
-        public async Task<IEnumerable<WasteReport>> GetWasteReportByType(string type)
+        // Get waste reports by waste type
+        public async Task<List<WasteReport>> GetWasteReportByType(string type)
         {
-            JArray wasteReports = await _databaseService.ReadDBAsync();
-            var matchingReports = wasteReports
-                .Where(report => report["WasteType"]?.Value<string>() == type)
-                .Select(report => report.ToObject<WasteReport>())
-                .Where(report => report != null);
-            return matchingReports!;
+            return await _context.WasteReports
+                .Where(report => report.WasteType == type && report.IsActive)
+                .ToListAsync();
         }
 
+        // Update a waste report
         public async Task PutWasteReport(int id, WasteReport wasteReport)
         {
-            JArray wasteReports = await _databaseService.ReadDBAsync();
-            var existingReport = wasteReports.FirstOrDefault(report => report["Id"]?.Value<int>() == id);
-
+            var existingReport = await _context.WasteReports.FindAsync(id);
             if (existingReport == null)
             {
                 throw new KeyNotFoundException("Waste report not found");
             }
 
-            // Check if waste type is valid and return CO2 emissions if valid
-            double co2Emissions = await _wasteTypes.isValidWasteReturnCo2Emissions(
-                wasteReport.WasteType, wasteReport.WasteProcessingFacility, wasteReport.WasteAmount
+            // Update properties
+            existingReport.WasteType = wasteReport.WasteType;
+            existingReport.WasteProcessingFacility = wasteReport.WasteProcessingFacility;
+            existingReport.WasteAmount = wasteReport.WasteAmount;
+            existingReport.WasteDate = wasteReport.WasteDate;
+            existingReport.WasteCollectorId = wasteReport.WasteCollectorId;
+            existingReport.IsActive = wasteReport.IsActive;
+
+            // Recalculate CO2 emissions
+            existingReport.Co2Emission = await _wasteTypes.isValidWasteReturnCo2Emissions(
+                wasteReport.WasteType, 
+                wasteReport.WasteProcessingFacility, 
+                wasteReport.WasteAmount
             );
 
-            // Update the waste report properties
-            existingReport["WasteType"] = wasteReport.WasteType;
-            existingReport["WasteProcessingFacility"] = wasteReport.WasteProcessingFacility;
-            existingReport["WasteAmount"] = wasteReport.WasteAmount;
-            existingReport["WasteDate"] = wasteReport.WasteDate;
-            existingReport["WasteCollectorId"] = wasteReport.WasteCollectorId;
-            existingReport["IsActive"] = wasteReport.IsActive;
-            existingReport["Co2Emission"] = co2Emissions;
-            existingReport["ModifiedOn"] = DateTime.Now; // Set the modification timestamp
+            existingReport.ModifiedOn = DateTime.Now;
 
-            await _databaseService.WriteDBAsync(wasteReports);
+            await _context.SaveChangesAsync();
         }
 
-        // DELETE - Delete a waste report by id
+        // Mark a waste report as inactive (soft delete)
         public async Task DeleteWasteReport(int id)
         {
-            JArray wasteReports = await _databaseService.ReadDBAsync();
-            var existingReport = wasteReports.FirstOrDefault(report => report["Id"]?.Value<int>() == id);
-
+            var existingReport = await _context.WasteReports.FindAsync(id);
             if (existingReport == null)
             {
                 throw new KeyNotFoundException("Waste report not found");
             }
 
-            // Mark the report as inactive instead of deleting it
-            existingReport["IsActive"] = false;
-            existingReport["ModifiedOn"] = DateTime.UtcNow; // Optionally set a deletion timestamp
+            existingReport.IsActive = false;
+            existingReport.ModifiedOn = DateTime.UtcNow;
 
-            await _databaseService.WriteDBAsync(wasteReports);
+            await _context.SaveChangesAsync();
         }
     }
 }
