@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241118112600_InitialCreate")]
+    [Migration("20241119190914_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -56,7 +56,7 @@ namespace Backend.Migrations
 
                     b.HasKey("EmployeeId");
 
-                    b.ToTable("People");
+                    b.ToTable("People", (string)null);
 
                     b.UseTptMappingStrategy();
                 });
@@ -109,12 +109,18 @@ namespace Backend.Migrations
                 {
                     b.HasBaseType("Shared.Models.PersonBase");
 
+                    b.HasIndex("EmployeeId")
+                        .IsUnique();
+
                     b.ToTable("Employees", (string)null);
                 });
 
             modelBuilder.Entity("Shared.Models.Manager", b =>
                 {
                     b.HasBaseType("Shared.Models.PersonBase");
+
+                    b.HasIndex("EmployeeId")
+                        .IsUnique();
 
                     b.ToTable("Managers", (string)null);
                 });

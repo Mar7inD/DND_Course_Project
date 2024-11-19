@@ -83,6 +83,24 @@ namespace Backend.Migrations
                         principalColumn: "EmployeeId",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Employees_EmployeeId",
+                table: "Employees",
+                column: "EmployeeId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Managers_EmployeeId",
+                table: "Managers",
+                column: "EmployeeId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_People_EmployeeId",
+                table: "People",
+                column: "EmployeeId",
+                unique: true);
         }
 
         /// <inheritdoc />

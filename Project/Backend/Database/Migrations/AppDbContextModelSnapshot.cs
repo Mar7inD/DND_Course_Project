@@ -53,7 +53,7 @@ namespace Backend.Migrations
 
                     b.HasKey("EmployeeId");
 
-                    b.ToTable("People");
+                    b.ToTable("People", (string)null);
 
                     b.UseTptMappingStrategy();
                 });
@@ -106,12 +106,18 @@ namespace Backend.Migrations
                 {
                     b.HasBaseType("Shared.Models.PersonBase");
 
+                    b.HasIndex("EmployeeId")
+                        .IsUnique();
+
                     b.ToTable("Employees", (string)null);
                 });
 
             modelBuilder.Entity("Shared.Models.Manager", b =>
                 {
                     b.HasBaseType("Shared.Models.PersonBase");
+
+                    b.HasIndex("EmployeeId")
+                        .IsUnique();
 
                     b.ToTable("Managers", (string)null);
                 });

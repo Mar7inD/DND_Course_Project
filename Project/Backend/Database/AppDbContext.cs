@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Shared.Models;
 
 namespace Backend.Data
 {
@@ -7,11 +6,11 @@ namespace Backend.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        // DbSet for WasteReport
+        // DbSets
         public DbSet<WasteReport> WasteReports { get; set; }
-
-        // DbSet for Person hierarchy
         public DbSet<PersonBase> People { get; set; }
+        public DbSet<Employee> Employees { get; set; }
+        public DbSet<Manager> Managers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,18 +27,30 @@ namespace Backend.Data
             // PersonBase Configuration
             modelBuilder.Entity<PersonBase>(entity =>
             {
-                entity.HasKey(p => p.EmployeeId); // Primary Key
+                entity.HasKey(p => p.EmployeeId); // Primary Key on Root Type
                 entity.Property(p => p.Name).IsRequired(); // Name is required
                 entity.Property(p => p.Role).IsRequired(); // Role is required
                 entity.Property(p => p.CreatedOn).HasDefaultValueSql("CURRENT_TIMESTAMP"); // Default value for CreatedOn
                 entity.Property(p => p.ModifiedOn).HasDefaultValueSql("CURRENT_TIMESTAMP"); // Default value for ModifiedOn
             });
 
-            // Employee and Manager use Table-Per-Hierarchy (TPH) inheritance
+            // Table Per Hierarchy (TPH) Configuration for Inheritance
+            modelBuilder.Entity<PersonBase>().ToTable("People");
             modelBuilder.Entity<Employee>().ToTable("Employees");
             modelBuilder.Entity<Manager>().ToTable("Managers");
 
+            // Unique constraints to prevent duplicates
+            modelBuilder.Entity<Employee>(entity =>
+            {
+                entity.HasIndex(e => e.EmployeeId).IsUnique();
+            });
+            modelBuilder.Entity<Manager>(entity =>
+            {
+                entity.HasIndex(m => m.EmployeeId).IsUnique();
+            });
+
             base.OnModelCreating(modelBuilder);
         }
+
     }
 }

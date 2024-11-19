@@ -47,15 +47,15 @@ Content-Type: application/json
 
 ###
 
-POST {{Backend_HostAddress}}/api/People
+POST {{Backend_HostAddress}}/api/People/register
 Content-Type: application/json
 
 {
     "name": "John Doe",
-    "email": "john.doe@example.com",
-    "employeeId": "566349",
-    "password": "password123",
-    "role": "Manager"
+    "email": "johndoe@example.com",
+    "employeeId": "123457",
+    "password": "1234",
+    "role": "manager"
 }
 
 ###
