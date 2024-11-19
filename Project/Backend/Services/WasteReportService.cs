@@ -6,12 +6,12 @@ namespace Backend.Services
 {
     public class WasteReportService
     {
-        private readonly AppDbContext _context;
+        private readonly AppDbContext _dbContext;
         private readonly WasteTypes _wasteTypes;
 
         public WasteReportService(AppDbContext context)
         {
-            _context = context;
+            _dbContext = context;
             _wasteTypes = new WasteTypes();
         }
 
@@ -26,8 +26,8 @@ namespace Backend.Services
             );
 
             // Add waste report to database
-            _context.WasteReports.Add(wasteReport);
-            await _context.SaveChangesAsync();
+            _dbContext.WasteReports.Add(wasteReport);
+            await _dbContext.SaveChangesAsync();
 
             return "Success";
         }
@@ -35,7 +35,7 @@ namespace Backend.Services
         // Get all active waste reports
         public async Task<List<WasteReport>> GetAllWasteReports()
         {
-            return await _context.WasteReports
+            return await _dbContext.WasteReports
                 .Where(report => report.IsActive)
                 .ToListAsync();
         }
@@ -43,13 +43,13 @@ namespace Backend.Services
         // Get a waste report by ID
         public async Task<WasteReport?> GetWasteReportById(int id)
         {
-            return await _context.WasteReports.FindAsync(id);
+            return await _dbContext.WasteReports.FindAsync(id);
         }
 
         // Get waste reports by waste type
         public async Task<List<WasteReport>> GetWasteReportByType(string type)
         {
-            return await _context.WasteReports
+            return await _dbContext.WasteReports
                 .Where(report => report.WasteType == type && report.IsActive)
                 .ToListAsync();
         }
@@ -57,7 +57,7 @@ namespace Backend.Services
         // Update a waste report
         public async Task PutWasteReport(int id, WasteReport wasteReport)
         {
-            var existingReport = await _context.WasteReports.FindAsync(id);
+            var existingReport = await _dbContext.WasteReports.FindAsync(id);
             if (existingReport == null)
             {
                 throw new KeyNotFoundException("Waste report not found");
@@ -80,13 +80,13 @@ namespace Backend.Services
 
             existingReport.ModifiedOn = DateTime.Now;
 
-            await _context.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
 
         // Mark a waste report as inactive (soft delete)
         public async Task DeleteWasteReport(int id)
         {
-            var existingReport = await _context.WasteReports.FindAsync(id);
+            var existingReport = await _dbContext.WasteReports.FindAsync(id);
             if (existingReport == null)
             {
                 throw new KeyNotFoundException("Waste report not found");
@@ -95,7 +95,7 @@ namespace Backend.Services
             existingReport.IsActive = false;
             existingReport.ModifiedOn = DateTime.UtcNow;
 
-            await _context.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
     }
 }
