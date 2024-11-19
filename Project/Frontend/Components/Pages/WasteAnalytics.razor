@@ -11,7 +11,7 @@
 @if (isInitialized && wasteReports.Count > 0)
 {
     <div class="chart-section">
-        <h3 class="chart-title">CO2 Emissions Over Time</h3>
+        <h3 class="chart-title">CO2 Emissions Over Last 7 Days</h3>
         <LineChart @ref="lineChart" Width="1100" Height="300"/>
     </div>
 
@@ -149,21 +149,39 @@ else
     private void GenerateLineChart()
     {
         var colors = ColorUtility.CategoricalTwelveColors;
-        var labels = wasteReports.Select(r => r.WasteDate.ToString("dd-MM-yyyy")).ToList();
-        var datasets = new List<IChartDataset>();
 
+        // Get the date range for the last 7 days
+        var sevenDaysAgo = DateTime.Now.Date.AddDays(-7);
+
+        // Filter data for the last 7 days and group by date
+        var groupedData = wasteReports
+            .Where(r => r.WasteDate.Date >= sevenDaysAgo) // Filter for last 7 days
+            .GroupBy(r => r.WasteDate.Date) // Group by the date part of WasteDate
+            .Select(g => new
+            {
+                Date = g.Key,
+                TotalCo2Emission = g.Sum(r => r.Co2Emission ?? 0) // Sum CO2 emissions, handling nulls
+            })
+            .OrderBy(g => g.Date) // Ensure dates are in ascending order
+            .ToList();
+
+        // Extract labels and data from grouped results
+        var labels = groupedData.Select(g => g.Date.ToString("dd-MM-yyyy")).ToList();
+        var co2EmissionData = groupedData.Select(g => (double?)g.TotalCo2Emission).ToList(); // Convert to nullable double
+
+        // Create the dataset for the line chart
         var dataset = new LineChartDataset
         {
             Label = "CO2 Emissions",
-            Data = wasteReports.Select(r => r.Co2Emission.HasValue ? (double?)r.Co2Emission.Value : (double?)0).ToList(),
+            Data = co2EmissionData, // Use aggregated data
             BackgroundColor = colors[0],
             BorderColor = colors[0],
             BorderWidth = 2,
             HoverBorderWidth = 4,
         };
 
-        datasets.Add(dataset);
-
+        // Prepare chart data and options
+        var datasets = new List<IChartDataset> { dataset };
         chartData = new ChartData { Labels = labels, Datasets = datasets };
 
         lineChartOptions = new();
@@ -171,7 +189,7 @@ else
         lineChartOptions.Responsive = true;
         lineChartOptions.Interaction = new Interaction { Mode = InteractionMode.Index };
 
-        lineChartOptions.Scales.X!.Title = new ChartAxesTitle { Text = "Date and Time", Display = true };
+        lineChartOptions.Scales.X!.Title = new ChartAxesTitle { Text = "Date", Display = true };
         lineChartOptions.Scales.Y!.Title = new ChartAxesTitle { Text = "CO2 Emissions (kg)", Display = true };
     }
 
@@ -181,7 +199,7 @@ else
         {
             try
             {
-                if (lineChart != null && chartData != null && lineChartOptions != null)
+                if (chartData != null && isInitialized)
                 {
                     await lineChart.InitializeAsync(chartData, lineChartOptions);
                 }
