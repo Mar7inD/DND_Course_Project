@@ -121,30 +121,30 @@ else
 
         try
         {
-            // Get user role from local storage
             userRole = await LocalStorage.GetItemAsync<string>("userRole");
 
             var client = ClientFactory.CreateClient("BackendAPI");
             var reportResponse = await client.GetFromJsonAsync<List<WasteReport>>("api/WasteReports/");
-            
-            if (reportResponse != null)
+
+            if (reportResponse != null && reportResponse.Any())
             {
                 wasteReports = reportResponse.OrderBy(report => report.WasteDate).ToList();
-                isInitialized = true;  // Mark that data is loaded
-                GenerateLineChart();  // Generate the chart data
+                isInitialized = true;
+                GenerateLineChart();
             }
             else
             {
                 Console.WriteLine("No data returned from API.");
-                isInitialized = true; // Set to true to stop the loading message
+                isInitialized = true; // Stop the loading spinner
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error loading waste reports: {ex.Message}");
-            isInitialized = true; // Set to true to stop the loading message
+            isInitialized = true;
         }
     }
+
 
     private void GenerateLineChart()
     {
@@ -179,10 +179,22 @@ else
     {
         if (firstRender)
         {
-            await lineChart.InitializeAsync(chartData, lineChartOptions);
+            try
+            {
+                if (lineChart != null && chartData != null && lineChartOptions != null)
+                {
+                    await lineChart.InitializeAsync(chartData, lineChartOptions);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error initializing line chart: {ex.Message}");
+            }
         }
+
         await base.OnAfterRenderAsync(firstRender);
     }
+
 
     private async Task ShowEditModal(int reportId)
     {
