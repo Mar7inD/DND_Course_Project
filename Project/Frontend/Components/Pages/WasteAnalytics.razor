@@ -10,10 +10,43 @@
 
 @if (isInitialized && wasteReports.Count > 0)
 {
-    <div class="chart-section">
-        <h3 class="chart-title">CO2 Emissions Over Last 7 Days</h3>
-        <LineChart @ref="lineChart" Width="1100" Height="300"/>
+    <div class="chart-section-row">
+        <!-- Line Chart for CO2 Emissions Over Last 7 Days -->
+        <div class="chart-section">
+            <h3 class="chart-title">CO2 Emissions Over Last 7 Days</h3>
+            <LineChart @ref="lineChart" Width="800" Height="300" style="width: 800px;" />
+        </div>
+
+        <div class="d-flex flex-column justify-content-between">
+            <!-- Summary Card for All-Time CO2 Emissions -->
+            <div class="summary-card">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex flex-column justify-content-start align-items-start">
+                            <h1 class="card-value">@totalCo2Emissions kg</h1>
+                            <p class="card-text">All-Time CO2 Emissions</p>
+                        </div>
+                        <img src="images/reduction.png" alt="Salling Group Logo">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Card for Latest CO2 Emission -->
+            <div class="summary-card">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex flex-column justify-content-start align-items-start">
+                            <h1 class="card-value">@latestCo2Emission kg</h1>
+                            <p class="card-text">Latest CO2 Impact</p>
+                        </div>
+                        <img src="images/carbon-dioxide.png" alt="CO2 Emission Logo">
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
+
 
     <h3>Waste Report Details</h3>
     <table class="table table-striped table-hover shadow-sm rounded">
@@ -110,6 +143,9 @@ else
     private LineChartOptions lineChartOptions = default!;
     private ChartData chartData = default!;
 
+    private double totalCo2Emissions = 0;
+    private double latestCo2Emission = 0;
+
     protected override async Task OnInitializedAsync()
     {
         if (isInitializedOnce)
@@ -128,23 +164,34 @@ else
 
             if (reportResponse != null && reportResponse.Any())
             {
-                wasteReports = reportResponse.OrderBy(report => report.WasteDate).ToList();
-                isInitialized = true;
+                // Sort waste reports by CreatedOn in descending order (latest first)
+                wasteReports = reportResponse.OrderByDescending(report => report.CreatedOn).ToList();
+
+                // Calculate total CO2 emissions
+                totalCo2Emissions = Math.Floor(wasteReports.Sum(r => r.Co2Emission ?? 0));
+
+                // Calculate the latest CO2 emission (most recent CreatedOn)
+                var latestReport = wasteReports.FirstOrDefault(); // Already sorted by CreatedOn
+                latestCo2Emission = latestReport?.Co2Emission ?? 0;
+
+                // Generate charts
                 GenerateLineChart();
             }
             else
             {
                 Console.WriteLine("No data returned from API.");
-                isInitialized = true; // Stop the loading spinner
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error loading waste reports: {ex.Message}");
+        }
+        finally
+        {
             isInitialized = true;
+            StateHasChanged();
         }
     }
-
 
     private void GenerateLineChart()
     {
