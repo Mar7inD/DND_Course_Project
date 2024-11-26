@@ -1,9 +1,11 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
-@inject AuthService AuthService
+@inject IAuthService AuthService
+@attribute [Authorize]
+
 
 <CascadingValue Value="EmployeeId">
-    <div class="page" style="display: @(isCheckingAuth ? "none" : "")">
+    <div class="page">
         <div class="sidebar">
             <NavMenu />
         </div>
@@ -30,43 +32,17 @@
     </div>
 </CascadingValue>
 
-
-@if (isCheckingAuth)
-{
-    <div class="d-flex flex-column justify-content-center align-items-center vh-75">
-        <p class="loading-data-text">Loading...</p>
-    </div>
-}
-
 <!-- New Waste Report Modal -->
 <NewWasteReportModal @ref="newWasteReportModal" OnSubmitSuccess="RefreshPage" />
 
+
 @code {
     private NewWasteReportModal newWasteReportModal = default!;
-    private bool isCheckingAuth = true;
     [CascadingParameter] public string? EmployeeId { get; private set; }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            var (isAuthenticated, employeeId) = await AuthService.IsAuthenticatedAsync();
-
-            if (!isAuthenticated)
-            {
-                NavigationManager.NavigateTo("/login", forceLoad: true);
-            }
-            else
-            {
-                this.EmployeeId = employeeId; // Set employeeId in the layout
-                isCheckingAuth = false; // Allow rendering after the check
-                StateHasChanged();
-            }
-        }
-    }
 
 
-    private async Task RefreshPage()
+    private void RefreshPage()
     {
         NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
     }
@@ -76,3 +52,4 @@
         await newWasteReportModal.ShowModal();
     }
 }
+

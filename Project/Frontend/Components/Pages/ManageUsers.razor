@@ -2,6 +2,7 @@
 @inject IHttpClientFactory ClientFactory
 @inject NavigationManager NavigationManager
 @inject ILocalStorageService LocalStorage
+@attribute [Authorize (Roles = "Manager")]
 
 <h3>Manage Users</h3>
 
@@ -122,9 +123,9 @@ else
         }
     }
 
-    private void ShowRegisterUserModal()
+    private async Task ShowRegisterUserModal()
     {
-        registerUserModal.ShowModal();
+        await registerUserModal.ShowModal();
     }
 
     private async Task ShowEditModal(string employeeId)

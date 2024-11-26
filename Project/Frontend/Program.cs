@@ -1,7 +1,10 @@
 global using Shared.Models;
+using Shared.Auth;
 using Blazored.LocalStorage;
 using Frontend.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Frontend.Auth;
+using Frontend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,9 +15,16 @@ builder.Services.AddRazorComponents()
 builder.Services.AddBlazorBootstrap();
 builder.Services.AddBlazoredLocalStorage();
 
-builder.Services.AddScoped<AuthService>();
-builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+builder.Services.AddAuthentication().AddCookie(options =>
+{
+    options.LoginPath = "/login";
+});
+
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthProvider>();
 builder.Services.AddAuthorizationCore();
+
+AuthorizationPolicies.AddPolicies(builder.Services);
 
 
 // Make HTTP requests to the backend
@@ -31,6 +41,8 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
     app.UseHsts();
 }
+
+app.UseAuthorization();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

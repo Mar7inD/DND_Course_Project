@@ -4,7 +4,13 @@ namespace Backend.Data
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        {
+            WasteReports = Set<WasteReport>();
+            People = Set<PersonBase>();
+            Employees = Set<Employee>();
+            Managers = Set<Manager>();
+        }
 
         // DbSets
         public DbSet<WasteReport> WasteReports { get; set; }

@@ -1,6 +1,4 @@
 using Newtonsoft.Json.Linq;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace Backend.Services;
 public class DatabaseService

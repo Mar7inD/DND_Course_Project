@@ -1,8 +1,10 @@
 @page "/login"
-@layout Layout.EmptyLayout
+@layout LoginLayout
 @inject IHttpClientFactory ClientFactory
 @inject ILocalStorageService LocalStorage
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
+@inject IAuthService AuthService
 
 <div class="d-flex justify-content-center align-items-center vh-100">
     <div class="p-4" style="width: 100%; max-width: 400px;">
@@ -34,45 +36,35 @@
 
 @code {
     [SupplyParameterFromForm]
-    private PersonBase loginModel { get; set; } = new PersonBase();
+    private PersonBaseDTO loginModel { get; set; } = new PersonBaseDTO();
+    private string errorLabel = "";
 
-    private async Task HandleLogin()
+    protected override async Task OnInitializedAsync()
     {
-        try
-        {
-            var client = ClientFactory.CreateClient("BackendAPI");
-            var response = await client.PostAsJsonAsync("api/People/login", loginModel);
+        var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authenticationState.User;
 
-            if (response.IsSuccessStatusCode)
-            {
-                var responseData = await response.Content.ReadFromJsonAsync<Dictionary<string, string>>();
-                if (responseData != null &&
-                    responseData.TryGetValue("token", out var token) &&
-                    responseData.TryGetValue("employeeId", out var employeeId) &&
-                    responseData.TryGetValue("role", out var role)) // Retrieve role from response
-                {                    
-                    await LocalStorage.SetItemAsync("authToken", token);
-                    await LocalStorage.SetItemAsync("employeeId", employeeId);
-                    await LocalStorage.SetItemAsync("userRole", role); // Store role in local storage
-
-                    Console.WriteLine("Login successful. Token and Role stored.");
-                    
-                    // Redirect to the employee's dashboard
-                    NavigationManager.NavigateTo($"/dashboard");
-                }
-                else
-                {
-                    Console.WriteLine("Login succeeded but token, employeeId, or role was not received.");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Login failed");
-            }
-        }
-        catch (Exception ex)
+        if (user.Identity != null && user.Identity.IsAuthenticated)
         {
-            Console.WriteLine($"Error: {ex.Message}");
+            // Redirect if already authenticated
+            NavigationManager.NavigateTo("/dashboard"); // or any other page you want to redirect to
         }
     }
+
+    private async Task HandleLogin()
+    { 
+        errorLabel = "";
+
+        try
+        {
+            await AuthService.LoginAsync(loginModel.EmployeeId, loginModel.Password);
+            NavigationManager.NavigateTo("/dashboard");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            errorLabel = $"Error: {e.Message}";
+        }
+    }
+    
 }

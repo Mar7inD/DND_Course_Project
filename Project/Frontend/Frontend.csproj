@@ -10,7 +10,9 @@
     <PackageReference Include="Blazorise" Version="1.6.2" />
     <PackageReference Include="Blazorise.Charts" Version="1.6.2" />
     <PackageReference Include="ChartJs.Blazor" Version="1.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.10" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.2.1" />
     <PackageReference Include="ScottPlot" Version="4.*" />
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
   </ItemGroup>

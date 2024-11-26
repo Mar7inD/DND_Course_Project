@@ -1,0 +1,25 @@
+@page "/check-claims"
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<h3>Your Claims</h3>
+
+<p>Your email claim: @email</p>
+<p>Your role claim: @role</p>
+
+@code {
+    private string email = "";
+    private string role = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Get the current authentication state
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        
+        // Get the ClaimsPrincipal (user) from the AuthenticationState
+        var user = authState.User;
+
+        // Retrieve specific claims (if available)
+        email = user.FindFirst(c => c.Type == "email")?.Value ?? "No email claim found";
+        role = user.FindFirst(c => c.Type == "role")?.Value ?? "No role claim found";
+    }
+}

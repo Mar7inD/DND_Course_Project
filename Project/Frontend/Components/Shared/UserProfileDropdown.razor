@@ -1,7 +1,9 @@
 @inject HttpClient HttpClient
-@inject AuthService AuthService
+@inject IAuthService AuthService
 @inject NavigationManager NavigationManager
 @inject ILocalStorageService LocalStorage
+@attribute [Authorize]
+
 
 <div class="dropdown">
     <button class="user-profile-btn btn btn-link position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="margin: 0;">
@@ -12,17 +14,18 @@
     </button>
 
     <ul class="dropdown-menu" aria-labelledby="userProfileDropdown" style="padding: 0;">
-        @if (UserRole == "Manager")
-        {
-            <li>
-                <button class="dropdown-item d-flex align-items-center rounded-top action-button" @onclick="NavigateToUsersPage">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill me-2" viewBox="0 0 16 16">
-                        <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/>
-                    </svg>
-                    Manage Users
-                </button>
-            </li>
-        }
+        <AuthorizeView Roles='Manager'>
+            <Authorized >
+                <li>
+                    <button class="dropdown-item d-flex align-items-center rounded-top action-button" @onclick="NavigateToUsersPage">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill me-2" viewBox="0 0 16 16">
+                            <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/>
+                        </svg>
+                        Manage Users
+                    </button>
+                </li>
+            </Authorized>
+        </AuthorizeView>
         <li>
             <button class="dropdown-item d-flex align-items-center rounded-bottom action-button" @onclick="Logout">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-left me-2" viewBox="0 0 16 16">
@@ -37,26 +40,14 @@
 
 @code {
     private string? UserRole { get; set; }
-    private bool hasLoaded = false;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            // Retrieve the role from local storage
-            UserRole = await LocalStorage.GetItemAsync<string>("userRole");
-            hasLoaded = true;
-            StateHasChanged(); // Trigger re-render after loading the role
-        }
-    }
-
-    private async Task NavigateToUsersPage()
+    private void NavigateToUsersPage()
     {
         NavigationManager.NavigateTo("/users");
     }
 
     private async Task Logout()
     {
-        await AuthService.Logout();
+        await AuthService.LogoutAsync();
     }
 }

@@ -1,5 +1,6 @@
 @page "/recycling-tips"
 @inject ILocalStorageService LocalStorage
+@attribute [Authorize]
 
 <PageTitle>Recycling Tips</PageTitle>
 
@@ -66,7 +67,7 @@
 
     private async Task HandleCheckboxChange(ChangeEventArgs e, RecyclingTip tip)
     {
-        tip.IsChecked = (bool)e.Value;
+        tip.IsChecked = (bool)(e.Value ?? false);
         var today = DateTime.UtcNow.Date.ToString("yyyy-MM-dd");
         await SaveTipsToLocalStorage(today);
     }

@@ -1,6 +1,6 @@
 global using Shared.Models;
+using Shared.Auth;
 using System.Text;
-using Backend.Converters;
 using Backend.Data; // For AppDbContext
 using Backend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -8,10 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// JWT configuration
-var jwtIssuer = builder.Configuration.GetSection("Jwt:Issuer").Get<string>();
-var jwtKey = builder.Configuration.GetSection("Jwt:Key").Get<string>();
 
 // Configure SQLite Database (the connection sting is inside appsettings.json)
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -21,33 +17,31 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<PersonService>();
 builder.Services.AddScoped<WasteReportService>();
 builder.Services.AddScoped<Co2CalculatorService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 // Configure authentication to use JWT Bearer tokens
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+builder.Services.AddAuthentication().AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+{
+    options.MapInboundClaims = false;
+    options.TokenValidationParameters = new TokenValidationParameters()
     {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtIssuer,
-            ValidAudience = jwtIssuer,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
-        };
-    });
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "")),
+        ClockSkew = TimeSpan.Zero,
+    };
+});
+
+AuthorizationPolicies.AddPolicies(builder.Services);
 
 // Configure authorization services
 builder.Services.AddAuthorization();
 
-// Add controllers with custom converters for serialization
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(new IPersonConverter());
-        options.JsonSerializerOptions.Converters.Add(new IPersonDTOConverter());
-    });
+builder.Services.AddControllers();
 
 // Add Swagger for API documentation
 builder.Services.AddEndpointsApiExplorer();

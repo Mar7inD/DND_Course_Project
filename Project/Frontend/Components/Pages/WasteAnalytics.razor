@@ -2,6 +2,7 @@
 @inject IHttpClientFactory ClientFactory
 @inject NavigationManager NavigationManager
 @inject ILocalStorageService LocalStorage
+@attribute [Authorize]
 
 <PageTitle>Waste Analytics</PageTitle>
 
@@ -135,7 +136,6 @@ else
     private WasteReport? selectedReport;
     private bool isInitialized = false;
     private bool isInitializedOnce = false;
-    private string? errorMessage;
     private string? userRole;
     private DeleteReportModal deleteModal = default!;
     private EditWasteReportModal editWasteReportModal = default!;
@@ -172,10 +172,10 @@ else
 
                 // Calculate the latest CO2 emission (most recent CreatedOn)
                 var latestReport = wasteReports.FirstOrDefault(); // Already sorted by CreatedOn
-                latestCo2Emission = latestReport?.Co2Emission ?? 0;
+                latestCo2Emission = Math.Floor(latestReport?.Co2Emission ?? 1);
 
                 // Generate charts
-                GenerateLineChart();
+                await GenerateLineChart();
             }
             else
             {
@@ -193,8 +193,9 @@ else
         }
     }
 
-    private void GenerateLineChart()
+    private async Task GenerateLineChart()
     {
+        
         var colors = ColorUtility.CategoricalTwelveColors;
 
         // Get the date range for the last 7 days
@@ -238,6 +239,7 @@ else
 
         lineChartOptions.Scales.X!.Title = new ChartAxesTitle { Text = "Date", Display = true };
         lineChartOptions.Scales.Y!.Title = new ChartAxesTitle { Text = "CO2 Emissions (kg)", Display = true };
+        await Task.CompletedTask;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

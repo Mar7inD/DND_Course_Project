@@ -31,7 +31,11 @@
             ],
             "problemMatcher": [
                 "$msCompile"
-            ]
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
     ]
 }
