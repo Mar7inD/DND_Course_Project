@@ -46,8 +46,7 @@
 
         if (user.Identity != null && user.Identity.IsAuthenticated)
         {
-            // Redirect if already authenticated
-            NavigationManager.NavigateTo("/dashboard"); // or any other page you want to redirect to
+            NavigationManager.NavigateTo("/dashboard");
         }
     }
 

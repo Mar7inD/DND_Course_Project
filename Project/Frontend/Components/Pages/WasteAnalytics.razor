@@ -2,15 +2,25 @@
 @inject IHttpClientFactory ClientFactory
 @inject NavigationManager NavigationManager
 @inject ILocalStorageService LocalStorage
+@inject ChartGeneration ChartGeneration
 @attribute [Authorize]
 
 <PageTitle>Waste Analytics</PageTitle>
 
 <h1 class="dashboard-title">Waste Analytics and Reports</h1>
 <p class="dashboard-subtitle">Track and edit waste reports and and get overview of CO2 emissions</p>
-
-@if (isInitialized && wasteReports.Count > 0)
-{
+    <div>
+        <label>Start Date: </label>
+        <input type="date" id="startDate" @bind="StartDate" @bind:after="ValidateDates" />
+        
+        <label>End Date: </label>
+        <input type="date" id="endDate" @bind="EndDate" @bind:after="ValidateDates" />
+        
+        <button class="btn add-new" @onclick="FilterData" disabled="@isFilterButtonDisabled">Apply Filter</button>
+        
+    </div>
+    <p class="error-message">@errorMessage</p>
+    <br />
     <div class="chart-section-row">
         <!-- Line Chart for CO2 Emissions Over Last 7 Days -->
         <div class="chart-section">
@@ -58,10 +68,9 @@
                 <th>Waste Amount (kg)</th>
                 <th>Waste Date</th>
                 <th>CO2 Emission (kg)</th>
-                @if (userRole == "Manager")
-                {
+                <AuthorizeView Roles="Manager">
                     <th><!-- Actions column Leave Empty! --></th>
-                }
+                </AuthorizeView>
             </tr>
         </thead>
         <tbody>
@@ -73,8 +82,7 @@
                     <td>@report.WasteAmount</td>
                     <td>@report.WasteDate.ToString("dd-MM-yyyy")</td>
                     <td>@(report.Co2Emission ?? 0)</td>
-                    @if (userRole == "Manager")
-                    {
+                    <AuthorizeView Roles="Manager">
                         <td>
                             <div class="dropdown">
                                 <button class="btn btn-link p-0 actions-dropdown-btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
@@ -104,27 +112,12 @@
                                 </ul>
                             </div>
                         </td>
-                    }
+                    </AuthorizeView>
                 </tr>
             }
         </tbody>
     </table>
-}
-else if (!isInitialized)
-{
-    <div class="d-flex flex-column justify-content-center align-items-center vh-75">
-        <svg xmlns="http://www.w3.org/2000/svg" width="2.6rem" height="2.6rem" viewBox="0 0 24 24"><circle cx="12" cy="2" r="0" fill="black"><animate attributeName="r" begin="0" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="12" cy="2" r="0" fill="black" transform="rotate(45 12 12)"><animate attributeName="r" begin="0.125s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="12" cy="2" r="0" fill="black" transform="rotate(90 12 12)"><animate attributeName="r" begin="0.25s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="12" cy="2" r="0" fill="black" transform="rotate(135 12 12)"><animate attributeName="r" begin="0.375s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="12" cy="2" r="0" fill="black" transform="rotate(180 12 12)"><animate attributeName="r" begin="0.5s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="12" cy="2" r="0" fill="black" transform="rotate(225 12 12)"><animate attributeName="r" begin="0.625s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="12" cy="2" r="0" fill="black" transform="rotate(270 12 12)"><animate attributeName="r" begin="0.75s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle><circle cx="12" cy="2" r="0" fill="black" transform="rotate(315 12 12)"><animate attributeName="r" begin="0.875s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle></svg>
-        <p class="loading-data-text">Loading data...</p>
-        <p class="loading-data-text-recommend">(Try Refreshing the Page)</p>
-    </div>
-}
-else
-{
-    <div class="d-flex flex-column justify-content-center align-items-center vh-75">
-        <img src="images/no-data-available.png" alt="no-data-available" class="no-data-available-image">
-        <p class="no-data-available-text">No data available.</p>
-    </div>
-}
+
 
 @* Modals for Edit and Delete *@
 <DeleteReportModal @ref="deleteModal" SelectedReport="selectedReport" OnDeleteSuccess="RefreshPage" />
@@ -134,112 +127,36 @@ else
     [CascadingParameter] public string? EmployeeId { get; set; }
     private List<WasteReport> wasteReports = new();
     private WasteReport? selectedReport;
-    private bool isInitialized = false;
-    private bool isInitializedOnce = false;
-    private string? userRole;
+    private string errorMessage = "";
+    private bool isFilterButtonDisabled = false;
     private DeleteReportModal deleteModal = default!;
     private EditWasteReportModal editWasteReportModal = default!;
     private LineChart lineChart = default!;
-    private LineChartOptions lineChartOptions = default!;
-    private ChartData chartData = default!;
-
     private double totalCo2Emissions = 0;
     private double latestCo2Emission = 0;
+    private DateTime StartDate { get; set; } = DateTime.Now.AddDays(-7);
+    private DateTime EndDate { get; set; } = DateTime.Now;
 
     protected override async Task OnInitializedAsync()
     {
-        if (isInitializedOnce)
-        {
-            return;
-        }
-
-        isInitializedOnce = true;
-
-        try
-        {
-            userRole = await LocalStorage.GetItemAsync<string>("userRole");
-
-            var client = ClientFactory.CreateClient("BackendAPI");
-            var reportResponse = await client.GetFromJsonAsync<List<WasteReport>>("api/WasteReports/");
-
-            if (reportResponse != null && reportResponse.Any())
+         try
             {
-                // Sort waste reports by CreatedOn in descending order (latest first)
-                wasteReports = reportResponse.OrderByDescending(report => report.CreatedOn).ToList();
+                var client = ClientFactory.CreateClient("BackendAPI");
+                var reportResponse = await client.GetFromJsonAsync<List<WasteReport>>("api/WasteReports/");
 
-                // Calculate total CO2 emissions
-                totalCo2Emissions = Math.Floor(wasteReports.Sum(r => r.Co2Emission ?? 0));
-
-                // Calculate the latest CO2 emission (most recent CreatedOn)
-                var latestReport = wasteReports.FirstOrDefault(); // Already sorted by CreatedOn
-                latestCo2Emission = Math.Floor(latestReport?.Co2Emission ?? 1);
-
-                // Generate charts
-                await GenerateLineChart();
+                if (reportResponse != null && reportResponse.Any())
+                {
+                    (wasteReports, totalCo2Emissions, latestCo2Emission) = formatWasteReports(reportResponse);
+                }
+                else
+                {
+                    Console.WriteLine("No data returned from API.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine("No data returned from API.");
+                Console.WriteLine($"Error loading waste reports: {ex.Message}");
             }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error loading waste reports: {ex.Message}");
-        }
-        finally
-        {
-            isInitialized = true;
-            StateHasChanged();
-        }
-    }
-
-    private async Task GenerateLineChart()
-    {
-        
-        var colors = ColorUtility.CategoricalTwelveColors;
-
-        // Get the date range for the last 7 days
-        var sevenDaysAgo = DateTime.Now.Date.AddDays(-7);
-
-        // Filter data for the last 7 days and group by date
-        var groupedData = wasteReports
-            .Where(r => r.WasteDate.Date >= sevenDaysAgo) // Filter for last 7 days
-            .GroupBy(r => r.WasteDate.Date) // Group by the date part of WasteDate
-            .Select(g => new
-            {
-                Date = g.Key,
-                TotalCo2Emission = g.Sum(r => r.Co2Emission ?? 0) // Sum CO2 emissions, handling nulls
-            })
-            .OrderBy(g => g.Date) // Ensure dates are in ascending order
-            .ToList();
-
-        // Extract labels and data from grouped results
-        var labels = groupedData.Select(g => g.Date.ToString("dd-MM-yyyy")).ToList();
-        var co2EmissionData = groupedData.Select(g => (double?)g.TotalCo2Emission).ToList(); // Convert to nullable double
-
-        // Create the dataset for the line chart
-        var dataset = new LineChartDataset
-        {
-            Label = "CO2 Emissions",
-            Data = co2EmissionData, // Use aggregated data
-            BackgroundColor = colors[0],
-            BorderColor = colors[0],
-            BorderWidth = 2,
-            HoverBorderWidth = 4,
-        };
-
-        // Prepare chart data and options
-        var datasets = new List<IChartDataset> { dataset };
-        chartData = new ChartData { Labels = labels, Datasets = datasets };
-
-        lineChartOptions = new();
-        lineChartOptions.Locale = "en-US";
-        lineChartOptions.Responsive = true;
-        lineChartOptions.Interaction = new Interaction { Mode = InteractionMode.Index };
-
-        lineChartOptions.Scales.X!.Title = new ChartAxesTitle { Text = "Date", Display = true };
-        lineChartOptions.Scales.Y!.Title = new ChartAxesTitle { Text = "CO2 Emissions (kg)", Display = true };
-        await Task.CompletedTask;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -248,8 +165,9 @@ else
         {
             try
             {
-                if (chartData != null && isInitialized)
+                if (lineChart != null)
                 {
+                    var (chartData, lineChartOptions) = ChartGeneration.GenerateLineChart(wasteReports.Where(r => r.WasteDate >= StartDate).ToList());
                     await lineChart.InitializeAsync(chartData, lineChartOptions);
                 }
             }
@@ -262,6 +180,70 @@ else
         await base.OnAfterRenderAsync(firstRender);
     }
 
+    private async Task FilterData()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("BackendAPI");
+            var reportResponse = await client.GetFromJsonAsync<List<WasteReport>>($"api/WasteReports?startDate={StartDate:yyyy-MM-dd}&endDate={EndDate:yyyy-MM-dd}");
+
+            if (reportResponse != null && reportResponse.Any())
+            {
+                (wasteReports, totalCo2Emissions, latestCo2Emission) = formatWasteReports(reportResponse);
+
+                var (chartData, lineChartOptions) = ChartGeneration.GenerateLineChart(wasteReports);
+                await lineChart.UpdateAsync(chartData, lineChartOptions);
+            }
+            else
+            {
+                Console.WriteLine("No data returned from API.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading waste reports: {ex.Message}");
+        }
+    }
+
+    private void ValidateDates()
+    {
+        if (StartDate > EndDate)
+        {
+            errorMessage = "Start date cannot be after end date.";
+            isFilterButtonDisabled = true;
+        }
+        else if (EndDate < StartDate)
+        {
+            errorMessage = "End date cannot be before start date.";
+            isFilterButtonDisabled = true;
+        }
+        else
+        {
+            errorMessage = "";
+            isFilterButtonDisabled = false;
+        }
+    }
+
+    private Tuple<List<WasteReport>, double, double> formatWasteReports(List<WasteReport> reportResponse)
+    {
+        // Fix decimal places for waste amount
+        foreach (var report in reportResponse)
+        {
+            report.WasteAmount = Math.Round(report.WasteAmount, 2);
+        }
+
+        // Sort waste reports by CreatedOn in descending order (latest first)
+        wasteReports = reportResponse.OrderByDescending(report => report.WasteDate).ToList();
+
+        // Calculate total CO2 emissions
+        var _totalCo2Emissions = Math.Floor(wasteReports.Sum(r => r.Co2Emission ?? 0));
+
+        // Calculate the latest CO2 emission (most recent CreatedOn)
+        var latestReport = wasteReports.FirstOrDefault(); // Already sorted by CreatedOn
+        var _latestCo2Emission = Math.Floor(latestReport?.Co2Emission ?? 1);
+
+        return new Tuple<List<WasteReport>, double, double> (wasteReports, _totalCo2Emissions, _latestCo2Emission);
+    }
 
     private async Task ShowEditModal(int reportId)
     {

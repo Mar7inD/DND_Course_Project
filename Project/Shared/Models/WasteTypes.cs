@@ -18,7 +18,7 @@ public class WasteTypes {
     {
         double co2emissionIndex = await GetWasteTypesByFacilityIndex(wasteType, wasteProcessingFacility);
         
-        double calculatedEmission = co2emissionIndex * wasteAmount;
+        double calculatedEmission = Math.Round(co2emissionIndex * wasteAmount, 2);
 
         return calculatedEmission; 
     }

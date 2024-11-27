@@ -1,6 +1,5 @@
 using Backend.Data;
 using Microsoft.EntityFrameworkCore;
-using Shared.Models;
 
 namespace Backend.Services
 {
@@ -18,6 +17,7 @@ namespace Backend.Services
         // Create a new waste report
         public async Task<string> PostWasteReport(WasteReport wasteReport)
         {
+
             // Check if waste type is valid and calculate CO2 emissions
             wasteReport.Co2Emission = await _wasteTypes.isValidWasteReturnCo2Emissions(
                 wasteReport.WasteType, 

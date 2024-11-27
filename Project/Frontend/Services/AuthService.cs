@@ -1,12 +1,11 @@
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
-using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components;
 
 namespace Frontend.Services;
 
-public class AuthService(HttpClient client, IJSRuntime jsRuntime, NavigationManager _navigationManager) : IAuthService
+public class AuthService(HttpClient client, TokenService tokenService, NavigationManager _navigationManager) : IAuthService
 {
     
     public string Jwt { get; private set; } = "";
@@ -37,17 +36,17 @@ public class AuthService(HttpClient client, IJSRuntime jsRuntime, NavigationMana
         string token = responseContent;
         Jwt = token;
 
-        await CacheTokenAsync();
+        CacheToken();
         
-        ClaimsPrincipal principal = await CreateClaimsPrincipal();
+        ClaimsPrincipal principal = CreateClaimsPrincipal();
         
         OnAuthStateChanged.Invoke(principal);
         
     }
 
-    private async Task<ClaimsPrincipal> CreateClaimsPrincipal()
+    private ClaimsPrincipal CreateClaimsPrincipal()
     {
-        var cachedToken = await GetTokenFromCacheAsync();
+        var cachedToken = GetTokenFromCache();
         if (string.IsNullOrEmpty(Jwt) && string.IsNullOrEmpty(cachedToken))
         {
             return new ClaimsPrincipal();
@@ -67,9 +66,9 @@ public class AuthService(HttpClient client, IJSRuntime jsRuntime, NavigationMana
         return principal;
     }
 
-    public async Task LogoutAsync()
+    public void LogoutAsync()
     {
-        await ClearTokenFromCacheAsync();
+        ClearTokenFromCache();
         Jwt = "";
         ClaimsPrincipal principal = new();
         OnAuthStateChanged.Invoke(principal);
@@ -89,9 +88,9 @@ public class AuthService(HttpClient client, IJSRuntime jsRuntime, NavigationMana
         }
     }
 
-    public async Task<ClaimsPrincipal> GetAuthAsync()
+    public ClaimsPrincipal GetAuth()
     {
-        ClaimsPrincipal principal = await CreateClaimsPrincipal();
+        ClaimsPrincipal principal = CreateClaimsPrincipal();
         return principal;
     }
 
@@ -151,18 +150,18 @@ public class AuthService(HttpClient client, IJSRuntime jsRuntime, NavigationMana
         return Convert.FromBase64String(base64);
     }
 
-    private async Task<string?> GetTokenFromCacheAsync()
+    private string? GetTokenFromCache()
     {
-        return await jsRuntime.InvokeAsync<string>("localStorage.getItem", "jwt");
+        return  tokenService.GetToken();
     }
 
-    private async Task CacheTokenAsync()
+    private void CacheToken()
     {
-        await jsRuntime.InvokeVoidAsync("localStorage.setItem", "jwt", Jwt);
+        tokenService.SetToken(Jwt);
     }
 
-    private async Task ClearTokenFromCacheAsync()
+    private void ClearTokenFromCache()
     {
-        await jsRuntime.InvokeVoidAsync("localStorage.setItem", "jwt", "");
+        tokenService.ClearToken();
     }
 }

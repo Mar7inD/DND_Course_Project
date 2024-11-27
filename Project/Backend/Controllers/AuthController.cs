@@ -82,9 +82,7 @@ public class AuthController(
             new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
             new Claim(ClaimTypes.Email, user.Email),
             new Claim(ClaimTypes.Role, user.Role),
-            new Claim("Name", user.Name),
-            new Claim("Role", user.Role),
-            new Claim("Email", user.Email)
+            new Claim("Name", user.Name)
         };
         return [.. claims];
     }

@@ -2,7 +2,6 @@
 @inject IAuthService AuthService
 @inject NavigationManager NavigationManager
 @inject ILocalStorageService LocalStorage
-@attribute [Authorize]
 
 
 <div class="dropdown">
@@ -15,7 +14,7 @@
 
     <ul class="dropdown-menu" aria-labelledby="userProfileDropdown" style="padding: 0;">
         <AuthorizeView Roles='Manager'>
-            <Authorized >
+            <Authorized>
                 <li>
                     <button class="dropdown-item d-flex align-items-center rounded-top action-button" @onclick="NavigateToUsersPage">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill me-2" viewBox="0 0 16 16">
@@ -46,8 +45,8 @@
         NavigationManager.NavigateTo("/users");
     }
 
-    private async Task Logout()
+    private void Logout()
     {
-        await AuthService.LogoutAsync();
+        AuthService.LogoutAsync();
     }
 }

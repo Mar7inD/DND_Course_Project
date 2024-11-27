@@ -1,6 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
 @inject IAuthService AuthService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @attribute [Authorize]
 
 
@@ -39,8 +40,6 @@
 @code {
     private NewWasteReportModal newWasteReportModal = default!;
     [CascadingParameter] public string? EmployeeId { get; private set; }
-
-
 
     private void RefreshPage()
     {

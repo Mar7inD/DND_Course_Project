@@ -16,13 +16,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Register services
 builder.Services.AddScoped<PersonService>();
 builder.Services.AddScoped<WasteReportService>();
-builder.Services.AddScoped<Co2CalculatorService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 // Configure authentication to use JWT Bearer tokens
 builder.Services.AddAuthentication().AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
 {
-    options.MapInboundClaims = false;
     options.TokenValidationParameters = new TokenValidationParameters()
     {
         ValidateIssuer = true,

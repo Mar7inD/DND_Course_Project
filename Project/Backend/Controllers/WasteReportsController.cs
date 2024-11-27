@@ -1,40 +1,37 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Backend.Services;
-using Shared.Models;
 
 namespace Backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class WasteReportsController : ControllerBase
+[Authorize]
+public class WasteReportsController(ILogger<WasteReportsController> _logger, WasteReportService _wasteReportService) : ControllerBase
 {
-    private readonly ILogger<WasteReportsController> _logger;
-    private readonly WasteReportService _wasteReportService;
-    private readonly Co2CalculatorService _co2CalculatorService;
-
-    public WasteReportsController(
-        ILogger<WasteReportsController> logger,
-        WasteReportService wasteReportService,
-        Co2CalculatorService co2CalculatorService)
-    {
-        _logger = logger;
-        _wasteReportService = wasteReportService;
-        _co2CalculatorService = co2CalculatorService;
-    }
 
     [HttpGet]
-    public async Task<ActionResult<List<WasteReport>>> Get([FromQuery] string? type)
+    public async Task<ActionResult<List<WasteReport>>> Get([FromQuery] string? type, [FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate)
     {
         try
         {
+            List<WasteReport> reports;
+
             if (type != null)
             {
-                var filteredReports = await _wasteReportService.GetWasteReportByType(type);
-                return Ok(filteredReports);
+                reports = await _wasteReportService.GetWasteReportByType(type);
+            }
+            else
+            {
+                reports = await _wasteReportService.GetAllWasteReports();
             }
 
-            var allReports = await _wasteReportService.GetAllWasteReports();
-            return Ok(allReports);
+            if (startDate.HasValue && endDate.HasValue)
+            {
+                reports = reports.Where(r => r.WasteDate >= startDate.Value && r.WasteDate <= endDate.Value.AddDays(1)).ToList();
+            }
+
+            return Ok(reports);
         }
         catch (Exception ex)
         {
@@ -42,6 +39,8 @@ public class WasteReportsController : ControllerBase
             return StatusCode(500, "An error occurred while processing your request.");
         }
     }
+
+
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<WasteReport>> Get(int id)

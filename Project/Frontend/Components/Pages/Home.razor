@@ -1,8 +1,8 @@
 ﻿@page "/dashboard"
-@layout Layout.MainLayout
 @inject IHttpClientFactory ClientFactory
 @inject NavigationManager NavigationManager
 @inject ILocalStorageService LocalStorage
+@inject ChartGeneration ChartGeneration
 @attribute [Authorize]
 
 <PageTitle>Dashboard</PageTitle>
@@ -15,199 +15,32 @@
     <!-- Line Chart for CO2 Emissions Over Time -->
     <div class="chart-section">
         <h3 class="chart-title">CO2 Emissions Over Last 7 Days</h3>
-        @if (isInitialized && wasteReports.Count > 0)
-        {
             <LineChart @ref="lineChart" Width="750" Height="300" style="width: 800px;" />
-        }
     </div>
 
     <!-- Pie Chart for Waste Type Distribution -->
     <div class="chart-section">
         <h3 class="chart-title">Waste Type Distribution (kg)</h3>
-        @if (isInitialized && wasteReports.Count > 0)
-        {
             <div class="chart-container">
                 <PieChart @ref="pieChart" Width="300" Height="300" />
             </div>
-        }
     </div>
 </div>
 
 <!-- Stacked Bar Chart for Waste Collection Trends -->
 <div class="chart-section">
     <h3 class="chart-title">Waste Collection Trends</h3>
-    @if (isInitialized && wasteReports.Count > 0)
-    {
         <div class="chart-container">
             <BarChart @ref="barChart" Width="1180" Height="300" />
         </div>
-    }
 </div>
 
 @code {
     private List<WasteReport> wasteReports = new();
-    private bool isInitialized = false;
-    private bool isInitializedOnce = false;
+
     private LineChart lineChart = default!;
     private PieChart pieChart = default!;
     private BarChart barChart = default!;
-    private LineChartOptions lineChartOptions = default!;
-    private PieChartOptions pieChartOptions = default!;
-    private BarChartOptions barChartOptions = default!;
-    private ChartData lineChartData = default!;
-    private ChartData pieChartData = default!;
-    private ChartData barChartData = default!;
-
-    protected override async Task OnInitializedAsync()
-    {
-        if (isInitializedOnce)
-        {
-            return;
-        }
-
-        isInitializedOnce = true;
-
-        try
-        {
-            var client = ClientFactory.CreateClient("BackendAPI");
-            var reportResponse = await client.GetFromJsonAsync<List<WasteReport>>("api/WasteReports/");
-
-            if (reportResponse != null && reportResponse.Any())
-            {
-                wasteReports = reportResponse.OrderBy(report => report.WasteDate).ToList();
-                GenerateLineChart();
-                GeneratePieChart();
-                GenerateBarChart();
-            }
-            else
-            {
-                Console.WriteLine("No data returned from API.");
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error loading home page: {ex.Message}");
-        }
-        finally
-        {
-            isInitialized = true;
-            StateHasChanged();
-        }
-    }
-
-    private void GenerateLineChart()
-    {
-        var colors = ColorUtility.CategoricalTwelveColors;
-
-        // Get the date range for the last 7 days
-        var sevenDaysAgo = DateTime.Now.Date.AddDays(-7);
-
-        // Filter data for the last 7 days and group by date
-        var groupedData = wasteReports
-            .Where(r => r.WasteDate.Date >= sevenDaysAgo) // Filter for last 7 days
-            .GroupBy(r => r.WasteDate.Date) // Group by the date part of WasteDate
-            .Select(g => new
-            {
-                Date = g.Key,
-                TotalCo2Emission = g.Sum(r => r.Co2Emission ?? 0) // Sum CO2 emissions, handling nulls
-            })
-            .OrderBy(g => g.Date) // Ensure dates are in ascending order
-            .ToList();
-
-        // Extract labels and data from grouped results
-        var labels = groupedData.Select(g => g.Date.ToString("dd-MM-yyyy")).ToList();
-        var co2EmissionData = groupedData.Select(g => (double?)g.TotalCo2Emission).ToList(); // Convert to nullable double
-
-        // Create the dataset for the line chart
-        var dataset = new LineChartDataset
-        {
-            Label = "CO2 Emissions",
-            Data = co2EmissionData, // Use aggregated data
-            BackgroundColor = colors[0],
-            BorderColor = colors[0],
-            BorderWidth = 2,
-            HoverBorderWidth = 4,
-        };
-
-        // Prepare chart data and options
-        var datasets = new List<IChartDataset> { dataset };
-        lineChartData = new ChartData { Labels = labels, Datasets = datasets };
-
-        lineChartOptions = new();
-        lineChartOptions.Locale = "en-US";
-        lineChartOptions.Responsive = true;
-        lineChartOptions.Interaction = new Interaction { Mode = InteractionMode.Index };
-
-        lineChartOptions.Scales.X!.Title = new ChartAxesTitle { Text = "Date", Display = true };
-        lineChartOptions.Scales.Y!.Title = new ChartAxesTitle { Text = "CO2 Emissions (kg)", Display = true };
-    }
-
-    private void GeneratePieChart()
-    {
-        var colors = ColorUtility.CategoricalTwelveColors;
-        var wasteTypeGroups = wasteReports.GroupBy(r => r.WasteType)
-            .Select(g => new { WasteType = g.Key, Amount = g.Sum(r => r.WasteAmount) })
-            .ToList();
-
-        pieChartData = new ChartData
-        {
-            Labels = wasteTypeGroups.Select(g => g.WasteType).ToList(),
-            Datasets = new List<IChartDataset>
-            {
-                new PieChartDataset
-                {
-                    Label = "Waste Type Distribution",
-                    Data = wasteTypeGroups.Select(g => (double?)g.Amount).ToList(),
-                    BackgroundColor = colors.Take(wasteTypeGroups.Count).ToList(),
-                    HoverBackgroundColor = colors.Take(wasteTypeGroups.Count).ToList()
-                }
-            }
-        };
-    }
-
-    private void GenerateBarChart()
-    {
-        var colors = ColorUtility.CategoricalTwelveColors;
-        var facilities = wasteReports.Select(r => r.WasteProcessingFacility).Distinct().ToList();
-        var wasteTypes = wasteReports.Select(r => r.WasteType).Distinct().ToList();
-
-        var datasets = new List<IChartDataset>();
-        int colorIndex = 0;
-
-        foreach (var wasteType in wasteTypes)
-        {
-            var dataset = new BarChartDataset()
-            {
-                Label = wasteType,
-                Data = facilities.Select(facility => (double?)wasteReports
-                    .Where(r => r.WasteProcessingFacility == facility && r.WasteType == wasteType)
-                    .Sum(r => r.WasteAmount))
-                    .ToList(),
-                BackgroundColor = new List<string> { colors[(colorIndex % colors.Length)] },
-                BorderColor = new List<string> { colors[(colorIndex % colors.Length)] },
-                BorderWidth = new List<double> { 0 }
-            };
-
-            datasets.Add(dataset);
-            colorIndex++;
-        }
-
-        barChartData = new ChartData { Labels = facilities, Datasets = datasets };
-
-        barChartOptions = new();
-        barChartOptions.Responsive = true;
-        barChartOptions.Interaction = new Interaction { Mode = InteractionMode.Y };
-        barChartOptions.IndexAxis = "y";
-
-        barChartOptions.Scales.X!.Title = new ChartAxesTitle { Text = "Waste Amount (kg)", Display = true };
-        barChartOptions.Scales.Y!.Title = new ChartAxesTitle { Text = "Processing Facility", Display = true };
-
-        barChartOptions.Scales.X.Stacked = true;
-        barChartOptions.Scales.Y.Stacked = true;
-
-        barChartOptions.Plugins.Title!.Text = "Waste Type";
-        barChartOptions.Plugins.Title.Display = true;
-    }
 
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -215,19 +48,37 @@
         if (firstRender)
         {
             try
+        {
+            var client = ClientFactory.CreateClient("BackendAPI");
+            var response = await client.GetFromJsonAsync<List<WasteReport>>("api/WasteReports");
+
+            if (response != null)
             {
-                if (lineChartData != null && isInitialized)
+                wasteReports = response;
+            }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading waste reports: {ex.Message}");
+            }
+            try
+            {
+                // Check if charts are not null before initializing them.
+                if (lineChart != null)
                 {
+                    var (lineChartData, lineChartOptions) = ChartGeneration.GenerateLineChart(wasteReports);
                     await lineChart.InitializeAsync(lineChartData, lineChartOptions);
                 }
 
-                if (pieChartData != null && isInitialized)
+                if (pieChart != null)
                 {
+                    var (pieChartData, pieChartOptions) = ChartGeneration.GeneratePieChart(wasteReports);
                     await pieChart.InitializeAsync(pieChartData, pieChartOptions);
-                }   
+                }
 
-                if (barChartData != null && isInitialized)
+                if (barChart != null)
                 {
+                    var (barChartData, barChartOptions) = ChartGeneration.GenerateBarChart(wasteReports);
                     await barChart.InitializeAsync(barChartData, barChartOptions);
                 }
             }
